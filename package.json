@@ -21,6 +21,7 @@
     "sass": "^1.50.0"
   },
   "dependencies": {
+    "@google-cloud/secret-manager": "^3.12.0",
     "@google/markerclustererplus": "^5.0.3",
     "@googlemaps/js-api-loader": "^1.12.1",
     "dotenv": "^16.0.0",
