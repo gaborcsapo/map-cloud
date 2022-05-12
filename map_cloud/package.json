@@ -1,0 +1,33 @@
+{
+  "name": "map_cloud",
+  "version": "1.0.0",
+  "description": "Google Maps project hosted on GCP",
+  "main": "app.js",
+  "scripts": {
+    "compile:sass": "sass sass/main.scss public/css/main.css && sass sass/simple.scss public/css/simple.css",
+    "compile:rollup": "rollup -c",
+    "build": "npm run compile:sass && npm run compile:rollup",
+    "watch": "nodemon --exec \"npm run build && node app.js\" -e js,scss,mustache --ignore node_modules/ --ignore public/",
+    "start": "npm run build && node app.js"
+  },
+  "author": "Gabor Csapo",
+  "license": "MIT",
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^13.3.0",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-es2015": "^6.24.1",
+    "rollup": "^2.72.1",
+    "rollup-plugin-babel": "^4.4.0",
+    "sass": "^1.50.0"
+  },
+  "dependencies": {
+    "@google/markerclustererplus": "^5.0.3",
+    "@googlemaps/js-api-loader": "^1.12.1",
+    "dotenv": "^16.0.0",
+    "express": "^4.18.1",
+    "express-router": "0.0.1",
+    "mustache-express": "^1.3.2",
+    "nodemon": "^2.0.16",
+    "serve-favicon": "^2.5.0"
+  }
+}

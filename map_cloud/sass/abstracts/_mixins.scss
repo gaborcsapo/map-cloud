@@ -1,0 +1,16 @@
+//COLOR GRADIENTS
+@mixin color-test-gradient {
+    background-image: -webkit-linear-gradient(top, #A60000, #FFFFFF);
+    background-image: -moz-linear-gradient(top, #A60000, #FFFFFF);
+    background-image: -ms-linear-gradient(top, #A60000, #FFFFFF);
+    background-image: -o-linear-gradient(top, #A60000, #FFFFFF);
+    background-image: linear-gradient(top, #A60000, #FFFFFF);
+}
+
+//Absolute center of view-port
+@mixin absCenter {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
