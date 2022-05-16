@@ -3,11 +3,12 @@
   "version": "1.0.0",
   "description": "Google Maps project hosted on GCP",
   "main": "app.js",
+  "type": "module",
   "scripts": {
-    "compile:sass": "node_modules/.bin/sass sass/main.scss public/css/main.css && node_modules/.bin/sass sass/simple.scss public/css/simple.css",
+    "compile:sass": "node_modules/.bin/sass public/sass/main.scss dist/css/main.css",
     "compile:rollup": "node_modules/.bin/rollup -c",
-    "build": "cp -r resources/* public/resources && npm run compile:sass && npm run compile:rollup",
-    "watch": "node_modules/.bin/nodemon --exec \"npm run build && node app.js\" -e js,scss,mustache,json --ignore node_modules/ --ignore public/",
+    "build": "mkdir -p dist/resources && cp -r public/resources/* dist/resources && npm run compile:sass && npm run compile:rollup",
+    "watch": "node_modules/.bin/nodemon --exec \"npm run build && node app.js\" -e js,scss,mustache,json --ignore node_modules/ --ignore dist/",
     "start": "node app.js"
   },
   "author": "Gabor Csapo",

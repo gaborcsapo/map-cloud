@@ -1,23 +1,25 @@
-const express = require('express');
-const router = express.Router();
-const favicon = require('serve-favicon');
-const mustacheExpress = require('mustache-express');
+import express from 'express';
+import serve_favicon from 'serve-favicon';
+import mustacheExpress from 'mustache-express';
+import 'dotenv/config'
+
+import routes from './routes/routes.js';
+
 const app = express();
 const mustache = mustacheExpress();
-const home = require('./routes/home');
-
-require('dotenv').config();
 
 mustache.cache = null;
 app.engine('mustache', mustache);
 app.set('view engine', 'mustache')
-app.set('views', __dirname + '/views');
-app.use(express.static('public'));
+app.set('views', 'public/views');
+app.use(express.static('dist'));
 
-// app.use(favicon(__dirname + '/public/img/favicon.png'));
+// app.use(favicon(__dirname + '/dist/img/favicon.png'));
 
-app.use('/', home);
-app.use('/hi', home);
+app.use('/home', routes.home);
+app.use('/fam', routes.fam);
+app.use('/joy', routes.joy);
+app.use('/urbanai', routes.urbanai);
 
 const PORT = parseInt(process.env.PORT) || 8080;
 app.listen(PORT, () => {
