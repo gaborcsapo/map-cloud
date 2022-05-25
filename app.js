@@ -15,8 +15,7 @@ app.set('views', 'public/views');
 app.use(express.static('dist'));
 
 // app.use(favicon(__dirname + '/dist/img/favicon.png'));
-
-app.use('/home', routes.home);
+app.use('/', routes.home);
 app.use('/fam', routes.fam);
 app.use('/joy', routes.joy);
 app.use('/urbanai', routes.urbanai);

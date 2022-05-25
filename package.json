@@ -17,7 +17,9 @@
     "@google-cloud/secret-manager": "^3.12.0",
     "@google/markerclustererplus": "^5.0.3",
     "@googlemaps/js-api-loader": "^1.12.1",
+    "@rollup/plugin-commonjs": "^22.0.0",
     "@rollup/plugin-node-resolve": "^13.3.0",
+    "@turf/turf": "^6.5.0",
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-preset-es2015": "^6.24.1",
     "dotenv": "^16.0.0",
@@ -30,5 +32,8 @@
     "sass": "^1.50.0",
     "serve-favicon": "^2.5.0",
     "three": "^0.140.2"
+  },
+  "devDependencies": {
+    "@types/object-assign": "^4.0.30"
   }
 }
