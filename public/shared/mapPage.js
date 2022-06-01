@@ -1,8 +1,6 @@
 import { ThreeJSOverlayView } from '../shared/threejsOverlayView.js';
 import { Basemap } from './baseMap.js';
 
-
-
 export class MapPage {
     baseMap;
     camera = {};

@@ -4,6 +4,7 @@ import mustacheExpress from 'mustache-express';
 import 'dotenv/config'
 
 import routes from './routes/routes.js';
+import { DirectionExporter } from './middleware/map_directions.js';
 
 const app = express();
 const mustache = mustacheExpress();
@@ -24,3 +25,5 @@ const PORT = parseInt(process.env.PORT) || 8080;
 app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}.`);
 });
+
+//const exporter = new DirectionExporter();

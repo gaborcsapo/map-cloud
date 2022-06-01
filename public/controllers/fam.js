@@ -2,59 +2,42 @@ import { MapPage } from '../shared/mapPage.js';
 import * as THREE from 'three';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { CarCamAnimation } from '../shared/cameraAnimations.js';
-import { latLngToVector3 } from '../shared/coordinates.js';
-import { FamCarCamPath } from '../resources/paths/fam-paths.js'
+import { Car } from '../shared/car.js';
+import { FamCarPaths } from '../resources/paths/fam-paths.js'
 
 import { Loader } from '@googlemaps/js-api-loader';
 
 const initialViewport = {
-    center: { lat: 25.080145, lng: 121.232534},
-    zoom: 16,
-    tilt: 0,
+    center: FamCarPaths[0].camPath[0],
+    zoom: 18,
+    tilt: 30,
     heading: 0,
 };
 
-const ANIMATION_DURATION = 40000;
-const START_DELAY = 1000;
-const DESTINATION_ZOOM = 18;
-const TARGET_HEADING = 160;
-
 class FamPage extends MapPage{
     initialize() {
+        this.pathIdx = 0;
+        this.overlay.setMap(this.baseMap.getMapInstance());
+        this.car = new Car({carPath: FamCarPaths[this.pathIdx], overlay: this.overlay});
+        this.startNextPath();
+    }
+
+    startNextPath() {
         this.cameraAnimation = new CarCamAnimation({
             basemap: this.baseMap,
             overlay: this.overlay,
-            cameraPath: FamCarCamPath,
-            duration: ANIMATION_DURATION,
-            delay: START_DELAY,
-            targetZoom: DESTINATION_ZOOM,
-            targetHeading: TARGET_HEADING,
-            origin: initialViewport
+            path: FamCarPaths[this.pathIdx],
         })
-        this.initScene();
-    }
-
-    start() {
+        this.car.startNewPath(FamCarPaths[this.pathIdx]);
         this.cameraAnimation.play();
-    };
-
-    stop() {
-    };
-
-    initScene() {
-        this.overlay.setMap(this.baseMap.getMapInstance());
-
-        this.box = new THREE.Mesh(
-            new THREE.BoxBufferGeometry(10, 50, 10),
-            new THREE.MeshNormalMaterial(),
-        );
-        this.overlay.getScene().add(this.box);
-        this.box.position.copy(latLngToVector3(initialViewport.center));
-        this.box.position.setY(25);
+        this.pathIdx++;
     }
 
     updateScene() {
-        this.box.rotateY(THREE.MathUtils.degToRad(0.1));
+        if (this.car.update() && (FamCarPaths.length > this.pathIdx)) {
+            // car animation finished
+            this.startNextPath();
+        }
     }
 }
 

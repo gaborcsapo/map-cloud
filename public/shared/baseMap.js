@@ -59,10 +59,10 @@ export class Basemap {
      */
     getCamera() {
         return {
-            center: this.map?.getCenter(),
-            tilt: this.map?.getTilt(),
-            zoom: this.map?.getZoom(),
-            heading: this.map?.getHeading()
+            center: this.map.getCenter(),
+            tilt: this.map.getTilt(),
+            zoom: this.map.getZoom(),
+            heading: this.map.getHeading()
         };
     }
 

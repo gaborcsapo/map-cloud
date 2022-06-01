@@ -1,3 +1,4 @@
+import { center } from '@turf/turf';
 import {CatmullRomCurve3, MathUtils} from 'three';
 import { latLngAltToVector3, vector3ToLatLngAlt } from '../shared/coordinates.js';
 import { easeInOutCubic, easeInSine, easeInOutQuad } from '../shared/easing.js';
@@ -144,32 +145,22 @@ export class LinearAnimation extends CameraAnimation {
  * rendering a frame.
  */
  export class CarCamAnimation extends CameraAnimation {
-    delay;
-    duration;
+    zoomAmplitude = 3;
 
-    headingAnimationStart = 0.85;
-    targetHeading;
-
-    zoomAmplitude = 1.5;
-    targetZoom;
-
-    overlay;
-    spline;
-
-    origin;
-
-    constructor({basemap, overlay, cameraPath, duration, delay, targetZoom, targetHeading, origin}) {
+    constructor({basemap, overlay, path}) {
         super(basemap);
 
-        this.delay = delay;
-        this.duration = duration;
-        this.targetHeading = targetHeading;
-        this.targetZoom = targetZoom;
-        this.origin = origin;
-
+        this.delay = path.delay;
+        this.duration = path.duration;
+        this.zoomAmplitude = path.zoomAmplitude;
+        this.directionHeading = path.directionHeading;
         this.overlay = overlay;
+        this.origin = this.basemap.getCamera();
+        this.origin.lat = this.origin.center.lat();
+        this.origin.lng = this.origin.center.lng();
+
         this.spline = new CatmullRomCurve3(
-            cameraPath.map(({lat, lng}) => latLngAltToVector3({lat, lng, altitude: 0}, origin.center)),
+            path.camPath.map(({lat, lng}) => latLngAltToVector3({lat, lng, altitude: 0}, this.origin)),
             false,
             'centripetal',
             0.2
@@ -178,29 +169,18 @@ export class LinearAnimation extends CameraAnimation {
 
     update(animationTime) {
       const linearProgress = MathUtils.clamp((animationTime - this.delay) / this.duration, 0, 1);
+      // stop animation once target is reached
+      if (linearProgress === 1) this.dispose();
+
       const progress = easeInOutCubic(linearProgress);
 
-      // stop animation once target is reached
-      if (linearProgress === 1) this.pause();
-
       const cameraPos = this.spline.getPointAt(progress);
-      const {lat, lng} = vector3ToLatLngAlt(cameraPos, this.origin.center);
+      const {lat, lng} = vector3ToLatLngAlt(cameraPos, this.origin);
 
       // compute a zoom out/zoom in animation and lerp towards the target zoom-level (smoothes out the approach)
-      const calcZoom = this.origin.zoom - this.zoomAmplitude * Math.sin(Math.PI * linearProgress);
-      const zoom = lerp(calcZoom, this.targetZoom, easeInSine(linearProgress));
+      const zoom = this.origin.zoom - this.zoomAmplitude * Math.sin(Math.PI * linearProgress);
 
-      // the map heading swings around to the final direction starting when animation is 85% complete.
-      const headingProgress = clamp(
-        mapLinear(linearProgress, this.headingAnimationStart, 1, 0, 1),
-        0,
-        1
-      );
-      const heading = lerp(
-        this.origin.heading,
-        this.targetHeading,
-        easeInOutQuad(headingProgress)
-      );
+      const heading = this.directionHeading * Math.sin(Math.PI * linearProgress);
 
       this.basemap.setCamera({
         center: {lat, lng},

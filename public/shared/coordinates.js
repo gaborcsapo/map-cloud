@@ -30,19 +30,12 @@ export function latLngToMeters(latLng) {
 /**
  * Converts latitude and longitude to world space coordinates with y up.
  */
-export function latLngToVector3(
-  point,
-  target = new Vector3()
-) {
-  const { x, y } = latLngToMeters(point);
-
-  return target.set(x, 0, -y);
+export function latLngToVector3(point, target = new Vector3()) {
+    const { x, y } = latLngToMeters(point);
+    return target.set(x, 0, -y);
 }
 
-export function latLngToMetersRelative(
-    point,
-    reference
-  ) {
+export function latLngToMetersRelative(point, reference) {
     const dx = distance([reference.lng, reference.lat], [point.lng, reference.lat], {
       units: 'meters'
     });

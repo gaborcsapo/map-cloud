@@ -54,6 +54,19 @@
           this.scale = scale;
           this.scene = new THREE.Scene();
 
+          // rotate the scene so it keeps the y-up orientation used by three.js
+          this.scene.rotation.x = Math.PI / 2;
+
+          // create two three.js lights to illuminate the model (roughly approximates
+          // the lighting of buildings in maps)
+          const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444, 1);
+          hemiLight.position.set(0, 1, -0.2).normalize();
+          this.scene.add(hemiLight);
+
+          const dirLight = new THREE.DirectionalLight(0xffffff);
+          dirLight.position.set(0, 100, 10);
+          this.scene.add(dirLight);
+
           // rotate scene consistent with y up in THREE
           this.scene.rotation.x = Math.PI / 2;
 
@@ -169,8 +182,8 @@
 
           gl.disable(gl.SCISSOR_TEST);
           if (this.updateSceneCallback) {
-               const res = this.updateSceneCallback(this.scene, this.camera);
-               if (typeof res === 'undefined' || res) this.requestRedraw();
+               this.updateSceneCallback(this.scene, this.camera);
+               this.requestRedraw();
           }
 
           this.renderer.render(this.scene, this.camera);
