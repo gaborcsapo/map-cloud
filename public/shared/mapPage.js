@@ -12,8 +12,6 @@ export class MapPage {
         this.overlay = new ThreeJSOverlayView();
 
         this.initialize();
-
-        this.overlay.updateSceneCallback = this.updateScene.bind(this);
     };
 
     initialize() {};
@@ -24,5 +22,7 @@ export class MapPage {
 
     initScene() {};
 
-    updateScene() {};
+    setUpdateSceneCallback(callback) {
+        this.overlay.updateSceneCallback = callback.bind(this);
+    };
 }

@@ -1,5 +1,3 @@
-import { LinearAnimation, OrbitAnimation } from './cameraAnimations.js';
-
 const mapId ="c2485044d90a90f"
 
 /**
@@ -10,6 +8,7 @@ const mapId ="c2485044d90a90f"
 export class Basemap {
     map;
     camera = {};
+    mapLoadingTime = 5000;
 
     constructor(initialViewport) {
         const mapDiv = document.getElementById('map');

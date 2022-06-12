@@ -146,6 +146,7 @@
           this.renderer = new THREE.WebGLRenderer({
                canvas: gl.canvas,
                context: gl,
+               antialias : false,
                ...gl.getContextAttributes(),
           });
           this.renderer.autoClear = false;
@@ -159,7 +160,7 @@
 
           const { width, height, clientWidth } = gl.canvas;
 
-          this.renderer.setPixelRatio(width / clientWidth);
+          this.renderer.setPixelRatio(window.devicePixelRatio * 0.8);
           this.renderer.setSize(width, height, false);
 
           this.viewportSize.set(width, height);

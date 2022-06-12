@@ -14,3 +14,13 @@ export function easeInOutQuad(x) {
   export function easeInOutQuint(x) {
     return x < 0.5 ? 16 * x * x * x * x * x : 1 - Math.pow(-2 * x + 2, 5) / 2;
   }
+
+  export function easeInOutCirc(x) {
+    return x < 0.5
+      ? (1 - Math.sqrt(1 - Math.pow(2 * x, 2))) / 2
+      : (Math.sqrt(1 - Math.pow(-2 * x + 2, 2)) + 1) / 2;
+  }
+
+  export function easeInOutPower(x) {
+    return -1 * Math.pow(2 * x - 1, 10) + 1;
+  }
