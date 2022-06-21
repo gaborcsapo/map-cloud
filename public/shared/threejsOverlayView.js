@@ -160,7 +160,7 @@
 
           const { width, height, clientWidth } = gl.canvas;
 
-          this.renderer.setPixelRatio(window.devicePixelRatio * 0.8);
+          this.renderer.setPixelRatio(window.devicePixelRatio);
           this.renderer.setSize(width, height, false);
 
           this.viewportSize.set(width, height);

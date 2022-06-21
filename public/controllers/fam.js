@@ -28,14 +28,16 @@ class FamPage extends MapPage{
             front: new Vector3(-1, 0, 0),
             scale: 0.3,
             baseMap: this.baseMap,
+            isImage: false,
         });
         this.car = new Vehicle({
             overlay: this.overlay,
             lineColor: CAR_LINE_COLOR,
-            modelPath: "resources/3d/low-poly-car.gltf",
+            modelPath: "resources/3d/car.gltf",
             front: new Vector3(1, 0, 0),
             scale: 0.1,
             baseMap: this.baseMap,
+            isImage: false,
         });
 
         this.startNextJourneyLeg(this.plane);
@@ -44,23 +46,28 @@ class FamPage extends MapPage{
 
 
     startNextJourneyLeg(vehicle) {
-
-        this.cameraAnimation = new CarCamAnimation({
-            basemap: this.baseMap,
-            overlay: this.overlay,
-            path: FamCarPaths[this.pathIdx],
-        });
-        if (vehicle)
-            vehicle.startNewPath(FamCarPaths[this.pathIdx]);
-        //this.sign = new InfoSign(this.overlay.getScene(), this.baseMap, initialViewport.zoom, FamCarPaths[this.pathIdx].infoSign);
-        this.cameraAnimation.play();
-        this.pathIdx++;
+        if (FamCarPaths.length > this.pathIdx) {
+            this.cameraAnimation = new CarCamAnimation({
+                basemap: this.baseMap,
+                overlay: this.overlay,
+                path: FamCarPaths[this.pathIdx],
+            });
+            if (vehicle)
+                vehicle.startNewPath(FamCarPaths[this.pathIdx]);
+            // this.sign = new InfoSign(this.overlay.getScene(), this.baseMap, initialViewport.zoom, FamCarPaths[this.pathIdx].infoSign);
+            this.cameraAnimation.play();
+            this.pathIdx++;
+        } else {
+            if (this.pathIdx % FamCarPaths.length == 0)
+                this.pathIdx += 3
+            vehicle.loopOldPath(FamCarPaths[this.pathIdx % FamCarPaths.length]);
+            this.pathIdx++;
+        }
     }
 
     updateFlightScene() {
         if (this.plane.update())
         {
-            console.log("Number of Triangles :", this.overlay.renderer.info.render.triangles);
             this.fireworks = new FireworkGroup({overlay: this.overlay, path: FamCarPaths[this.pathIdx]});
             //this.sign.destroy();
             this.startNextJourneyLeg(false);
@@ -71,7 +78,6 @@ class FamPage extends MapPage{
     updateFireworksScene() {
         if (this.fireworks.update())
         {
-            console.log("Number of Triangles :", this.overlay.renderer.info.render.triangles);
             this.fireworks = null;
             this.startNextJourneyLeg(this.car);
             this.setUpdateSceneCallback(this.updateCarScene);
@@ -79,8 +85,7 @@ class FamPage extends MapPage{
     }
 
     updateCarScene() {
-        if (this.car.update() && (FamCarPaths.length > this.pathIdx)) {
-            console.log("Number of Triangles :", this.overlay.renderer.info.render.triangles);
+        if (this.car.update()) {
             // car animation finished
             this.startNextJourneyLeg(this.car);
         }

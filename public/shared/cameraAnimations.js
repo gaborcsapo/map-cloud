@@ -1,6 +1,6 @@
 import {CatmullRomCurve3, MathUtils} from 'three';
 import { latLngAltToVector3, vector3ToLatLngAlt } from '../shared/coordinates.js';
-import { easeInOutCubic, easeInOutQuint, easeInOutPower } from '../shared/easing.js';
+import { easeInOutCubic, easeInOutQuint, easeInOutPower, easeInSine } from '../shared/easing.js';
 
 const {lerp, mapLinear, clamp} = MathUtils;
 
@@ -81,12 +81,16 @@ export class CameraAnimation {
     constructor({basemap, overlay, path}) {
         super(basemap);
 
-        this.delay = path.delay;
-        this.vehicleStartDelay = this.delay + basemap.mapLoadingTime;
-        this.duration = path.duration;
-        this.vehicleDuration = this.duration - basemap.mapLoadingTime;
+        this.startDelay = path.startDelay;
+        this.zoomDuration = path.zoomDuration;
+        this.camMoveDuration = path.camMoveDuration;
+
+        this.totalDuration = this.startDelay + this.zoomDuration * 2 + this.camMoveDuration;
+        this.zoomEndTime = this.startDelay + this.zoomDuration;
+        this.camMoveEndTime = this.startDelay + this.zoomDuration + this.camMoveDuration;
+
         this.zoomAmplitude = path.zoomAmplitude;
-        this.directionHeading = path.directionHeading;
+
         this.overlay = overlay;
         this.origin = this.basemap.getCamera();
         this.origin.lat = this.origin.center.lat();
@@ -101,26 +105,41 @@ export class CameraAnimation {
     }
 
     update(animationTime) {
-      const linearCamProgress = MathUtils.clamp((animationTime - this.delay) / this.duration, 0, 1);
-      // stop animation once target is reached
-      if (linearCamProgress === 1)
+      if (animationTime < this.startDelay) {
+        return;
+      }
+      else if (animationTime < this.zoomEndTime)
+      {
+        const zoomProgress = (animationTime - this.startDelay) / this.zoomDuration;
+        this.zoom = this.origin.zoom - this.zoomAmplitude * easeInSine(zoomProgress);
+        this.basemap.setCamera({
+          zoom: this.zoom,
+        });
+      }
+      else if (animationTime < this.camMoveEndTime)
+      {
+        const camMoveProgress = (animationTime - this.zoomEndTime) / this.camMoveDuration;
+        const cameraPos = this.spline.getPointAt(easeInOutCubic(camMoveProgress));
+        const {lat, lng} = vector3ToLatLngAlt(cameraPos, this.origin);
+        this.basemap.setCamera({
+          center: {lat, lng},
+          zoom: this.zoom,
+          heading: this.origin.heading,
+        });
+      }
+      else if (animationTime < this.totalDuration)
+      {
+        const zoomProgress = (animationTime - this.camMoveEndTime) / this.zoomDuration;
+        this.zoom = this.origin.zoom - this.zoomAmplitude * (1 - easeInSine(zoomProgress));
+        this.basemap.setCamera({
+          zoom: this.zoom,
+        });
+      }
+      else
       {
         this.spline = null;
         this.dispose();
       }
-
-      const linearVehicleProgress = MathUtils.clamp((animationTime - this.vehicleStartDelay) / this.vehicleDuration, 0, 1);
-      const cameraPos = this.spline.getPointAt(easeInOutCubic(linearVehicleProgress));
-      const {lat, lng} = vector3ToLatLngAlt(cameraPos, this.origin);
-
-      // compute a zoom out/zoom in animation and lerp towards the target zoom-level (smoothes out the approach)
-      const zoom = this.origin.zoom - this.zoomAmplitude * easeInOutPower(linearCamProgress);
-
-      this.basemap.setCamera({
-        center: {lat, lng},
-        zoom,
-        heading: this.directionHeading,
-      });
     }
   }
 
