@@ -14,7 +14,22 @@ export default [
             format: 'cjs'
         },
         plugins: [
-            resolve(),
+            resolve({
+                browser: true,
+            }),
+            commonjs()
+        ]
+    },
+    {
+        input: 'public/controllers/link_gen.js',
+        output: {
+            file: 'dist/scripts/link_gen.js',
+            format: 'cjs'
+        },
+        plugins: [
+            resolve({
+                browser: true,
+            }),
             commonjs()
         ]
     },

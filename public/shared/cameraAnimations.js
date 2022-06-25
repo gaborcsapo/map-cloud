@@ -1,8 +1,6 @@
 import {CatmullRomCurve3, MathUtils} from 'three';
 import { latLngAltToVector3, vector3ToLatLngAlt } from '../shared/coordinates.js';
-import { easeInOutCubic, easeInOutQuint, easeInOutPower, easeInSine } from '../shared/easing.js';
-
-const {lerp, mapLinear, clamp} = MathUtils;
+import { easeInOutCubic, easeInSine } from '../shared/easing.js';
 
 /**
  * Baseclass for all camera-animations, manages the rAF-loop
