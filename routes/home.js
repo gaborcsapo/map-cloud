@@ -1,15 +1,7 @@
 import { Router} from 'express';
 const router = Router();
 
-let global_idx = 0;
-
 const view = {
-    inc_idx: function() {
-        ++global_idx; return;
-    },
-    get_idx: function() {
-        return global_idx;
-    },
     forms: [
         {
             title: "Departure Airport Location",
@@ -24,16 +16,20 @@ const view = {
             def: "Taoyuan International Airport",
         },
         {
+            title: "Arrival message",
+            def: "Welcome to Taiwan"
+        },
+        {
             title: "Airport Celebration Picture Link",
             def: "www.example.com/pic.jpg",
         },
         {
-            title: "Announcement before car departure",
-            def: "And now let's go to the city!"
-        },
-        {
             title: "Car Departure Location from Airport",
             def: "Taoyuan International Airport Terminal 2",
+        },
+        {
+            title: "Announcement before car departure",
+            def: "And now let's go to the city!"
         },
         {
             title: "Car Destination",
@@ -53,7 +49,7 @@ const view = {
         },
         {
             title: "Sight location",
-            def: "Google TPKD Banqiao",
+            def: "Google TPKD",
         },
         {
             title: "Announcement at sight",
@@ -61,7 +57,7 @@ const view = {
         },
         {
             title: "Sight location",
-            def: "Taipei 101",
+            def: "Taipei 101 Tower",
         },
         {
             title: "Announcement at sight",
@@ -79,21 +75,7 @@ const view = {
 };
 
 router.get('/', (req, res) => {
-    console.log(req.query);
-    if(Object.hasOwn(req.query, "path"))
-    {
-        res.send(req.query);
-    }
-
-    if (global_idx != 0) {
-        res.send("error: template rendering race condition. Please try again");
-
-    } else {
-        res.render('home', view, (error, html) => {
-            global_idx = 0;
-            res.send(html);
-        });
-    }
+    res.render('home', view);
 });
 
 export default router ;

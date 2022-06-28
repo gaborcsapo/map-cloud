@@ -21,9 +21,9 @@ export default [
         ]
     },
     {
-        input: 'public/controllers/link_gen.js',
+        input: 'public/controllers/home.js',
         output: {
-            file: 'dist/scripts/link_gen.js',
+            file: 'dist/scripts/home.js',
             format: 'cjs'
         },
         plugins: [

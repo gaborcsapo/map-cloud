@@ -1,18 +1,19 @@
-import { MapPage } from '../shared/mapPage.js';
-import { CarCamAnimation } from '../shared/cameraAnimations.js';
-import { FireworkGroup } from '../shared/fireworks';
-import { Vehicle } from '../shared/vehicle.js';
-import { FamCarPaths } from '../resources/paths/fam-paths.js'
+import { MapPage } from '../controllers/mapPage.js';
+import { CarCamAnimation } from '../controllers/cameraAnimations.js';
+import { FireworkGroup } from '../controllers/fireworks';
+import { Vehicle } from '../controllers/vehicle.js';
 import { Vector3 } from "three";
 import { Loader } from '@googlemaps/js-api-loader';
-import { InfoReader } from '../shared/infoReader.js';
-import { SoundManager } from '../shared/soundManager.js';
+import { InfoReader } from '../controllers/infoReader.js';
+import { SoundManager } from '../controllers/soundManager.js';
 
 const PLANE_LINE_COLOR = 0x285f4;
 const CAR_LINE_COLOR = 0xf4b400;
 
+const FamCarPaths = JSON.parse(FAM_CAR_PATHS);
+
 const initialViewport = {
-    center: FamCarPaths[0].camPath[0],
+    center: FamCarPaths[0].route[0],
     zoom: 18,
     tilt: 30,
     heading: 0,
@@ -25,7 +26,7 @@ class FamPage extends MapPage{
         this.plane = new Vehicle({
             overlay: this.overlay,
             lineColor: PLANE_LINE_COLOR,
-            modelPath: "resources/3d/plane.gltf",
+            modelPath: "/resources/3d/plane.gltf",
             front: new Vector3(-1, 0, 0),
             scale: 0.3,
             baseMap: this.baseMap,
@@ -34,7 +35,7 @@ class FamPage extends MapPage{
         this.car = new Vehicle({
             overlay: this.overlay,
             lineColor: CAR_LINE_COLOR,
-            modelPath: "resources/3d/car.gltf",
+            modelPath: "/resources/3d/car.gltf",
             front: new Vector3(1, 0, 0),
             scale: 0.1,
             baseMap: this.baseMap,
@@ -48,8 +49,6 @@ class FamPage extends MapPage{
         this.myModal = new bootstrap.Modal('#splash-modal');
         this.myModal.show();
         document.getElementById("continue-button").onclick = this.startJourney.bind(this);
-        // JSURL for parametrizing https://morioh.com/p/d87d18ff93b9
-
     }
 
     startJourney() {

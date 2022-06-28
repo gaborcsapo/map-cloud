@@ -1,48 +1,53 @@
-import {Client } from "@googlemaps/google-maps-services-js";
+import {Client, PlaceInputType } from "@googlemaps/google-maps-services-js";
 import { getDirectionsAPIKey } from './secret_manager.js';
-import { writeFileSync } from 'fs'
 
-const destinations = [
-    "Taoyuan Airport Terminal 2",
-    "Zhongshan MRT station Taipei",
-    "Banqiao Huajiang 1st road 235"
-]
-
-export class DirectionExporter {
-    key;
-
+export class MapDirections {
     constructor() {
         console.log("init");
         getDirectionsAPIKey().then((key) => {
             this.key = key;
-            this.retrievePaths();
+            this.client = new Client({});
         });
     }
 
-    async retrievePaths(){
-        const client = new Client({});
-        console.log("start");
-        for (let i = 1; i < destinations.length; i++)
-        {
-            console.log(i);
-            let promise = client.directions({params: {
-                                                origin:destinations[i - 1],
-                                                destination:destinations[i],
-                                                travelMode: 'DRIVING',
-                                                key: this.key,
-                                            },
-                                            timeout: 1000,
-                                        });
-            let results = await promise;
-            this.saveOutput(`public/resources/paths/${i}.json`, this.decodePath(results.data.routes[0].overview_polyline.points), { flag: 'w' });
-        }
-        console.log("done");
+    searchPath(start, end){
+        return new Promise((resolve) => {
+            this.client.directions({
+                params:
+                {
+                    origin: start,
+                    destination: end,
+                    travelMode: 'DRIVING',
+                    key: this.key,
+                },
+                timeout: 1000,
+            }).then((resp) => {
+                if (resp.data.routes.length == 0)
+                {
+                    console.log(resp);
+                }
+                resolve(this.decodePath(resp.data.routes[0].overview_polyline.points));
+            }, reason => {
+                console.log(reason)
+            });
+        });
     }
 
-    saveOutput(fileName, data)
-    {
-        let json_data = JSON.stringify(data);
-        writeFileSync(fileName, json_data);
+    searchPlace(description){
+        return new Promise((resolve) => {
+            this.client.geocode({
+                params:
+                {
+                    address: description,
+                   key: this.key,
+                },
+                timeout: 1000,
+            }).then((resp) => {
+                resolve(resp.data.results[0].geometry.location);
+            }, reason => {
+                console.log(reason)
+            });
+        });
     }
 
     decodePath(encodedPath) {

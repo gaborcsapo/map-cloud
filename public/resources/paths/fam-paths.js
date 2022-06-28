@@ -1,9 +1,6 @@
 export const FamCarPaths =
 [
     {
-        startDelay: 2000,
-        zoomDuration: 1000,
-        camMoveDuration: 2000,
         camPath: [
             {"lat": 48.117329, "lng": 16.564981},
             {"lat": 43.671605, "lng": 25.772934},
@@ -12,7 +9,6 @@ export const FamCarPaths =
             {"lat": 25.083154, "lng": 121.234930}
         ],
         text: "WELCOME TO VIENNA AIRPORT",
-        zoomAmplitude: 13,
         route: [
             {"lat": 48.117329, "lng": 16.564981, "alt": 0},
             {"lat": 43.671605, "lng": 25.772934, "alt": 6000},
@@ -22,15 +18,11 @@ export const FamCarPaths =
         ]
     },
     {
-        startDelay: 4000,
-        zoomDuration: 0,
-        camMoveDuration: 3000,
         camPath: [
             {"lat": 25.083154, "lng": 121.234930},
             {"lat":25.07692,"lng":121.23156000000002}
         ],
         text: "WELCOME TO VIENNA AIRPORT, lalalalalalalalalalalalalalalal lalalalalalalalalalalalalalalal",
-        zoomAmplitude: 0,
         celebImgURL: "resources/img/stupid.png"
     },
     {

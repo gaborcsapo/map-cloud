@@ -6,7 +6,6 @@ import mustacheExpress from 'mustache-express';
 import 'dotenv/config'
 
 import routes from './routes/routes.js';
-import { DirectionExporter } from './middleware/map_directions.js';
 import {TTSManager} from './middleware/text_to_speech.js';
 
 const app = express();
@@ -21,8 +20,6 @@ app.set('views', 'public/views');
 app.use(express.static('dist'));
 app.use('/', routes.home);
 app.use('/fam', routes.fam);
-app.use('/joy', routes.joy);
-app.use('/urbanai', routes.urbanai);
 // app.use(favicon(__dirname + '/dist/img/favicon.png'));
 
 const PORT = parseInt(process.env.PORT) || 8080;
@@ -46,5 +43,3 @@ io.on('connection', (socket) => {
     console.log("tts_request: ", text);
   });
 });
-
-//const exporter = new DirectionExporter();
