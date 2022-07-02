@@ -16,8 +16,8 @@ export class InfoReader {
         });
     }
 
-    loadAudio(text) {
-        this.socket.emit('tts_request', text, {});
+    loadAudio(text, language) {
+        this.socket.emit('tts_request', {text: text, language: language}, {});
         this.text = text;
     }
 

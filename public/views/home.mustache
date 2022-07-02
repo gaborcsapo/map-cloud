@@ -7,31 +7,64 @@
     <title>Hype Generator</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
-    <script type="module" src="/scripts/home.js"></script>
+    <script type="module" src="/scripts/POSApp.js"></script>
+    <script type="text/javascript">
+        var MAPS_API_KEY = "{{ maps_api_key }}"
+        var sampleJourneysJSON = `{{{ POSJourneyParams }}}`
+    </script>
+    <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
     <div class="container">
+        <div class="row g-5">
+            <div class="col col-sm-12 col-md-6 text-end title-center">
+                <h1 style="margin-bottom:3rem;">Share travel itineraries <br> with your friends and families</h1>
+                <h3>Fill in the form below to generate your custom journey animation.</h3>
+            </div>
+            <div class="col col-sm-12 col-md-6 map1x1" id="map"></div>
+        </div>
+    </div>
+    <div class="container">
         <form class="row g-3 needs-validation" novalidate>
+            <div class="col col-sm-0 col-md-1 col-lg-2"></div>
+            <div class="col col-sm-12 col-md-10 col-lg-8">
+                <label class="form-label">Throughout the animation, a voice reads your itinerary. In what language </label>
+                <select id="language" class="form-select" aria-label="Select the language of the announcements" >
+                    <option selected value="en-GB">UK English</option>
+                    <option value="en-IN">Indian English</option>
+                    <option value="de-DE">German</option>
+                    <option value="es-MX">Spanish</option>
+                    <option value="hu-HU">Hungarian</option>
+                    <option value="fr-FR">French</option>
+                    <option value="zh-TW">Chinese</option>
+                </select>
+            </div>
+            <div class="col col-sm-0 col-md-1 col-lg-2"></div>
 
             {{#forms}}
                 {{> form_element}}
             {{/forms}}
 
-            <div class="col-12">
-                <button class="btn btn-primary" type="submit">Generate Link</button>
+            <div class="col col-12 d-grid d-sm-flex justify-content-sm-center">
+                <button class="btn btn-primary btn-lg" type="submit">Generate Link</button>
             </div>
         </form>
-
-        <div class="mt-5">
-            <h2>Link to your animation: </h2>
-            <div>
-                <textarea type="text" id="copyTarget" class="w-75" value="Your link will appear here..."></textarea>
-                <button id="copyButton" class="btn btn-primary align-top d-inline-block" data-bs-toggle="tooltip" title="Copy to clipboard" >
-                    <svg class="icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="24" height="24" viewBox="0 0 24 24"><path d="M17,9H7V7H17M17,13H7V11H17M14,17H7V15H14M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3Z" /></svg>
-                </button>
+        <div class="row g-5">
+            <div class="col col-sm-12 d-grid d-sm-flex justify-content-sm-center">
+                <h2>Copy this link into your browser to check your animation.<br>Then share this link with anyone. </h2>
+            </div>
+            <div class="col col-sm-12 d-grid d-sm-flex justify-content-sm-center">
+                <textarea type="text" id="copyTarget" class="w-75" value="Your link will appear here..." oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'></textarea>
+                <div>
+                    <button id="copyButton" class="btn btn-primary align-top d-inline-block" data-bs-toggle="tooltip" title="Copy to clipboard" >
+                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="24" height="24" viewBox="0 0 24 24"><path d="M17,9H7V7H17M17,13H7V11H17M14,17H7V15H14M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3Z" /></svg>
+                    </button>
+                </div>
             </div>
         </div>
-
+    </div>
+    <div class="footer">
+        <p>Made by Gabor Csapo | gaborcsapo.com</p>
     </div>
 </body>
 </html>

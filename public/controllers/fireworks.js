@@ -22,7 +22,6 @@ const NUM_PARTICLES = 80;
 const BASE_ALTITUDE = 350;
 const ALTITUDE_VARIANCE = 0.2;
 
-// temp variables to prevent unneccessary allocations
 const color = new Color();
 const v3Tmp = new Vector3();
 const v3Tmp2 = new Vector3();
@@ -166,17 +165,17 @@ export class Firework extends Object3D {
 
 export class FireworkGroup {
 
-    constructor({overlay, path}) {
+    constructor({overlay, journeyStageParams}) {
         this.fireworksGroup = new Group();
-        this.position = latLngAltToVector3(path.route[0]);
+        this.position = latLngAltToVector3(journeyStageParams.route[0]);
 		this.position.z += 180;
 		this.overlay = overlay;
-        this.duration = path.startDelay + path.zoomDuration * 2 + path.camMoveDuration;
+        this.duration = journeyStageParams.startDelay + journeyStageParams.zoomDuration * 2 + journeyStageParams.camMoveDuration;
         this.scene = overlay.getScene();
         this.scene.add(this.fireworksGroup);
         this.startTimestamp = performance.now();
 
-		this.celebratedImage = this.loadImageMesh(path.celebImgURL, this.position);
+		this.celebratedImage = this.loadImageMesh(journeyStageParams.celebImgURL, this.position);
 		this.scene.add(this.celebratedImage);
     }
 
@@ -190,7 +189,6 @@ export class FireworkGroup {
             }
         } else if (this.fireworksGroup.children.length == 0) {
             this.scene.remove(this.fireworksGroup);
-			// this.scene.remove(this.celebratedImage);
             return true;
         }
 
@@ -207,7 +205,7 @@ export class FireworkGroup {
     loadImageMesh(modelPath, position) {
         const geometry = new PlaneGeometry(12, 12, 32);
         const loader = new TextureLoader();
-		loader.crossOrigin = "Anonymous";
+        loader.crossOrigin = "Anonymous";
         const texture = loader.load(modelPath);
         const material = new MeshBasicMaterial({
             map: texture,
@@ -230,7 +228,6 @@ export class FireworkGroup {
         }
 
 		imageMesh.scale.set(10, 10);
-
 		imageMesh.position.set(position.x, 50, position.z);
 
         return imageMesh;

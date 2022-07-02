@@ -9,25 +9,25 @@
     <link rel="stylesheet" href="/css/main.css">
     <script type="text/javascript">
         var MAPS_API_KEY = "{{ maps_api_key }}"
-        var FAM_CAR_PATHS = `{{{ famCarPaths }}}`
+        var journeyJSON = `{{{ journeyParams }}}`
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
-    <script type="module" src="/scripts/fam-bundle.js"></script>
+    <script type="module" src="/scripts/main-app-bundle.js"></script>
 </head>
 <body>
-    <div id="map"></div>
+    <div id="map" style="height: 100%;"></div>
 
     <div class="modal fade" id="splash-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title" id="staticBackdropLabel">You're travelling soon!!</h4>
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content border-0 p-4">
+                <div class="modal-header border-0">
+                    <b><h2 class="modal-title" id="staticBackdropLabel">Excited to see you!! &#127881; &#9992;&#65039; &#127881; <br> Here's our itinerary...</h2></b>
                 </div>
                 <div class="modal-body">
-                    <p>Here's your trip itinerary overview... So exciting!! Note: this is an awesome itinerary with sound effects ;) </p>
+                    <h4>Note: this is an awesome itinerary with sound effects, so click continue when you're ready </h4>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" id="continue-button" class="btn btn-primary">Continue with sound</button>
+                <div class="modal-footer border-0">
+                    <button type="button" id="continue-button" class="btn btn-primary btn-lg">Continue with sound &#128266;</button>
                 </div>
             </div>
         </div>

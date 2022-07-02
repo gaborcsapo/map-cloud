@@ -1,12 +1,4 @@
-.home {
-    &__section-slider {
-        background-color: $color-primary;
-        height: 90vh;
-        width: 95%;
-        @include absCenter;
-    }
-    &__test-div {
-        @include absCenter;
-        font-size: 5rem;
-    }
+.form-control {
+    font-size: 1.5rem;
 }
+

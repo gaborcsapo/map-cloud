@@ -1,7 +1,5 @@
 export class SoundManager {
     constructor() {
-
-
         this.airport = new Audio("/resources/sounds/airport.flac");
         this.airport.loop = true;
 
@@ -13,6 +11,8 @@ export class SoundManager {
 
         this.plane = new Audio("/resources/sounds/plane.wav");
         this.plane.loop = true;
+
+        this.button = new Audio("/resources/sounds/button_click.mp3");
     }
 
     playMusic() {
@@ -46,5 +46,9 @@ export class SoundManager {
                 this.plane.pause();
             }, duration);
         }, delay);
+    }
+
+    playButtonClick() {
+        this.button.play();
     }
 }

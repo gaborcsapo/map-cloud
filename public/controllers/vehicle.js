@@ -11,14 +11,13 @@ const ARC_LENGTH_DIVISIONS = 150;
 const tmpVec3 = new Vector3();
 
 export class Vehicle {
-    constructor({overlay, lineColor, modelPath, front, scale, baseMap}) {
+    constructor({overlay, lineColor, modelPath, front, scale}) {
         this.overlay = overlay;
         this.previousVehicleLines = [];
         this.scene = overlay.getScene();
         this.lineColor = lineColor;
         this.vehicleFront = front;
         this.scale = scale;
-        this.baseMap = baseMap;
         this.map = this.overlay.getMap();
         this.counter = 0;
 
@@ -28,7 +27,7 @@ export class Vehicle {
         });
     }
 
-    startNewPath(vehiclePath) {
+    startNewJourneyStage(vehiclePath) {
         this.vehicleSpline = new CatmullRomCurve3(
             vehiclePath.route.map(({lat, lng}) => latLngToVector3({lat, lng})),
             false,
@@ -39,7 +38,6 @@ export class Vehicle {
         // rougly 1sec/km should be duration with a max of 25 sec
         const duration = Math.round(Math.min(this.vehicleSpline.getLength() / 0.9, 25000));
 
-        console.log(this.vehicleSpline.getLength());
         const zoomAmplitude = Math.min(14.19135 + (0.301789 - 14.19135)/(1 + Math.pow(this.vehicleSpline.getLength()/163175.6, 0.583)), 13)
 
         this.initVehicleLine(this.vehicleSpline);
@@ -53,7 +51,7 @@ export class Vehicle {
         return {zoomAmplitude: zoomAmplitude, duration: duration};
     }
 
-    loopOldPath(vehiclePath) {
+    loopPastJourneyStage(vehiclePath) {
         this.vehicleSpline = new CatmullRomCurve3(
             vehiclePath.route.map(({lat, lng}) => latLngToVector3({lat, lng})),
             false,

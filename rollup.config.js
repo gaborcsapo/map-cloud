@@ -8,9 +8,9 @@ export default [
                 rollupWarn(warning);
             }
         },
-        input: 'public/controllers/fam.js',
+        input: 'public/controllers/mainApp.js',
         output: {
-            file: 'dist/scripts/fam-bundle.js',
+            file: 'dist/scripts/main-app-bundle.js',
             format: 'cjs'
         },
         plugins: [
@@ -21,9 +21,14 @@ export default [
         ]
     },
     {
-        input: 'public/controllers/home.js',
+        onwarn(warning, rollupWarn) {
+            if (warning.code !== 'CIRCULAR_DEPENDENCY') {
+                rollupWarn(warning);
+            }
+        },
+        input: 'public/controllers/POSApp.js',
         output: {
-            file: 'dist/scripts/home.js',
+            file: 'dist/scripts/POSApp.js',
             format: 'cjs'
         },
         plugins: [

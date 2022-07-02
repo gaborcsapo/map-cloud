@@ -15,15 +15,15 @@ export class CameraAnimation {
   lastFrameTime = 0;
   animationTime = 0;
 
-  basemap;
+  baseMapWrapper;
 
-  constructor(basemap) {
-    this.basemap = basemap;
+  constructor(baseMapWrapper) {
+    this.baseMapWrapper = baseMapWrapper;
   }
 
   /**
    * Updates the animation based on the given animation-time in
-   * milliseconds. Should call `this.basemap.setCamera()` to
+   * milliseconds. Should call `this.baseMapWrapper.setCamera()` to
    * update the camera-position.
    * @param animationTime
    */
@@ -76,27 +76,27 @@ export class CameraAnimation {
  export class CarCamAnimation extends CameraAnimation {
     zoomAmplitude = 3;
 
-    constructor({basemap, overlay, path}) {
-        super(basemap);
+    constructor({baseMapWrapper, overlay, journeyStageParams}) {
+        super(baseMapWrapper);
 
-        this.startDelay = path.startDelay;
-        this.zoomDuration = path.zoomDuration;
-        this.camMoveDuration = path.camMoveDuration;
+        this.startDelay = journeyStageParams.startDelay;
+        this.zoomDuration = journeyStageParams.zoomDuration;
+        this.camMoveDuration = journeyStageParams.camMoveDuration;
 
         this.totalDuration = this.startDelay + this.zoomDuration * 2 + this.camMoveDuration;
         this.zoomEndTime = this.startDelay + this.zoomDuration;
         this.camMoveEndTime = this.startDelay + this.zoomDuration + this.camMoveDuration;
 
-        this.zoomAmplitude = path.zoomAmplitude;
+        this.zoomAmplitude = journeyStageParams.zoomAmplitude;
 
         this.overlay = overlay;
-        this.origin = this.basemap.getCamera();
+        this.origin = this.baseMapWrapper.getCamera();
         this.origin.lat = this.origin.center.lat();
         this.origin.lng = this.origin.center.lng();
 
 
         let camPath;
-        const route = path.route;
+        const route = journeyStageParams.route;
         if (route.length >= 4)
         {
             camPath = [route[0], route[Math.floor(route.length/4)],route[Math.floor(route.length/4*3)],route[route.length - 1]];
@@ -119,7 +119,7 @@ export class CameraAnimation {
       {
         const zoomProgress = (animationTime - this.startDelay) / this.zoomDuration;
         this.zoom = this.origin.zoom - this.zoomAmplitude * easeInSine(zoomProgress);
-        this.basemap.setCamera({
+        this.baseMapWrapper.setCamera({
           zoom: this.zoom,
         });
       }
@@ -128,7 +128,7 @@ export class CameraAnimation {
         const camMoveProgress = (animationTime - this.zoomEndTime) / this.camMoveDuration;
         const cameraPos = this.spline.getPointAt(easeInOutCubic(camMoveProgress));
         const {lat, lng} = vector3ToLatLngAlt(cameraPos, this.origin);
-        this.basemap.setCamera({
+        this.baseMapWrapper.setCamera({
           center: {lat, lng},
           zoom: this.zoom,
           heading: this.origin.heading,
@@ -138,7 +138,7 @@ export class CameraAnimation {
       {
         const zoomProgress = (animationTime - this.camMoveEndTime) / this.zoomDuration;
         this.zoom = this.origin.zoom - this.zoomAmplitude * (1 - easeInSine(zoomProgress));
-        this.basemap.setCamera({
+        this.baseMapWrapper.setCamera({
           zoom: this.zoom,
         });
       }

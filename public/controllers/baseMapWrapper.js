@@ -5,12 +5,12 @@ const mapId ="c2485044d90a90f"
  * instance with some additional features for camera-animations. Also handles
  * loading of the maps API and initializing the map itself.
  */
-export class Basemap {
+export class BaseMapWrapper {
     map;
     camera = {};
     mapLoadingTime = 5000;
 
-    constructor(initialViewport) {
+    constructor({initialViewport, disableDefaultUI}) {
         const mapDiv = document.getElementById('map');
         Object.assign(this.camera, initialViewport);
 
@@ -18,6 +18,7 @@ export class Basemap {
 
         this.map = new google.maps.Map(mapDiv, {
             mapId: mapId,
+            disableDefaultUI: disableDefaultUI,
             backgroundColor: 'transparent',
             gestureHandling: 'greedy',
             zoom,

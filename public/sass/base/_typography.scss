@@ -1,7 +1,15 @@
-@import url('https://fonts.googleapis.com/css?family=Lato');
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500&family=Source+Code+Pro:wght@500&display=swap');
 body {
-    font-family: Lato, sans-serif;
-    font-weight: 400;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 1.5rem;
     line-height: 1.7;
     color: #000;
+}
+
+h2, h1 {
+    font-family: 'Oswald', sans-serif;;
+}
+
+h1 {
+    font-size: 4rem;
 }

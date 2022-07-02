@@ -26,10 +26,7 @@ export function MetersToLatLng(point) {
     return { lat: lat, lng: lng, alt: 0 };
 }
 
-/**
- * Converts latitude and longitude to world space coordinates with y up.
- */
- export function latLngToVector3(point, target = new Vector3()) {
+export function latLngToVector3(point, target = new Vector3()) {
     const { x, y } = latLngToMeters(point);
     return target.set(x, 0, -y);
 }

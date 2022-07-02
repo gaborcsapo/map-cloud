@@ -1,7 +1,7 @@
-import fam from './fam.js';
-import home from './home.js'
+import map from './map_route.js';
+import home from './home_route.js'
 
 export default {
     home,
-    fam,
+    map,
 };

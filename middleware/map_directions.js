@@ -1,51 +1,55 @@
-import {Client, PlaceInputType } from "@googlemaps/google-maps-services-js";
+import {Client } from "@googlemaps/google-maps-services-js";
 import { getDirectionsAPIKey } from './secret_manager.js';
+
+const apiKey = await getDirectionsAPIKey();
 
 export class MapDirections {
     constructor() {
-        console.log("init");
-        getDirectionsAPIKey().then((key) => {
-            this.key = key;
-            this.client = new Client({});
-        });
+        this.client = new Client({});
     }
 
     searchPath(start, end){
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             this.client.directions({
                 params:
                 {
                     origin: start,
                     destination: end,
                     travelMode: 'DRIVING',
-                    key: this.key,
+                    key: apiKey,
                 },
                 timeout: 1000,
             }).then((resp) => {
                 if (resp.data.routes.length == 0)
                 {
-                    console.log(resp);
+                    reject("Google Maps doesn't recognize one of these two places or can't draw a route between them: " + start + ", " + end + ". Please generate a new link and make these addresses more specific or closer.");
+                } else {
+                    resolve(this.decodePath(resp.data.routes[0].overview_polyline.points));
                 }
-                resolve(this.decodePath(resp.data.routes[0].overview_polyline.points));
-            }, reason => {
-                console.log(reason)
+            }, (reason) => {
+                reject("There's an unknown failure with searchPlace: " + start + " --> " + end + ". Reason: " + reason + ". Please generate a new link and change these addresses.");
             });
         });
     }
 
     searchPlace(description){
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             this.client.geocode({
                 params:
                 {
                     address: description,
-                   key: this.key,
+                   key: apiKey,
                 },
                 timeout: 1000,
             }).then((resp) => {
-                resolve(resp.data.results[0].geometry.location);
-            }, reason => {
-                console.log(reason)
+                if (resp.data.results.length == 0)
+                {
+                    reject("Google Maps doesn't recognize the place: " + description + ". Please generate a new link and make this address more specific.");
+                } else {
+                    resolve(resp.data.results[0].geometry.location);
+                }
+            }, (reason) => {
+                reject("There's an unknown failure with searchPlace: " + description + ". Reason: " + reason + ". Please generate a new link and make these addresses.");
             });
         });
     }
