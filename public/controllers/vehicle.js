@@ -38,6 +38,20 @@ export class Vehicle {
         // rougly 1sec/km should be duration with a max of 25 sec
         const duration = Math.round(Math.min(this.vehicleSpline.getLength() / 0.9, 25000));
 
+        // The zoomamplitude equation is just a exponential curve fitting for these y/x values:
+        // 12     1508257.9025383398
+        // 4       25943.69836456524
+        // 3.8     21074.388344540803
+        // 13     6067340.345612513
+        // 7      142126.16128664665
+        // 13.5    8587727.398089878
+        // 5      48061.46991743621
+        // 2.8    7756.402385156812
+        // 13.5   12079192.250058014
+        // 5      45619.223347196
+        // 2.9    7807.924142224345
+
+
         const zoomAmplitude  = Math.min(13.68244 + (1.556327 - 13.68244)/Math.pow(1 + Math.pow((this.vehicleSpline.getLength()/1036770), 0.6166804), 2.364686), 14);
 
         this.initVehicleLine(this.vehicleSpline);

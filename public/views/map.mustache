@@ -24,7 +24,7 @@
     </script>
 </head>
 <body>
-    <div id="map" style="height: 100%;"></div>
+    <div id="map" style="height: 100vh; width: 100vw; position:absolute;"></div>
 
     <div class="modal fade" id="splash-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -42,14 +42,22 @@
         </div>
     </div>
 
-    <div class="toast-container position-fixed top-0 end-0 p-3">
-        <div id="liveToast" class="toast text-bg-primary" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x">
+        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
             <div class="toast-body">
-                <h3>Did you like your itinerary? Check out <a style="color:red" href="/">our homepage</a> to create your own animation!</h3>
+                <h3>Hey, did you like your itinerary? Create another animation on <a href="/">our homepage</a>!</h3>
             </div>
         </div>
     </div>
 
+
+    <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x">
+        <div id="announcementToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
+            <div class="toast-body">
+                <h3 id="announcementText"></h3>
+            </div>
+        </div>
+    </div>
     <div id="snackbar" class="hidden">Some text...</div>
 </body>
 </html>

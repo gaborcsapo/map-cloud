@@ -62,6 +62,10 @@ class POSApp {
 
         this.plane.deletePreviousLines();
         this.car.deletePreviousLines();
+        if (this.fireworks)
+        {
+            this.fireworks.removeImage();
+        }
         this.startNextJourneyLeg(this.plane);
         this.setUpdateSceneCallback(this.updateFlightScene);
     }
@@ -103,7 +107,6 @@ class POSApp {
         if (this.fireworks.update())
         {
             this.plane.update(); // to update the size in case sth went bad
-            this.fireworks = null;
             this.startNextJourneyLeg(this.car);
             this.setUpdateSceneCallback(this.updateCarScene);
         }

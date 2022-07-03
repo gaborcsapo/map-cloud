@@ -21,7 +21,7 @@ const view = {
         {
             title: "Destination airport location.",
             helper_text: "<br>Again either name or lat/long coordinates...",
-            def: "Taoyuan International Airport",
+            def: "25.081604, 121.229958",
         },
         {
             title: "Arrival message",
@@ -51,17 +51,17 @@ const view = {
         {
             title: "Announcement at arrival",
             helper_text: "",
-            def: "This is Zhongshan, one of the centers of Taipei"
+            def: "This is Zhongshan, one of the bustling centers of Taipei. The neighbourhood has a mixture old and modern that you can experience when you walk along the 3km long Zhongshan Linear Park."
         },
         {
             title: "1. Sightseeing location",
             helper_text: "<br>Next the sightseeing begins. Add the address or coordinates of each sight then in the next field the text to read aloud.",
-            def: "Banqiao Huajiang 1st road 235",
+            def: "Taipei 101 Tower",
         },
         {
             title: "Announcement at first sight",
             helper_text: "",
-            def: "arrived here",
+            def: "This is one of the coolest buildings in Taipei, Taipei 101. It used to be tallest building from 2004 to 2008.",
         },
     ]
 };
@@ -76,9 +76,9 @@ const samplePOSJourneys = [
         "/resources/img/welcome-default.png",
         "Airport Charles de Gaulle France Terminal 1",
         "No text for sample journeys",
-        "Eiffel Tower Paris",
+        "48.859349, 2.294018",
         "No text for sample journeys",
-        "Paris Notre Dam Cathedral",
+        "48.851942, 2.349294",
         "No text for sample journeys",
     ],
     [
@@ -90,9 +90,9 @@ const samplePOSJourneys = [
         "/resources/img/welcome-default.png",
         "Tokyo Haneda Terminal 2",
         "No text for sample journeys",
-        "Shibuya Tokyo",
+        "35.659414, 139.701681",
         "No text for sample journeys",
-        "Tokyo Skytree",
+        "35.709626, 139.810548",
         "No text for sample journeys",
     ],
     [
@@ -102,11 +102,11 @@ const samplePOSJourneys = [
         "25.249175, 55.363002",
         "No text for sample journeys",
         "/resources/img/welcome-default.png",
-        "Dubai DXB Airport Terminal 3",
+        "25.196957, 55.273784",
         "No text for sample journeys",
         "Burj Khalifa Dubai",
         "No text for sample journeys",
-        "Abu Dhabi Grand Mosque",
+        "24.410573, 54.475386",
         "No text for sample journeys",
     ]
 ];

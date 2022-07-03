@@ -53,6 +53,7 @@ class MainApp {
         this.myModal = new bootstrap.Modal('#splash-modal');
         this.myModal.show();
         document.getElementById("continue-button").onclick = function() {
+            document.getElementById('map').style.position="static";
             this.soundManager.playButtonClick();
             this.startNewJourney();
         }.bind(this);

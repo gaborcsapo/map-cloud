@@ -5,6 +5,7 @@ export class InfoReader {
         this.info = [];
         this.chimeAudio = new Audio("/resources/sounds/chime.wav");
         this.socket = io();
+        this.toast = new bootstrap.Toast(document.getElementById("announcementToast"));
 
         this.socket.on('connection', (data) => {
             console.log("Socket connected");
@@ -34,13 +35,10 @@ export class InfoReader {
             this.playAudio(currentAudio);
         }
 
-        const snackbar = document.getElementById("snackbar");
-        snackbar.innerHTML = this.text;
-        snackbar.classList.remove("hidden");
-        snackbar.classList.add("show");
+        document.getElementById("announcementText").innerHTML = this.text;
+        this.toast.show()
         setTimeout(()=> {
-            snackbar.classList.add("hidden");
-            snackbar.classList.remove("show");
+            this.toast.hide();
         }, length);
 
         return length;

@@ -228,8 +228,12 @@ export class FireworkGroup {
         }
 
 		imageMesh.scale.set(7, 7);
-		imageMesh.position.set(position.x, 100, position.z);
+		imageMesh.position.set(position.x, 60, position.z);
 
         return imageMesh;
+    }
+
+    removeImage() {
+      this.scene.remove(this.celebratedImage);
     }
   }
