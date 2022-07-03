@@ -8,6 +8,8 @@ import { Loader } from '@googlemaps/js-api-loader';
 import { ThreeJSOverlayView } from './threejsOverlayView.js';
 import { BaseMapWrapper } from './baseMapWrapper.js';
 
+import MustacheFormTemplate from '../views/form_element.mustache'
+
 const PLANE_LINE_COLOR = 0x285f4;
 const CAR_LINE_COLOR = 0xf4b400;
 
@@ -44,7 +46,7 @@ class POSApp {
             lineColor: CAR_LINE_COLOR,
             modelPath: "/resources/3d/car.gltf",
             front: new Vector3(1, 0, 0),
-            scale: 0.1,
+            scale: 0.2,
             isImage: false,
         });
 
@@ -57,13 +59,9 @@ class POSApp {
 
     startNewJourney() {
         this.stageIdx = 0;
-        this.initialViewport = {
-            center: this.journeyStages[0].route[0],
-            zoom: 18,
-            tilt: 30,
-            heading: 0,
-        };
-        this.baseMapWrapper.setCamera()
+
+        this.plane.deletePreviousLines();
+        this.car.deletePreviousLines();
         this.startNextJourneyLeg(this.plane);
         this.setUpdateSceneCallback(this.updateFlightScene);
     }
@@ -104,6 +102,7 @@ class POSApp {
     updateFireworksScene() {
         if (this.fireworks.update())
         {
+            this.plane.update(); // to update the size in case sth went bad
             this.fireworks = null;
             this.startNextJourneyLeg(this.car);
             this.setUpdateSceneCallback(this.updateCarScene);
@@ -121,11 +120,14 @@ class POSApp {
                 }, 4000);
                 this.stageIdx += 1;
             } else if (this.journeyStages.length > this.stageIdx) {
+                this.plane.update(); // to update the size in case sth went bad
                 this.startNextJourneyLeg(this.car);
             }
         }
     }
 }
+
+let sightCounter = 2;
 
 window.addEventListener("load", function () {
     (async () => {
@@ -147,7 +149,28 @@ window.addEventListener("load", function () {
         document.getElementById("copyTarget").value = window.location.href + "map/?journey=" + encoded;
 
         form.classList.add('was-validated');
+        setTimeout(() => {
+            window.open("map/?journey=" + encoded, '_blank').focus();
+        }, 1000);
     }, false)
+
+
+    document.getElementById("add-button").addEventListener("click", (event) => {
+        event.preventDefault();
+        let html = MustacheFormTemplate.render({
+            title: sightCounter + '. Next sight location',
+            def: '',
+            helper_text: '',
+        });
+        document.getElementById("add-button-container").insertAdjacentHTML("beforebegin", html);
+        html = MustacheFormTemplate.render({
+            title: 'Announcement at the sight',
+            def: '',
+            helper_text: '',
+        });
+        document.getElementById("add-button-container").insertAdjacentHTML("beforebegin", html);
+        sightCounter++;
+    });
 
     const tooltip = document.getElementById("copyButton");
     new bootstrap.Tooltip(tooltip);

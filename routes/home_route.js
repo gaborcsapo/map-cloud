@@ -9,72 +9,59 @@ const journeyGenerator = new JourneyGenerator();
 const view = {
     forms: [
         {
-            title: "Departure Airport Location",
+            title: "What's your Home airport location?",
+            helper_text: '<br>Animations start by flying from your home base to your destination. Write the name or lat/long coordinates of the airport. (i.e. 49.019597, 2.540914)',
             def: "Vienna Internation Airport",
         },
         {
-            title: "Pre-departure announcement",
+            title: "Pre-departure announcement.",
+            helper_text: "<br>This text will be read aloud by AI before departure.",
             def: "Flight G A B 4 5 1 to Taipei is ready to depart. We wish you a pleasant journey!",
         },
         {
-            title: "Destination Airport Location",
+            title: "Destination airport location.",
+            helper_text: "<br>Again either name or lat/long coordinates...",
             def: "Taoyuan International Airport",
         },
         {
             title: "Arrival message",
+            helper_text: "",
             def: "Welcome to Taiwan"
         },
         {
-            title: "Airport Celebration Picture Link",
+            title: "Airport welcoming picture link.",
+            helper_text: "<br>I'll display this image at the airport. Has to be a public picture link (not Google Photos etc)",
             def: "/resources/img/welcome-default.png",
         },
         {
-            title: "Car Departure Location from Airport",
+            title: "Arrival terminal",
+            helper_text: "<br>Next, the animation takes you to the city. Which airport terminal should your car depart from?",
             def: "Taoyuan International Airport Terminal 2",
         },
         {
             title: "Announcement before car departure",
+            helper_text: "",
             def: "And now let's go to the city!"
         },
         {
-            title: "Car Destination",
+            title: "First car destination in the city.",
+            helper_text: "<br>Either address or lat/long coordinates are fine.",
             def: "Taipei Zhongshan MRT station",
         },
         {
             title: "Announcement at arrival",
+            helper_text: "",
             def: "This is Zhongshan, one of the centers of Taipei"
         },
         {
-            title: "Sight location",
+            title: "1. Sightseeing location",
+            helper_text: "<br>Next the sightseeing begins. Add the address or coordinates of each sight then in the next field the text to read aloud.",
             def: "Banqiao Huajiang 1st road 235",
         },
         {
-            title: "Announcement at sight",
+            title: "Announcement at first sight",
+            helper_text: "",
             def: "arrived here",
-        },
-        {
-            title: "Sight location",
-            def: "Google TPKD",
-        },
-        {
-            title: "Announcement at sight",
-            def: "This is google",
-        },
-        {
-            title: "Sight location",
-            def: "Taipei 101 Tower",
-        },
-        {
-            title: "Announcement at sight",
-            def: "Here's Taipei 1 0 1",
-        },
-        {
-            title: "Sight location",
-            def: "Yongkang Street Taipei",
-        },
-        {
-            title: "Announcement at sight",
-            def: "Yongkang street",
         },
     ]
 };

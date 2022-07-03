@@ -42,7 +42,7 @@ class MainApp {
             lineColor: CAR_LINE_COLOR,
             modelPath: "/resources/3d/car.gltf",
             front: new Vector3(1, 0, 0),
-            scale: 0.1,
+            scale: 0.2,
             isImage: false,
         });
 
@@ -136,6 +136,9 @@ class MainApp {
         if (this.car.update()) {
             // car animation finished
             if (this.journeyStages.length == this.stageIdx) {
+                const toastLiveExample = document.getElementById('liveToast');
+                const toast = new bootstrap.Toast(toastLiveExample);
+                toast.show();
                 this.soundManager.musicVolumeDown();
             }
             this.startNextJourneyLeg(this.car);

@@ -15,6 +15,7 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    min-height: 35rem;
 }
 
 .map1x1::before {
@@ -30,5 +31,4 @@ body {
     padding-left: 4rem;
     padding-top: 7rem;
     margin-top: 4rem;
-    background-image: linear-gradient(to top, #5599ff, white);
 }

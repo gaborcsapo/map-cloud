@@ -13,23 +13,44 @@
         var sampleJourneysJSON = `{{{ POSJourneyParams }}}`
     </script>
     <link rel="stylesheet" href="/css/main.css">
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TH541L4MT2"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-TH541L4MT2');
+    </script>
 </head>
 <body>
     <div class="container">
         <div class="row g-5">
             <div class="col col-sm-12 col-md-6 text-end title-center">
-                <h1 style="margin-bottom:3rem;">Share travel itineraries <br> with your friends and families</h1>
+                <h1 class="mb-3">Share travel itineraries <br> with your friends or family</h1>
                 <h3>Fill in the form below to generate your custom journey animation.</h3>
             </div>
             <div class="col col-sm-12 col-md-6 map1x1" id="map"></div>
         </div>
     </div>
     <div class="container">
-        <form class="row g-3 needs-validation" novalidate>
-            <div class="col col-sm-0 col-md-1 col-lg-2"></div>
-            <div class="col col-sm-12 col-md-10 col-lg-8">
-                <label class="form-label">Throughout the animation, a voice reads your itinerary. In what language </label>
-                <select id="language" class="form-select" aria-label="Select the language of the announcements" >
+        <form class="row g-5 needs-validation mt-5" novalidate>
+
+            {{#forms}}
+                {{> form_element}}
+            {{/forms}}
+
+            <div id="add-button-container" class="col col-12 d-grid d-sm-flex justify-content-sm-center">
+                <button class="btn btn-primary btn-lg" id="add-button">
+                    <svg style="color: white" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16"> <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" fill="white"></path> </svg>
+                    Add more sights
+                </button>
+            </div>
+
+            <div class="col col-sm-0 col-md-1 col-lg-2 mt-5"></div>
+            <div class="col col-sm-12 col-md-10 col-lg-8 mt-5">
+                <label class="form-label">In what <b>language</b> should I read your announcements?</label>
+                <select id="language" class="form-select" aria-label="Select the language of the announcements" required>
                     <option selected value="en-GB">UK English</option>
                     <option value="en-IN">Indian English</option>
                     <option value="de-DE">German</option>
@@ -39,32 +60,31 @@
                     <option value="zh-TW">Chinese</option>
                 </select>
             </div>
-            <div class="col col-sm-0 col-md-1 col-lg-2"></div>
+            <div class="col col-sm-0 col-md-1 col-lg-2 mb-5"></div>
 
-            {{#forms}}
-                {{> form_element}}
-            {{/forms}}
-
-            <div class="col col-12 d-grid d-sm-flex justify-content-sm-center">
-                <button class="btn btn-primary btn-lg" type="submit">Generate Link</button>
+            <div class="col col-12 d-grid d-sm-flex justify-content-sm-center mt-5 mb-5">
+                <button class="btn btn-primary btn-lg mt-5" type="submit">
+                    <svg style="color: white" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-link" viewBox="0 0 16 16"> <path d="M6.354 5.5H4a3 3 0 0 0 0 6h3a3 3 0 0 0 2.83-4H9c-.086 0-.17.01-.25.031A2 2 0 0 1 7 10.5H4a2 2 0 1 1 0-4h1.535c.218-.376.495-.714.82-1z" fill="white"></path> <path d="M9 5.5a3 3 0 0 0-2.83 4h1.098A2 2 0 0 1 9 6.5h3a2 2 0 1 1 0 4h-1.535a4.02 4.02 0 0 1-.82 1H12a3 3 0 1 0 0-6H9z" fill="white"></path> </svg>
+                    Generate Link and Open in New Tab
+                </button>
             </div>
         </form>
-        <div class="row g-5">
-            <div class="col col-sm-12 d-grid d-sm-flex justify-content-sm-center">
-                <h2>Copy this link into your browser to check your animation.<br>Then share this link with anyone. </h2>
+        <div class="row g-5 mt-5">
+            <div class="col col-sm-12 d-grid d-sm-flex justify-content-sm-center mt-5">
+                <h2>Here's the sharable link to your animation!</h2>
             </div>
             <div class="col col-sm-12 d-grid d-sm-flex justify-content-sm-center">
                 <textarea type="text" id="copyTarget" class="w-75" value="Your link will appear here..." oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'></textarea>
                 <div>
                     <button id="copyButton" class="btn btn-primary align-top d-inline-block" data-bs-toggle="tooltip" title="Copy to clipboard" >
-                        <svg class="icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="24" height="24" viewBox="0 0 24 24"><path d="M17,9H7V7H17M17,13H7V11H17M14,17H7V15H14M12,3A1,1 0 0,1 13,4A1,1 0 0,1 12,5A1,1 0 0,1 11,4A1,1 0 0,1 12,3M19,3H14.82C14.4,1.84 13.3,1 12,1C10.7,1 9.6,1.84 9.18,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3Z" /></svg>
+                        <svg style="color: white" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-files" viewBox="0 0 16 16"> <path d="M13 0H6a2 2 0 0 0-2 2 2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm0 13V4a2 2 0 0 0-2-2H5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1zM3 4a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4z" fill="white"></path> </svg>
                     </button>
                 </div>
             </div>
         </div>
     </div>
     <div class="footer">
-        <p>Made by Gabor Csapo | gaborcsapo.com</p>
+        <p>Made by Gabor Csapo | <a>gaborcsapo.com</a></p>
     </div>
 </body>
 </html>

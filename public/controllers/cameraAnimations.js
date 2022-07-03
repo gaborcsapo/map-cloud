@@ -1,4 +1,4 @@
-import {CatmullRomCurve3, MathUtils} from 'three';
+import {CatmullRomCurve3} from 'three';
 import { latLngAltToVector3, vector3ToLatLngAlt } from '../controllers/coordinates.js';
 import { easeInOutCubic, easeInSine } from '../controllers/easing.js';
 
@@ -73,9 +73,10 @@ export class CameraAnimation {
  * Camera-Animations should run outside of the overlay update-loop, as updates is called amidst
  * rendering a frame.
  */
- export class CarCamAnimation extends CameraAnimation {
-    zoomAmplitude = 3;
 
+const STARTING_ZOOM = 18;
+
+ export class CarCamAnimation extends CameraAnimation {
     constructor({baseMapWrapper, overlay, journeyStageParams}) {
         super(baseMapWrapper);
 
@@ -88,12 +89,19 @@ export class CameraAnimation {
         this.camMoveEndTime = this.startDelay + this.zoomDuration + this.camMoveDuration;
 
         this.zoomAmplitude = journeyStageParams.zoomAmplitude;
+        this.highestZoomLevel = 0;
 
         this.overlay = overlay;
         this.origin = this.baseMapWrapper.getCamera();
         this.origin.lat = this.origin.center.lat();
         this.origin.lng = this.origin.center.lng();
 
+        this.baseMapWrapper.setCamera({
+            zoom: STARTING_ZOOM,
+            center: journeyStageParams.route[0],
+            tilt: 30,
+            heading: 0,
+        });
 
         let camPath;
         const route = journeyStageParams.route;
@@ -112,41 +120,42 @@ export class CameraAnimation {
     }
 
     update(animationTime) {
-      if (animationTime < this.startDelay) {
-        return;
-      }
-      else if (animationTime < this.zoomEndTime)
-      {
-        const zoomProgress = (animationTime - this.startDelay) / this.zoomDuration;
-        this.zoom = this.origin.zoom - this.zoomAmplitude * easeInSine(zoomProgress);
-        this.baseMapWrapper.setCamera({
-          zoom: this.zoom,
-        });
-      }
-      else if (animationTime < this.camMoveEndTime)
-      {
-        const camMoveProgress = (animationTime - this.zoomEndTime) / this.camMoveDuration;
-        const cameraPos = this.spline.getPointAt(easeInOutCubic(camMoveProgress));
-        const {lat, lng} = vector3ToLatLngAlt(cameraPos, this.origin);
-        this.baseMapWrapper.setCamera({
-          center: {lat, lng},
-          zoom: this.zoom,
-          heading: this.origin.heading,
-        });
-      }
-      else if (animationTime < this.totalDuration)
-      {
-        const zoomProgress = (animationTime - this.camMoveEndTime) / this.zoomDuration;
-        this.zoom = this.origin.zoom - this.zoomAmplitude * (1 - easeInSine(zoomProgress));
-        this.baseMapWrapper.setCamera({
-          zoom: this.zoom,
-        });
-      }
-      else
-      {
-        this.spline = null;
-        this.dispose();
-      }
+        if (animationTime < this.startDelay) {
+            return;
+        }
+        else if (animationTime <= this.zoomEndTime)
+        {
+            const zoomProgress = (animationTime - this.startDelay) / this.zoomDuration;
+            this.zoom = STARTING_ZOOM - this.zoomAmplitude * easeInSine(zoomProgress);
+            this.baseMapWrapper.setCamera({
+                zoom: this.zoom,
+            });
+        }
+        else if (animationTime <= this.camMoveEndTime)
+        {
+            const camMoveProgress = (animationTime - this.zoomEndTime) / this.camMoveDuration;
+            const cameraPos = this.spline.getPointAt(easeInOutCubic(camMoveProgress));
+            const {lat, lng} = vector3ToLatLngAlt(cameraPos, this.origin);
+            this.baseMapWrapper.setCamera({
+                center: {lat, lng},
+            });
+        }
+        else if (animationTime <= this.totalDuration)
+        {
+            if (this.highestZoomLevel == 0) {
+                this.highestZoomLevel = this.zoom;
+            }
+            const zoomProgress = (animationTime - this.camMoveEndTime) / this.zoomDuration;
+            this.zoom = this.highestZoomLevel + this.zoomAmplitude * easeInSine(zoomProgress);
+            this.baseMapWrapper.setCamera({
+                zoom: this.zoom,
+            });
+        }
+        else
+        {
+            this.spline = null;
+            this.dispose();
+        }
     }
-  }
+}
 

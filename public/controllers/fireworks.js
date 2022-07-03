@@ -227,8 +227,8 @@ export class FireworkGroup {
             );
         }
 
-		imageMesh.scale.set(10, 10);
-		imageMesh.position.set(position.x, 50, position.z);
+		imageMesh.scale.set(7, 7);
+		imageMesh.position.set(position.x, 100, position.z);
 
         return imageMesh;
     }

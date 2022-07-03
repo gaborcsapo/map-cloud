@@ -38,7 +38,7 @@ export class Vehicle {
         // rougly 1sec/km should be duration with a max of 25 sec
         const duration = Math.round(Math.min(this.vehicleSpline.getLength() / 0.9, 25000));
 
-        const zoomAmplitude = Math.min(14.19135 + (0.301789 - 14.19135)/(1 + Math.pow(this.vehicleSpline.getLength()/163175.6, 0.583)), 13)
+        const zoomAmplitude  = Math.min(13.68244 + (1.556327 - 13.68244)/Math.pow(1 + Math.pow((this.vehicleSpline.getLength()/1036770), 0.6166804), 2.364686), 14);
 
         this.initVehicleLine(this.vehicleSpline);
         this.scene.add(this.vehicleLine);
@@ -47,7 +47,7 @@ export class Vehicle {
         this.totalDuration = duration + vehiclePath.zoomDuration;
 
         this.startTimestamp = performance.now();
-
+        console.log(zoomAmplitude, this.vehicleSpline.getLength());
         return {zoomAmplitude: zoomAmplitude, duration: duration};
     }
 
@@ -72,7 +72,7 @@ export class Vehicle {
 
         // Save computation by updating the scale only every ~ 0.5 seconds
         this.counter++;
-        if (this.counter % 20) {
+        if (this.counter % 2) {
             this.vehicleLine.material.resolution.copy(this.overlay.getViewportSize());
             this.previousVehicleLines.forEach(element => {
                 element.material.resolution.copy(this.overlay.getViewportSize());
@@ -147,5 +147,12 @@ export class Vehicle {
         this.vehicleLine.material.resolution.copy(this.overlay.getViewportSize());
         this.vehicleLine.geometry.setPositions(vehiclePositions);
         this.vehicleLine.computeLineDistances();
+    }
+
+    deletePreviousLines() {
+        this.previousVehicleLines.forEach((line) => {
+            this.scene.remove(line);
+        });
+        this.previousVehicleLines = [];
     }
 }

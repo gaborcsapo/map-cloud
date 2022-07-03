@@ -1,5 +1,6 @@
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
+import mustache from 'rollup-plugin-mustache'
 
 export default [
     {
@@ -34,6 +35,9 @@ export default [
         plugins: [
             resolve({
                 browser: true,
+            }),
+            mustache({
+                include: 'public/views/*.mustache'
             }),
             commonjs()
         ]

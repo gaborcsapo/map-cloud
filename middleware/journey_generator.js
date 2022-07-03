@@ -34,7 +34,7 @@ export class JourneyGenerator {
             });
         } else {
             console.log("cache miss");
-            return generatePath(decodedData);
+            return this.generatePath(decodedData);
         }
 
     }
