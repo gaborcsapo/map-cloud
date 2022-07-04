@@ -16,7 +16,7 @@ const view = {
         {
             title: "Pre-departure announcement.",
             helper_text: "<br>This text will be read aloud by AI before departure.",
-            def: "Flight G A B 4 5 1 to Taipei is ready to depart. We wish you a pleasant journey!",
+            def: "Flight G A B 4 5 1 to Taipei is ready to depart. We wish you a pleasant journey! Someone is eagerly waiting on the other side for you.",
         },
         {
             title: "Destination airport location.",
@@ -26,7 +26,7 @@ const view = {
         {
             title: "Arrival message",
             helper_text: "",
-            def: "Welcome to Taiwan"
+            def: "Welcome to Taiwan!!"
         },
         {
             title: "Airport welcoming picture link.",
@@ -41,7 +41,7 @@ const view = {
         {
             title: "Announcement before car departure",
             helper_text: "",
-            def: "And now let's go to the city!"
+            def: "Let's go to the city to see all the coolest places!"
         },
         {
             title: "First car destination in the city.",
@@ -51,7 +51,7 @@ const view = {
         {
             title: "Announcement at arrival",
             helper_text: "",
-            def: "This is Zhongshan, one of the bustling centers of Taipei. The neighbourhood has a mixture old and modern that you can experience when you walk along the 3km long Zhongshan Linear Park."
+            def: "This is Zhongshan, one of the bustling centers of Taipei. I love the mixture old and modern that you can experience when you walk along the 3km long Zhongshan Linear Park."
         },
         {
             title: "1. Sightseeing location",
@@ -61,7 +61,7 @@ const view = {
         {
             title: "Announcement at first sight",
             helper_text: "",
-            def: "This is one of the coolest buildings in Taipei, Taipei 101. It used to be tallest building from 2004 to 2008.",
+            def: "This is one of the coolest and tallest buildings in Taipei, Taipei 101. Elephant mountain is a great place to soak in the sunset with the view of 101.",
         },
     ]
 };
