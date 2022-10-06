@@ -1,6 +1,6 @@
 import { TextToSpeechClient } from '@google-cloud/text-to-speech';
 import { writeFile } from "fs";
-import { SimpleCache } from '../public/controllers/simpleCache.js';
+import { SimpleCache } from '../public/scripts/utilities/simpleCache.js';
 
 export class TTSManager {
     constructor() {

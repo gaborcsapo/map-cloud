@@ -1,6 +1,6 @@
 import {CatmullRomCurve3} from 'three';
-import { latLngAltToVector3, vector3ToLatLngAlt } from '../controllers/coordinates.js';
-import { easeInOutCubic, easeInSine } from '../controllers/easing.js';
+import { latLngAltToVector3, vector3ToLatLngAlt } from '../utilities/coordinates.js';
+import { easeInOutCubic, easeInSine } from '../utilities/easing.js';
 
 /**
  * Baseclass for all camera-animations, manages the rAF-loop
@@ -15,15 +15,11 @@ export class CameraAnimation {
   lastFrameTime = 0;
   animationTime = 0;
 
-  baseMapWrapper;
-
-  constructor(baseMapWrapper) {
-    this.baseMapWrapper = baseMapWrapper;
-  }
+  constructor() {}
 
   /**
    * Updates the animation based on the given animation-time in
-   * milliseconds. Should call `this.baseMapWrapper.setCamera()` to
+   * milliseconds. Should call `this.overlay.setMapCamera()` to
    * update the camera-position.
    * @param animationTime
    */
@@ -77,8 +73,8 @@ export class CameraAnimation {
 const STARTING_ZOOM = 18;
 
  export class CarCamAnimation extends CameraAnimation {
-    constructor({baseMapWrapper, overlay, journeyStageParams}) {
-        super(baseMapWrapper);
+    constructor({mapAndOverlayManager, journeyStageParams}) {
+        super();
 
         this.startDelay = journeyStageParams.startDelay;
         this.zoomDuration = journeyStageParams.zoomDuration;
@@ -91,12 +87,12 @@ const STARTING_ZOOM = 18;
         this.zoomAmplitude = journeyStageParams.zoomAmplitude;
         this.highestZoomLevel = 0;
 
-        this.overlay = overlay;
-        this.origin = this.baseMapWrapper.getCamera();
+        this.mapAndOverlayManager = mapAndOverlayManager;
+        this.origin = this.mapAndOverlayManager.getMapCamera();
         this.origin.lat = this.origin.center.lat();
         this.origin.lng = this.origin.center.lng();
 
-        this.baseMapWrapper.setCamera({
+        this.mapAndOverlayManager.setMapCamera({
             zoom: STARTING_ZOOM,
             center: journeyStageParams.route[0],
             tilt: 30,
@@ -127,7 +123,7 @@ const STARTING_ZOOM = 18;
         {
             const zoomProgress = (animationTime - this.startDelay) / this.zoomDuration;
             this.zoom = STARTING_ZOOM - this.zoomAmplitude * easeInSine(zoomProgress);
-            this.baseMapWrapper.setCamera({
+            this.mapAndOverlayManager.setMapCamera({
                 zoom: this.zoom,
             });
         }
@@ -136,7 +132,7 @@ const STARTING_ZOOM = 18;
             const camMoveProgress = (animationTime - this.zoomEndTime) / this.camMoveDuration;
             const cameraPos = this.spline.getPointAt(easeInOutCubic(camMoveProgress));
             const {lat, lng} = vector3ToLatLngAlt(cameraPos, this.origin);
-            this.baseMapWrapper.setCamera({
+            this.mapAndOverlayManager.setMapCamera({
                 center: {lat, lng},
             });
         }
@@ -147,7 +143,7 @@ const STARTING_ZOOM = 18;
             }
             const zoomProgress = (animationTime - this.camMoveEndTime) / this.zoomDuration;
             this.zoom = this.highestZoomLevel + this.zoomAmplitude * easeInSine(zoomProgress);
-            this.baseMapWrapper.setCamera({
+            this.mapAndOverlayManager.setMapCamera({
                 zoom: this.zoom,
             });
         }

@@ -1,12 +1,11 @@
 import * as JSURL from "jsurl"
 import { compress } from 'compress-json'
-import { CarCamAnimation } from './cameraAnimations.js';
-import { FireworkGroup } from './fireworks';
-import { Vehicle } from './vehicle.js';
+import { CarCamAnimation } from './threejsObjects/cameraAnimations.js';
+import { FireworksManager } from './controllers/fireworksManager.js';
+import { Vehicle } from './controllers/vehicleManager.js';
 import { Vector3 } from "three";
 import { Loader } from '@googlemaps/js-api-loader';
-import { ThreeJSOverlayView } from './threejsOverlayView.js';
-import { BaseMapWrapper } from './baseMapWrapper.js';
+import { MapAndOverlayManager } from './controllers/mapAndOverlayManager.js';
 
 import MustacheFormTemplate from '../views/form_element.mustache'
 
@@ -27,14 +26,10 @@ class POSApp {
             tilt: 30,
             heading: 0,
         };
-        this.baseMapWrapper = new BaseMapWrapper({initialViewport: this.initialViewport, disableDefaultUI: true});
-        this.overlay = new ThreeJSOverlayView();
-        this.camera = {};
-
-        this.overlay.setMap(this.baseMapWrapper.getMapInstance());
+        this.mapAndOverlayManager = new MapAndOverlayManager({initialViewport: this.initialViewport, disableDefaultUI: true});
 
         this.plane = new Vehicle({
-            overlay: this.overlay,
+            mapAndOverlayManager: this.mapAndOverlayManager,
             lineColor: PLANE_LINE_COLOR,
             modelPath: "/resources/3d/plane.gltf",
             front: new Vector3(-1, 0, 0),
@@ -42,7 +37,7 @@ class POSApp {
             isImage: false,
         });
         this.car = new Vehicle({
-            overlay: this.overlay,
+            mapAndOverlayManager: this.mapAndOverlayManager,
             lineColor: CAR_LINE_COLOR,
             modelPath: "/resources/3d/car.gltf",
             front: new Vector3(1, 0, 0),
@@ -54,7 +49,7 @@ class POSApp {
     }
 
     setUpdateSceneCallback(callback) {
-        this.overlay.updateSceneCallback = callback.bind(this);
+        this.mapAndOverlayManager.updateSceneCallback = callback.bind(this);
     }
 
     startNewJourney() {
@@ -85,8 +80,7 @@ class POSApp {
         }
 
         this.cameraAnimation = new CarCamAnimation({
-            baseMapWrapper: this.baseMapWrapper,
-            overlay: this.overlay,
+            mapAndOverlayManager: this.mapAndOverlayManager,
             journeyStageParams: this.journeyStages[this.stageIdx],
         });
         this.cameraAnimation.play();
@@ -98,7 +92,11 @@ class POSApp {
         if (this.plane.update())
         {
             this.startNextJourneyLeg(false);
-            this.fireworks = new FireworkGroup({overlay: this.overlay, journeyStageParams: this.journeyStages[1]});
+            this.fireworks = new FireworksManager({
+                scene: this.mapAndOverlayManager.getScene(),
+                latLng: this.journeyStages[1].route[0],
+                duration: this.journeyStages[1].startDelay + this.journeyStages[1].zoomDuration * 2 + this.journeyStages[1].camMoveDuration
+            });
             this.setUpdateSceneCallback(this.updateFireworksScene);
         }
     }

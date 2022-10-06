@@ -14,7 +14,13 @@
  * limitations under the License.
  */
 
- import * as THREE from 'three';
+/**
+ * Modifications copyright (C) 2013 - Gabor Csapo
+ *  */
+
+import * as THREE from 'three';
+
+const mapId ="c2485044d90a90f"
 
  /**
   * Add a [three.js](https://threejs.org) scene as a [Google Maps WebGLOverlayView](http://goo.gle/WebGLOverlayView-ref).
@@ -22,17 +28,13 @@
   * **Note**: The scene will be rotated to a default up axis of (0, 1, 0) matching that of three.js.
   * *
   */
- export class ThreeJSOverlayView {
-     /**
-      * See [[ThreeJSOverlayViewOptions.anchor]]
-      */
+export class MapAndOverlayManager {
      anchor;
-     /**
-      * See [[ThreeJSOverlayViewOptions.scene]]
-      */
      scene;
 
-     camera;
+     mapCamera
+     overlayCamera;
+     map;
      scale;
      rotation;
      overlay;
@@ -45,10 +47,37 @@
           anchor = { lat: 0, lng: 0, altitude: 0 },
           rotation = new Float32Array([0, 0, 0]),
           scale = new Float32Array([1, 1, 1]),
+          initialViewport,
+          disableDefaultUI
      } = {}) {
+
+          this.mapCamera = {};
+          Object.assign(this.mapCamera, initialViewport);
+          const mapDiv = document.getElementById('map');
+          const {zoom, center, heading, tilt} = this.mapCamera;
+
+          this.map = new google.maps.Map(mapDiv, {
+               mapId: mapId,
+               disableDefaultUI: disableDefaultUI,
+               draggable: !disableDefaultUI,
+               zoomControl: !disableDefaultUI,
+               scrollwheel: !disableDefaultUI,
+               disableDoubleClickZoom: !disableDefaultUI,
+               backgroundColor: 'transparent',
+               gestureHandling: 'greedy',
+               zoom,
+               center,
+               heading,
+               tilt
+          });
+
           this.overlay = new google.maps.WebGLOverlayView();
+
+          this.overlay.setMap(this.map);
+          window.map = this.map;
+
           this.renderer = null;
-          this.camera = null;
+          this.overlayCamera = null;
           this.anchor = anchor;
           this.rotation = rotation;
           this.scale = scale;
@@ -76,7 +105,7 @@
           this.overlay.onContextRestored = this.onContextRestored.bind(this);
           this.overlay.onDraw = this.onDraw.bind(this);
 
-          this.camera = new THREE.PerspectiveCamera();
+          this.overlayCamera = new THREE.PerspectiveCamera();
      }
      onStateUpdate(options) {
           this.overlay.onStateUpdate(options);
@@ -90,10 +119,6 @@
 
      onRemove() {}
 
-     getMap() {
-          return this.overlay.getMap();
-     }
-
      getViewportSize() {
           return this.viewportSize;
      }
@@ -106,8 +131,30 @@
           this.overlay.requestRedraw();
      }
 
-     setMap(map) {
-          this.overlay.setMap(map);
+
+     getMapInstance() {
+          if (!this.map) {
+               throw new Error('Basemap.getMapInstance() called before map initialized.');
+          }
+
+          return this.map;
+     }
+
+     setMapCamera(camera) {
+          Object.assign(this.mapCamera, camera);
+
+          if (this.map) {
+               this.map.moveCamera(this.mapCamera);
+          }
+     }
+
+     getMapCamera() {
+          return {
+               center: this.map.getCenter(),
+               tilt: this.map.getTilt(),
+               zoom: this.map.getZoom(),
+               heading: this.map.getHeading()
+          };
      }
 
      addListener(eventName, handler) {
@@ -159,10 +206,7 @@
           this.renderer.outputEncoding = THREE.sRGBEncoding;
 
           const { width, height, clientWidth } = gl.canvas;
-
-          this.renderer.setPixelRatio(window.devicePixelRatio);
           this.renderer.setSize(width, height, false);
-
           this.viewportSize.set(width, height);
      }
 
@@ -177,17 +221,17 @@
      }
 
      onDraw({ gl, transformer }) {
-          this.camera.projectionMatrix.fromArray(
+          this.overlayCamera.projectionMatrix.fromArray(
                transformer.fromLatLngAltitude(this.anchor, this.rotation, this.scale)
           );
 
           gl.disable(gl.SCISSOR_TEST);
           if (this.updateSceneCallback) {
-               this.updateSceneCallback(this.scene, this.camera);
+               this.updateSceneCallback(this.scene, this.overlayCamera);
                this.requestRedraw();
           }
 
-          this.renderer.render(this.scene, this.camera);
+          this.renderer.render(this.scene, this.overlayCamera);
 
           // reset state using renderer.resetState() and not renderer.state.reset()
           this.renderer.resetState();

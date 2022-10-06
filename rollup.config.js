@@ -9,7 +9,7 @@ export default [
                 rollupWarn(warning);
             }
         },
-        input: 'public/controllers/mainApp.js',
+        input: 'public/scripts/mainApp.js',
         output: {
             file: 'dist/scripts/main-app-bundle.js',
             format: 'cjs'
@@ -27,7 +27,7 @@ export default [
                 rollupWarn(warning);
             }
         },
-        input: 'public/controllers/POSApp.js',
+        input: 'public/scripts/POSApp.js',
         output: {
             file: 'dist/scripts/POSApp.js',
             format: 'cjs'

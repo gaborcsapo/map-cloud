@@ -1,7 +1,7 @@
 import * as JSURL from "jsurl"
 import { decompress } from 'compress-json'
 import { MapDirections } from "./map_directions.js";
-import { SimpleCache } from "../public/controllers/simpleCache.js";
+import { SimpleCache } from '../public/scripts/utilities/simpleCache.js';
 
 const LANGUAGE_IDX = 0;
 const DEP_AIRPORT_IDX = 1;

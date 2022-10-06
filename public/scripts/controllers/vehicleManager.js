@@ -4,21 +4,21 @@ import {Line2} from 'three/examples/jsm/lines/Line2.js';
 import {LineGeometry} from 'three/examples/jsm/lines/LineGeometry';
 import {LineMaterial} from 'three/examples/jsm/lines/LineMaterial';
 import {CatmullRomCurve3, Vector3, MathUtils} from 'three';
-import { latLngToVector3 } from './coordinates.js';
-import { easeInOutCubic } from './easing.js';
+import { latLngToVector3 } from '../utilities/coordinates.js';
+import { easeInOutCubic } from '../utilities/easing.js';
 
 const ARC_LENGTH_DIVISIONS = 150;
 const tmpVec3 = new Vector3();
 
 export class Vehicle {
-    constructor({overlay, lineColor, modelPath, front, scale}) {
-        this.overlay = overlay;
+    constructor({mapAndOverlayManager, lineColor, modelPath, front, scale}) {
+        this.mapAndOverlayManager = mapAndOverlayManager;
         this.previousVehicleLines = [];
-        this.scene = overlay.getScene();
+        this.scene = mapAndOverlayManager.getScene();
         this.lineColor = lineColor;
         this.vehicleFront = front;
         this.scale = scale;
-        this.map = this.overlay.getMap();
+        this.map = this.mapAndOverlayManager.getMapInstance();
         this.counter = 0;
 
         this.loadVehicleModel(modelPath).then(model => {
@@ -61,7 +61,6 @@ export class Vehicle {
         this.totalDuration = duration + vehiclePath.zoomDuration;
 
         this.startTimestamp = performance.now();
-        console.log(zoomAmplitude, this.vehicleSpline.getLength());
         return {zoomAmplitude: zoomAmplitude, duration: duration};
     }
 
@@ -85,11 +84,10 @@ export class Vehicle {
         }
 
         // Save computation by updating the scale only every ~ 0.5 seconds
-        this.counter++;
-        if (this.counter % 2) {
-            this.vehicleLine.material.resolution.copy(this.overlay.getViewportSize());
+        if (this.counter++ % 3) {
+            this.vehicleLine.material.resolution.copy(this.mapAndOverlayManager.getViewportSize());
             this.previousVehicleLines.forEach(element => {
-                element.material.resolution.copy(this.overlay.getViewportSize());
+                element.material.resolution.copy(this.mapAndOverlayManager.getViewportSize());
             });
 
             const zoom = this.map.getZoom();
@@ -158,7 +156,7 @@ export class Vehicle {
             vehicleCurvePoints[i].toArray(vehiclePositions, 3 * i);
         }
 
-        this.vehicleLine.material.resolution.copy(this.overlay.getViewportSize());
+        this.vehicleLine.material.resolution.copy(this.mapAndOverlayManager.getViewportSize());
         this.vehicleLine.geometry.setPositions(vehiclePositions);
         this.vehicleLine.computeLineDistances();
     }

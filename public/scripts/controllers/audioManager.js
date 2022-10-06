@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
-export class InfoReader {
+export class AudioManager {
     constructor() {
         this.info = [];
         this.chimeAudio = new Audio("/resources/sounds/chime.wav");
@@ -17,12 +17,12 @@ export class InfoReader {
         });
     }
 
-    loadAudio(text, language) {
+    loadText2Voice(text, language) {
         this.socket.emit('tts_request', {text: text, language: language}, {});
         this.text = text;
     }
 
-    readText(chime) {
+    readLoadedText2Voice(chime) {
         const currentAudio = this.loadedData;
         // we get 32Kbps MP3 which 4KB/s = 4B/ms
         const length = Math.round(this.loadedData.byteLength / 4) + 1000 + (chime * 2000);
