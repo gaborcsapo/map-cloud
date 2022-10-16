@@ -4,7 +4,7 @@ export class AudioManager {
     constructor() {
         this.info = [];
         this.chimeAudio = new Audio("/resources/sounds/chime.wav");
-        this.socket = io();
+        this.socket = io({transports: [ "websocket" ]});
 
         this.socket.on('connection', (data) => {
             console.log("Socket connected");

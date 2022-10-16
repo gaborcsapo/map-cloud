@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
-let socket = io();
+let socket = io({transports: [ "websocket" ]});
 
 export function socketQuery(query, args) {
     return new Promise((resolve) => {

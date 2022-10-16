@@ -156,7 +156,7 @@ const PARAM_IDX = {
     FIRST_SIGHT                   : 13,
 }
 
-let socket = io();
+let socket = io({transports: [ "websocket" ]});
 
 window.addEventListener("load", function () {
     (async () => {
