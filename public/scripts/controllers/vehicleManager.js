@@ -10,7 +10,7 @@ import { easeInOutCubic } from '../utilities/easing.js';
 const ARC_LENGTH_DIVISIONS = 150;
 const tmpVec3 = new Vector3();
 
-export class Vehicle {
+export class VehicleManager {
     constructor({mapAndOverlayManager, lineColor, modelPath, front, scale}) {
         this.mapAndOverlayManager = mapAndOverlayManager;
         this.previousVehicleLines = [];
@@ -143,7 +143,7 @@ export class Vehicle {
             new LineGeometry(),
             new LineMaterial({
               color: this.lineColor,
-              linewidth: 4,
+              linewidth: 6,
               vertexColors: false,
               dashed: false
             })

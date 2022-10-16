@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="/css/main.css">
     <script type="text/javascript">
         var MAPS_API_KEY = "{{ maps_api_key }}"
-        var journeyJSON = `{{{ journeyParams }}}`
+        var journeyId = `{{{ id }}}`
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
     <script type="module" src="/scripts/main-app-bundle.js"></script>
@@ -24,16 +24,13 @@
     </script>
 </head>
 <body>
-    <div id="map" style="position: static;z-index: 0;left: 0px;top: 0px;height: 100%;width: 100%;padding: 0px;border-width: 0px;margin: 0px;"></div>
+    <div id="map" class="map70"></div>
 
     <div class="modal fade" id="splash-modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content border-0 p-4">
+            <div class="modal-content border-0 p-5 text-center">
                 <div class="modal-header border-0">
-                    <h2 class="modal-title" id="staticBackdropLabel">You received a <b>Digital Travel Postcard</b>, because someone is excited about your travels. Here's a glimpse at your itinerary... &#127881; &#9992;&#65039; &#127881;</h2>
-                </div>
-                <div class="modal-body">
-                    <h4>Note: this is an awesome itinerary with sound effects, so click continue when you're ready </h4>
+                    <h2 class="modal-title" id="staticBackdropLabel">Open your <b>Digital Travel Postcard</b> &#127881; &#9992;&#65039; &#127881;</h2>
                 </div>
                 <div class="modal-footer border-0">
                     <button type="button" id="continue-button" class="btn btn-primary btn-lg">Continue with sound &#128266;</button>
@@ -42,22 +39,9 @@
         </div>
     </div>
 
-    <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x">
-        <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
-            <div class="toast-body">
-                <h3>Hey, did you like your itinerary? Create another animation on <a href="/">our homepage</a>!</h3>
-            </div>
-        </div>
+    <div id="info-box">
+        <div id="timeline-container"></div>
+        <div class="bottom scroll-shadow"></div>
     </div>
-
-
-    <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x">
-        <div id="announcementToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="false">
-            <div class="toast-body">
-                <h3 id="announcementText"></h3>
-            </div>
-        </div>
-    </div>
-    <div id="snackbar" class="hidden">Some text...</div>
 </body>
 </html>

@@ -19,7 +19,7 @@ export class MarkerManager {
     }
 
     update() {
-        if (this.frameCount++ > 20)
+        if (this.frameCount++ > 10)
         {
             this.frameCount = 0;
             this.markers.forEach(marker => {

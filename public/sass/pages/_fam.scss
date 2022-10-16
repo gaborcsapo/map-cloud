@@ -5,30 +5,90 @@ body {
   padding: 0;
 }
 
-.map1x1 {
-    --bs-aspect-ratio: 100%;
-    position: relative;
-    overflow: hidden;
-}
-
-.title-center {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-height: 35rem;
-}
-
-.map1x1::before {
-    display: block;
-    padding-top: var(--bs-aspect-ratio);
-    content: "";
-}
-
-.footer {
-    color:rgb(22, 22, 22);
+.map70 {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    height: 100%;
     width: 100%;
-    padding: 2rem;
-    padding-left: 4rem;
-    padding-top: 7rem;
-    margin-top: 4rem;
+    z-index: 0;
+}
+
+#timeline-container {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    overflow: scroll;
+    border-radius: 10px;
+}
+
+
+#info-box {
+    position: absolute;
+    max-width: 400px;
+    width: 35%;
+    right: 20px;
+    top: 65px;
+    height: 30%;
+    min-height: 300px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 3px -1px 10px 3px rgb(105 96 215 / 9%);
+}
+
+@media (orientation: portrait) and (max-width: 900px) {
+    #info-box {
+        right: auto;
+        min-height: auto;
+        top: auto;
+        border-radius: 0;
+        box-shadow: none;
+        left: 0px;
+        bottom: 0px;
+        height: 30%;
+        width: 100%;
+    }
+    .map70 {
+        height: 70%;
+    }
+}
+
+.scroll-shadow {
+    background: linear-gradient(#fafafa,#fafafa 20%,rgb(250 250 250/92%) 35%,rgb(250 250 250/68%) 50%,rgb(250 250 250/28%) 70%,transparent);
+    height: 40px;
+    left: 0;
+    pointer-events: none;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 1;
+    border-radius: 10px;
+}
+
+.bottom {
+    background: linear-gradient(transparent,rgb(250 250 250/28%) 30%,rgb(250 250 250/68%) 50%,rgb(250 250 250/96%) 75%,#fafafa 90%,#fafafa);
+    bottom: 0;
+    top: auto;
+}
+
+::-webkit-scrollbar {
+    width: 4px;
+    height: 0px;
+}
+::-webkit-scrollbar-track-piece {
+    background: rgb(255, 255, 255, 0);
+}
+::-webkit-scrollbar-track-piece:end {
+    margin-bottom: 10px;
+}
+
+::-webkit-scrollbar-track-piece:start {
+    margin-top: 10px;
+}
+::-webkit-scrollbar-thumb:vertical {
+    height: 6px;
+    background-color: rgb(199, 199, 199);
+    -webkit-border-radius: 2px;
 }

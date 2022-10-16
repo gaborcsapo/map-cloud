@@ -9,7 +9,7 @@ export default [
                 rollupWarn(warning);
             }
         },
-        input: 'public/scripts/mainApp.js',
+        input: 'public/scripts/playerApp.js',
         output: {
             file: 'dist/scripts/main-app-bundle.js',
             format: 'cjs'
@@ -17,6 +17,9 @@ export default [
         plugins: [
             resolve({
                 browser: true,
+            }),
+            mustache({
+                include: 'public/views/*.mustache'
             }),
             commonjs()
         ]
@@ -27,9 +30,9 @@ export default [
                 rollupWarn(warning);
             }
         },
-        input: 'public/scripts/POSApp.js',
+        input: 'public/scripts/editorApp.js',
         output: {
-            file: 'dist/scripts/POSApp.js',
+            file: 'dist/scripts/editorApp.js',
             format: 'cjs'
         },
         plugins: [

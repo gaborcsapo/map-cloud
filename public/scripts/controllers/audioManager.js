@@ -5,7 +5,6 @@ export class AudioManager {
         this.info = [];
         this.chimeAudio = new Audio("/resources/sounds/chime.wav");
         this.socket = io();
-        this.toast = new bootstrap.Toast(document.getElementById("announcementToast"));
 
         this.socket.on('connection', (data) => {
             console.log("Socket connected");
@@ -34,12 +33,6 @@ export class AudioManager {
         } else {
             this.playAudio(currentAudio);
         }
-
-        document.getElementById("announcementText").innerHTML = this.text;
-        this.toast.show()
-        setTimeout(()=> {
-            this.toast.hide();
-        }, length);
 
         return length;
     }

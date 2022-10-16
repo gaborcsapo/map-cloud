@@ -2,3 +2,30 @@
     font-size: 1.5rem;
 }
 
+.map1x1 {
+    --bs-aspect-ratio: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.title-center {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 35rem;
+}
+
+.map1x1::before {
+    display: block;
+    padding-top: var(--bs-aspect-ratio);
+    content: "";
+}
+
+.footer {
+    color:rgb(22, 22, 22);
+    width: 100%;
+    padding: 2rem;
+    padding-left: 4rem;
+    padding-top: 7rem;
+    margin-top: 4rem;
+}

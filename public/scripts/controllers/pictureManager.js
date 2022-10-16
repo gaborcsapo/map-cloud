@@ -23,7 +23,7 @@ export class PictureManager {
         if (this.imgTextures.get(url) == undefined)
         {
             this.preLoadImage(url).then(() => {
-                this.loadImageMesh(this.scene, url, position);
+                this.loadImageMesh(url, latLng);
             });
         } else {
             const geometry = new PlaneGeometry(12, 12, 32);

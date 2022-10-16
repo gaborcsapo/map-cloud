@@ -1,5 +1,5 @@
 import { CarCamAnimation } from './threejsObjects/cameraAnimations.js';
-import { Vehicle as VehicleManager } from './controllers/vehicleManager.js';
+import { VehicleManager } from './controllers/vehicleManager.js';
 import { Vector3 } from "three";
 import { Loader } from '@googlemaps/js-api-loader';
 import { AudioManager } from './controllers/audioManager.js';
@@ -8,19 +8,29 @@ import { MapAndOverlayManager } from './controllers/mapAndOverlayManager.js';
 import { MarkerManager } from './controllers/markerManager.js';
 import { PictureManager } from './controllers/pictureManager.js';
 import { FireworksManager } from './controllers/fireworksManager.js';
+import { TimelineManager } from './controllers/timelineManager.js';
+import { socketQuery } from "./utilities/socketPromise.js";
 
 const PLANE_LINE_COLOR = 0x285f4;
 const CAR_LINE_COLOR = 0xf4b400;
 const INITIAL_ZOOM = 18;
 
-class MainApp {
+class PlayerApp {
     constructor()
     {
-        this.journeyStages = JSON.parse(journeyJSON);
+        const urlSearchParams = new URLSearchParams(window.location.search);
+
+        socketQuery("getJourneyData", urlSearchParams.get("journey")).then((data) => {
+            this.journeyStages = data.journeyStages;
+            this.initJourney();
+        });
+    }
+
+    initJourney() {
         this.initialViewport = {
             center: this.journeyStages[0].route[0],
             zoom: INITIAL_ZOOM,
-            tilt: 30,
+            tilt: 45,
             heading: 0,
         };
         this.mapAndOverlayManager = new MapAndOverlayManager({initialViewport: this.initialViewport, disableDefaultUI: false});
@@ -44,8 +54,9 @@ class MainApp {
         });
 
         this.infoReader = new AudioManager();
-        this.infoReader.loadText2Voice(this.journeyStages[this.stageIdx].text, this.journeyStages[this.stageIdx].language)
+        this.infoReader.loadText2Voice(this.journeyStages[this.stageIdx].narrationText, this.journeyStages[this.stageIdx].language)
         this.soundManager = new SoundManager();
+        this.timelineManager = new TimelineManager({journeyStages: this.journeyStages});
         this.markerManager = new MarkerManager({map: this.mapAndOverlayManager.getMapInstance(),
                                                 scene: this.mapAndOverlayManager.getScene()
                                                 });
@@ -53,8 +64,8 @@ class MainApp {
                                                   scene: this.mapAndOverlayManager.getScene()
                                                 });
         this.journeyStages.forEach(element => {
-            if (element.celebImgURL != undefined) {
-                this.pictureManager.preLoadImage(element.celebImgURL);
+            if (element.picture != undefined) {
+                this.pictureManager.preLoadImage(element.picture);
             }
         });
 
@@ -81,6 +92,7 @@ class MainApp {
         const flightTime = this.journeyStages[0].camMoveDuration + this.journeyStages[0].zoomDuration;
         this.soundManager.playAirportSound(waitTimeAirport);
         this.soundManager.playPlaneSound(waitTimeAirport, flightTime);
+        this.markerManager.addMarker(this.journeyStages[this.stageIdx].route[0], this.journeyStages[this.stageIdx].markerTitle);
     }
 
     startNextJourneyLeg(vehicle) {
@@ -88,14 +100,15 @@ class MainApp {
             const isAirplaneOrAirportScene = this.stageIdx <= 1;
 
             // Load picture
-            if (this.journeyStages[this.stageIdx].celebImgURL != undefined) {
+            if (this.journeyStages[this.stageIdx].picture != undefined) {
                 let [position] = this.journeyStages[this.stageIdx].route.slice(-1);
                 position.y += 120;
-                this.pictureManager.loadImageMesh(this.journeyStages[this.stageIdx].celebImgURL, position);
+                this.pictureManager.loadImageMesh(this.journeyStages[this.stageIdx].picture, position);
             }
 
             // Read text
             this.journeyStages[this.stageIdx].startDelay = this.infoReader.readLoadedText2Voice(isAirplaneOrAirportScene);
+            this.timelineManager.open(this.stageIdx);
 
             // Calculate new route and timing
             if (vehicle) {
@@ -120,8 +133,8 @@ class MainApp {
             // Prepare for the next stage by preloading stuff
             this.stageIdx++;
             if (this.journeyStages.length > this.stageIdx) {
-                this.infoReader.loadText2Voice(this.journeyStages[this.stageIdx].text, this.journeyStages[this.stageIdx].language);
-                this.markerManager.addMarker(this.journeyStages[this.stageIdx].route[0], "Label Demo BLAblaBla");
+                this.infoReader.loadText2Voice(this.journeyStages[this.stageIdx].narrationText, this.journeyStages[this.stageIdx].language);
+                this.markerManager.addMarker(this.journeyStages[this.stageIdx].route[0], this.journeyStages[this.stageIdx].markerTitle);
             }
         } else {
             // Skip plane scenes
@@ -165,24 +178,32 @@ class MainApp {
         if (this.car.update()) {
             // car animation finished
             if (this.journeyStages.length == this.stageIdx) {
-                const toastLiveExample = document.getElementById('liveToast');
-                const toast = new bootstrap.Toast(toastLiveExample);
-                toast.show();
+                // create another fireworks at the end
+                this.fireworks = new FireworksManager({
+                    scene: this.mapAndOverlayManager.getScene(),
+                    latLng: this.journeyStages[3].route[0],
+                    duration: 20000,
+                });
                 this.soundManager.musicVolumeDown();
             }
             this.startNextJourneyLeg(this.car);
             if (this.journeyStages.length > this.stageIdx) {
+
                 const waitTime = this.journeyStages[this.stageIdx - 1].startDelay + this.journeyStages[this.stageIdx - 1].zoomDuration;
                 const driveTime = this.journeyStages[this.stageIdx - 1].camMoveDuration + this.journeyStages[this.stageIdx - 1].zoomDuration;
                 this.soundManager.playCarSound(waitTime, driveTime);
             }
         }
         this.markerManager.update();
+        if (this.fireworks) {
+            // fireworks udpate after done
+            this.fireworks.update();
+        }
     }
 }
 
 (async () => {
     new Loader({apiKey: MAPS_API_KEY}).load().then(() => {
-        const page = new MainApp();
+        const page = new PlayerApp();
     });
 })();

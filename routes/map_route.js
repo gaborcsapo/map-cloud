@@ -1,25 +1,21 @@
 import { Router} from 'express';
 import { getMapsAPIKey } from '../middleware/secret_manager.js';
-import { JourneyGenerator } from '../middleware/journey_generator.js';
+
+
+
+// Shoudln't await maps API key, delays server becoming reponsive
+
+
+
 
 const maps_api_key = await getMapsAPIKey();
 const router = Router();
-const journeyGenerator = new JourneyGenerator();
 
 router.get('/', (req, res) => {
     if(Object.hasOwn(req.query, "journey"))
     {
-        console.log(req.query.journey);
-        journeyGenerator.rawURLDataToJourney(req.query.journey).then((journey) => {
-            res.render('map', {
-                "maps_api_key": maps_api_key,
-                "journeyParams": JSON.stringify(journey),
-            })
-            console.log(JSON.stringify(journey));
-        }, (reason) => {
-            res.render('error', {
-                "error_msg": reason,
-            })
+        res.render('map', {
+            "maps_api_key": maps_api_key
         })
     }
     else

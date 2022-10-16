@@ -1,0 +1,82 @@
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700");
+
+
+.timeline-elem {
+    width: 100%;
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    .dot-container {
+        display: flex;
+        align-items: center;
+        transform: translate(-8px);
+        .dot{
+            width:14px;
+            height:14px;
+            background: #D1D6E6;
+            border-radius:7px;
+        }
+    }
+    .line-container {
+        display: flex;
+        flex-direction: column;
+        .line{
+            flex: 1;
+            width:2px;
+            background: #D1D6E6;
+        }
+    }
+    .card-container {
+        padding: 10px;
+        width: 80%;
+        max-width: 500px;
+
+        .timeline-card {
+            width:100%;
+            padding:10px;
+            background: #FFFFFF;
+            border-radius: 10px;
+            box-shadow: 3px -1px 10px 3px rgb(105 96 215 / 9%);
+
+            .timeline-title {
+                cursor: pointer;
+                text-align: left;
+                border: 0;
+                width: 100%;
+                transition: 0.4s;
+                background: #FFFFFF;
+                display:flex;
+
+            }
+
+            .timeline-title:after {
+                content: '\02C5'; /* Unicode character for "plus" sign (+) */
+                color: #777;
+                float: right;
+                margin-left: auto;
+              }
+
+              .active:after {
+                content: "\02C4"; /* Unicode character for "minus" sign (-) */
+              }
+
+            .active {
+                background-color: rgb(247, 246, 255);
+            }
+
+            .timeline-body {
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.7s ease-out;
+            }
+        }
+
+        .blocked {
+            background-color: rgb(231, 231, 231);
+            .timeline-title {
+                background-color: rgb(231, 231, 231);
+                color: rgb(143, 143, 143);
+            }
+        }
+    }
+}

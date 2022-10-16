@@ -8,13 +8,13 @@ export class MapDirections {
         this.client = new Client({});
     }
 
-    searchPath(start, end){
+    searchRoute(journeyStage){
         return new Promise((resolve, reject) => {
             this.client.directions({
                 params:
                 {
-                    origin: start,
-                    destination: end,
+                    origin: journeyStage.getStartDescription(),
+                    destination: journeyStage.getEndDescription(),
                     travelMode: 'DRIVING',
                     key: apiKey,
                 },
@@ -24,7 +24,8 @@ export class MapDirections {
                 {
                     reject("Google Maps doesn't recognize one of these two places or can't draw a route between them: " + start + ", " + end + ". Please generate a new link and make these addresses more specific or closer.");
                 } else {
-                    resolve(this.decodePath(resp.data.routes[0].overview_polyline.points));
+                    journeyStage.setRoute(this.decodePath(resp.data.routes[0].overview_polyline.points));
+                    resolve();
                 }
             }, (reason) => {
                 reject("There's an unknown failure with searchPlace: " + start + " --> " + end + ". Reason: " + reason + ". Please generate a new link and change these addresses.");
@@ -32,25 +33,44 @@ export class MapDirections {
         });
     }
 
+    searchLine(journeyStage) {
+        let searchPromises = [this.searchPlace(journeyStage.getStartDescription()), this.searchPlace(journeyStage.getEndDescription())];
+
+        return new Promise((resolve, reject) => {
+            Promise.all(searchPromises).then((values) => {
+                journeyStage.setRoute(values);
+                resolve();
+            }, (reason) => {
+                reject(reason); // bubble up the error
+            });
+        })
+    }
+
     searchPlace(description){
         return new Promise((resolve, reject) => {
-            this.client.geocode({
-                params:
-                {
-                    address: description,
-                   key: apiKey,
-                },
-                timeout: 1000,
-            }).then((resp) => {
-                if (resp.data.results.length == 0)
-                {
-                    reject("Google Maps doesn't recognize the place: " + description + ". Please generate a new link and make this address more specific.");
-                } else {
-                    resolve(resp.data.results[0].geometry.location);
-                }
-            }, (reason) => {
-                reject("There's an unknown failure with searchPlace: " + description + ". Reason: " + reason + ". Please generate a new link and make these addresses.");
-            });
+            let maybeLatLng = this.checkIfValidlatitudeAndlongitude(description)
+            if (maybeLatLng != undefined) {
+                resolve(maybeLatLng);
+            } else {
+                this.client.geocode({
+                    params:
+                    {
+                        address: description,
+                        key: apiKey,
+                    },
+                    timeout: 1000,
+                }).then((resp) => {
+                    if (resp.data.results.length == 0)
+                    {
+                        reject("Google Maps doesn't recognize the place: " + description + ". Please generate a new link and make this address more specific.");
+                    } else {
+                        console.log(resp.data.results)
+                        resolve(resp.data.results[0].geometry.location);
+                    }
+                }, (reason) => {
+                    reject("There's an unknown failure with searchPlace: " + description + ". Reason: " + reason + ". Please generate a new link and make these addresses.");
+                });
+            }
         });
     }
 
@@ -83,5 +103,25 @@ export class MapDirections {
         }
         path.length = pointIndex;
         return path;
+    }
+
+    checkIfValidlatitudeAndlongitude(str) {
+        let chunks = str.split(",")
+        var res = undefined
+        if (chunks.length == 2)
+        {
+            if (this.isLatitude(chunks[0]) && this.isLongitude(chunks[1])) {
+                res = {lat: Number(chunks[0]), lng: Number(chunks[1])};
+            }
+        }
+        return res;
+    }
+
+    isLatitude(lat) {
+        return isFinite(lat) && Math.abs(lat) <= 90;
+    }
+
+    isLongitude(lng) {
+        return isFinite(lng) && Math.abs(lng) <= 180;
     }
 }

@@ -62,15 +62,16 @@ export default class HtmlMarker3d extends Group {
         const showTopView = tilt < 30;
 
         if (showTopView) {
+            this.labelGroup.rotation.x = -Math.PI / 2;
             this.labelGroup.rotation.y = -MathUtils.DEG2RAD * heading;
         } else {
-            this.adjustMarkerRotation(heading);
+            this.labelGroup.rotation.x = 0;
+            this.adjustMarkerRotation(heading + 20);
         }
 
-        this.labelGroup.rotation.x = showTopView ? -Math.PI / 2 : -Math.PI / 4;
 
         // adjust scale according to zoom-level
-        const scaleFactor = Math.pow(1.6, baseZoom - zoom);
+        const scaleFactor = Math.pow(1.6, baseZoom - zoom + 1);
         this.labelGroup.scale.setScalar(scaleFactor);
     }
 
@@ -81,7 +82,7 @@ export default class HtmlMarker3d extends Group {
      */
     adjustMarkerRotation(mapHeading) {
         // + 20 for extra sideways rotation
-        const sectorHeading = (mapHeading + 20) % 360;
+        const sectorHeading = (mapHeading) % 360;
 
         const currRotation = this.labelGroup.rotation.y;
         let targetRotation = MathUtils.DEG2RAD * MathUtils.euclideanModulo(-sectorHeading, 360);
