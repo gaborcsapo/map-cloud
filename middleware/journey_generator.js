@@ -70,6 +70,7 @@ export class JourneyGenerator {
             console.log(journeyStages);
         }, (reason) => {
             this.journeyStore.add(newId, {status: "Error", msg: reason});
+            console.log("error creating journey: " + reason);
         });
         return newId;
     }

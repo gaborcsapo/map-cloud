@@ -5,7 +5,7 @@ const apiKey = await getDirectionsAPIKey();
 
 export class MapDirections {
     constructor() {
-        this.client = new Client({});
+        this.client = new Client();
     }
 
     searchRoute(journeyStage){
@@ -22,13 +22,13 @@ export class MapDirections {
             }).then((resp) => {
                 if (resp.data.routes.length == 0)
                 {
-                    reject("Google Maps doesn't recognize one of these two places or can't draw a route between them: " + start + ", " + end + ". Please generate a new link and make these addresses more specific or closer.");
+                    reject("Google Maps doesn't recognize one of these two places or can't draw a route between them: " + journeyStage.getStartDescription() + ", " + journeyStage.getEndDescription() + ". Please generate a new link and make these addresses more specific or closer.");
                 } else {
                     journeyStage.setRoute(this.decodePath(resp.data.routes[0].overview_polyline.points));
                     resolve();
                 }
             }, (reason) => {
-                reject("There's an unknown failure with searchPlace: " + start + " --> " + end + ". Reason: " + reason + ". Please generate a new link and change these addresses.");
+                reject("There's an unknown failure with searchPlace: " + journeyStage.getStartDescription() + " --> " + journeyStage.getEndDescription() + ". Reason: " + reason + ". Please generate a new link and change these addresses.");
             });
         });
     }

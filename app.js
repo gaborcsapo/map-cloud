@@ -19,6 +19,7 @@ app.set('views', 'public/views');
 app.use(express.static('dist'));
 app.use('/', routes.home);
 app.use('/map', routes.map);
+app.use('/data', routes.data);
 app.use(serve_favicon('dist/resources/img/favicon.png'));
 
 const PORT = parseInt(process.env.PORT) || 8080;
