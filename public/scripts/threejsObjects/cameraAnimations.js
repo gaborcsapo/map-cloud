@@ -1,4 +1,4 @@
-import {CatmullRomCurve3} from 'three';
+import {CatmullRomCurve3, MathUtils} from 'three';
 import { latLngAltToVector3, vector3ToLatLngAlt } from '../utilities/coordinates.js';
 import { easeInOutCubic, easeInSine } from '../utilities/easing.js';
 
@@ -70,39 +70,53 @@ export class CameraAnimation {
  * rendering a frame.
  */
 
-const STARTING_ZOOM = 18;
-
- export class CarCamAnimation extends CameraAnimation {
-    constructor({mapAndOverlayManager, journeyStageParams}) {
+export class ZoomAnimation extends CameraAnimation {
+    constructor({mapAndOverlayManager, startingZoom, targetZoom, duration, center}) {
         super();
-
-        this.startDelay = journeyStageParams.startDelay;
-        this.zoomDuration = journeyStageParams.zoomDuration;
-        this.camMoveDuration = journeyStageParams.camMoveDuration;
-
-        this.totalDuration = this.startDelay + this.zoomDuration * 2 + this.camMoveDuration;
-        this.zoomEndTime = this.startDelay + this.zoomDuration;
-        this.camMoveEndTime = this.startDelay + this.zoomDuration + this.camMoveDuration;
-
-        this.zoomAmplitude = journeyStageParams.zoomAmplitude;
-        this.highestZoomLevel = 0;
 
         this.mapAndOverlayManager = mapAndOverlayManager;
         this.origin = this.mapAndOverlayManager.getMapCamera();
         this.origin.lat = this.origin.center.lat();
         this.origin.lng = this.origin.center.lng();
 
+        this.duration = duration;
+        this.targetZoom = targetZoom;
+        this.startingZoom = startingZoom;
+        this.zoomAmplitude = targetZoom - startingZoom;
+
         this.mapAndOverlayManager.setMapCamera({
-            zoom: STARTING_ZOOM,
-            center: journeyStageParams.route[0],
+            zoom: startingZoom,
+            center: center,
             tilt: 30,
             heading: 0,
         });
+    }
 
+    update(animationTime) {
+        const progress = MathUtils.clamp(animationTime / this.duration, 0, 1);
+        this.zoom = this.startingZoom + this.zoomAmplitude * easeInSine(progress);
+        this.mapAndOverlayManager.setMapCamera({
+            zoom: this.zoom,
+        });
+
+        if (progress == 1) {
+            this.dispose();
+        }
+    }
+}
+
+export class MoveAnimation extends CameraAnimation {
+    constructor({mapAndOverlayManager, route, duration}) {
+        super();
+
+        this.mapAndOverlayManager = mapAndOverlayManager;
+        this.origin = this.mapAndOverlayManager.getMapCamera();
+        this.origin.lat = this.origin.center.lat();
+        this.origin.lng = this.origin.center.lng();
+
+        this.duration = duration;
         let camPath;
-        const route = journeyStageParams.route;
-        if (route.length >= 4)
-        {
+        if (route.length >= 4) {
             camPath = [route[0], route[Math.floor(route.length/4)],route[Math.floor(route.length/4*3)],route[route.length - 1]];
         } else {
             camPath = route;
@@ -116,42 +130,18 @@ const STARTING_ZOOM = 18;
     }
 
     update(animationTime) {
-        if (animationTime < this.startDelay) {
-            return;
-        }
-        else if (animationTime <= this.zoomEndTime)
-        {
-            const zoomProgress = (animationTime - this.startDelay) / this.zoomDuration;
-            this.zoom = STARTING_ZOOM - this.zoomAmplitude * easeInSine(zoomProgress);
-            this.mapAndOverlayManager.setMapCamera({
-                zoom: this.zoom,
-            });
-        }
-        else if (animationTime <= this.camMoveEndTime)
-        {
-            const camMoveProgress = (animationTime - this.zoomEndTime) / this.camMoveDuration;
-            const cameraPos = this.spline.getPointAt(easeInOutCubic(camMoveProgress));
-            const {lat, lng} = vector3ToLatLngAlt(cameraPos, this.origin);
-            this.mapAndOverlayManager.setMapCamera({
-                center: {lat, lng},
-            });
-        }
-        else if (animationTime <= this.totalDuration)
-        {
-            if (this.highestZoomLevel == 0) {
-                this.highestZoomLevel = this.zoom;
-            }
-            const zoomProgress = (animationTime - this.camMoveEndTime) / this.zoomDuration;
-            this.zoom = this.highestZoomLevel + this.zoomAmplitude * easeInSine(zoomProgress);
-            this.mapAndOverlayManager.setMapCamera({
-                zoom: this.zoom,
-            });
-        }
-        else
-        {
+        const progress = MathUtils.clamp(animationTime / this.duration, 0, 1);
+        const cameraPos = this.spline.getPointAt(easeInOutCubic(progress));
+        const {lat, lng} = vector3ToLatLngAlt(cameraPos, this.origin);
+        this.mapAndOverlayManager.setMapCamera({
+            center: {lat, lng},
+        });
+
+        if (progress == 1) {
             this.spline = null;
             this.dispose();
         }
     }
+
 }
 

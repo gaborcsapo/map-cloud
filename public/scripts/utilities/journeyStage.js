@@ -10,25 +10,33 @@ export class JourneyStage {
         picture,
         route = [],
         narrationAudio = undefined,
-        startDelay = 0,
+        narrationDuration = 0,
         camMoveDuration = 0,
-        zoomAmplitude = 0,
         zoomDuration = 0,
+        startingZoom = 0,
+        targetZoom = 0,
+        distance = 0,
+        fireworks = false,
     }) {
         this.stageName = stageName;
         this.startDescription = startDescription;
         this.endDescription = endDescription;
         this.routeType = routeType;
         this.route = route;
-        this.narrationAudio = narrationAudio;
-        this.startDelay = startDelay;
+        if (narrationAudio) {
+            this.narrationAudio = new Uint8Array(narrationAudio.data).buffer;
+        }
+        this.narrationDuration = narrationDuration;
         this.camMoveDuration = camMoveDuration;
-        this.zoomAmplitude = zoomAmplitude;
+        this.startingZoom = startingZoom;
+        this.targetZoom = targetZoom;
         this.zoomDuration = zoomDuration;
         this.markerTitle = markerTitle;
         this.narrationText = narrationText;
         this.language = language;
         this.picture = picture;
+        this.distance = distance;
+        this.fireworks = fireworks;
     }
 
     getStageName() {
@@ -83,12 +91,12 @@ export class JourneyStage {
         return this.narrationAudio;
     }
 
-    setStartDelay(startDelay) {
-        this.startDelay = startDelay;
+    setNarrationDuration(narrationDuration) {
+        this.narrationDuration = narrationDuration;
     }
 
-    getStartDelay() {
-        return this.startDelay;
+    getNarrationDuration() {
+        return this.narrationDuration;
     }
 
     setCamMoveDuration(camMoveDuration) {
@@ -99,12 +107,20 @@ export class JourneyStage {
         return this.camMoveDuration;
     }
 
-    setZoomAmplitude(zoomAmplitude) {
-        this.zoomAmplitude = zoomAmplitude;
+    setStartingZoom(startingZoom) {
+        this.startingZoom = startingZoom;
     }
 
-    getZoomAmplitude() {
-        return this.zoomAmplitude;
+    getStartingZoom() {
+        return this.startingZoom;
+    }
+
+    setTargetZoom(targetZoom) {
+        this.targetZoom = targetZoom;
+    }
+
+    getTargetZoom() {
+        return this.targetZoom;
     }
 
     setZoomDuration(zoomDuration) {
@@ -113,5 +129,21 @@ export class JourneyStage {
 
     getZoomDuration() {
         return this.zoomDuration;
+    }
+
+    setDistance(distance) {
+        this.distance = distance;
+    }
+
+    getDistance() {
+        return this.distance;
+    }
+
+    setFireworks(fireworks) {
+        this.fireworks = fireworks;
+    }
+
+    hasFireworks() {
+        return this.fireworks;
     }
 }

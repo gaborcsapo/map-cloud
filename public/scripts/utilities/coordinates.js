@@ -63,3 +63,9 @@ export function latLngAltRelToVector3(point, ref, target) {
 
     return target.set(dx, altitude, -dy);
 }
+
+export function distanceLatLng(point1, point2) {
+    return distance([point1.lng, point1.lat], [point2.lng, point2.lat], {
+        units: 'meters'
+    });
+}

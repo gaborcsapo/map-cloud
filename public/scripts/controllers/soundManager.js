@@ -13,6 +13,8 @@ export class SoundManager {
         this.plane.loop = true;
 
         this.button = new Audio("/resources/sounds/button_click.mp3");
+
+        this.chimeAudio = new Audio("/resources/sounds/chime.wav");
     }
 
     playMusic() {
@@ -23,32 +25,63 @@ export class SoundManager {
         this.music.volume /= 3;
     }
 
-    playAirportSound(duration) {
+    playAirportSound() {
         this.airport.play();
-        setTimeout(() => {
-            this.airport.pause();
-        }, duration);
     }
 
-    playCarSound(delay, duration) {
-        setTimeout(() => {
-            this.car.play();
-            setTimeout(() => {
-                this.car.pause();
-            }, duration);
-        }, delay);
+    stopAirportSound() {
+        this.airport.pause();
     }
 
-    playPlaneSound(delay, duration) {
-        setTimeout(() => {
-            this.plane.play();
-            setTimeout(() => {
-                this.plane.pause();
-            }, duration);
-        }, delay);
+    playCarSound() {
+        this.car.play();
+    }
+
+    stopCarSound() {
+        this.car.pause();
+    }
+
+    playPlaneSound() {
+        this.plane.play();
+    }
+
+    stopPlaneSound() {
+        this.plane.pause();
     }
 
     playButtonClick() {
         this.button.play();
+    }
+
+    playChime() {
+        this.chimeAudio.play();
+    }
+
+    playAudio(arrayBuffer) {
+        return new Promise(resolve => {
+            try {
+                let audioContext = new AudioContext();
+                let outputSource;
+                if(arrayBuffer.byteLength > 0){
+                    audioContext.decodeAudioData(arrayBuffer,
+                        (buffer) => {
+                            audioContext.resume();
+                            outputSource = audioContext.createBufferSource();
+                            outputSource.connect(audioContext.destination);
+                            outputSource.buffer = buffer;
+                            outputSource.start(0);
+                            setTimeout(resolve, buffer.duration * 1000)
+                        },
+                        () => {
+                            console.log(arguments);
+                        }
+                    );
+                } else {
+                    console.log("byte length is 0");
+                }
+            } catch(e) {
+                console.log(e);
+            }
+        });
     }
 }

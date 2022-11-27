@@ -5,14 +5,13 @@ import mustacheExpress from 'mustache-express';
 import 'dotenv/config'
 
 import routes from './routes/routes.js';
-import { SocketManager } from './routes/sockets.js';
 
 const app = express();
 const http = createServer(app);
-const sockets = new SocketManager(http);
 const mustache = mustacheExpress();
 
 mustache.cache = null;
+app.use(express.json());
 app.engine('mustache', mustache);
 app.set('view engine', 'mustache')
 app.set('views', 'public/views');
@@ -24,7 +23,7 @@ app.use(serve_favicon('dist/resources/img/favicon.png'));
 
 const PORT = parseInt(process.env.PORT) || 8080;
 
-http.listen(PORT, () => {
+http.listen(PORT, () => {app.use(express.json());
   console.log(`HTTP listening on port ${PORT}.`);
 })
 

@@ -20,6 +20,7 @@ export class VehicleManager {
         this.scale = scale;
         this.map = this.mapAndOverlayManager.getMapInstance();
         this.counter = 0;
+        this.startTimestamp = 0;
 
         this.loadVehicleModel(modelPath).then(model => {
             this.vehicleModel = model;
@@ -27,89 +28,48 @@ export class VehicleManager {
         });
     }
 
-    startNewJourneyStage(vehiclePath) {
+    startNewJourneyStage(route, duration) {
         this.vehicleSpline = new CatmullRomCurve3(
-            vehiclePath.route.map(({lat, lng}) => latLngToVector3({lat, lng})),
+            route.map(({lat, lng}) => latLngToVector3({lat, lng})),
             false,
             'centripetal',
             0.2
         );
 
-        // rougly 1sec/km should be duration with a max of 25 sec
-        const duration = Math.round(Math.min(this.vehicleSpline.getLength() / 0.9, 25000));
-
-        // The zoomamplitude equation is just a exponential curve fitting for these y/x values:
-        // 12     1508257.9025383398
-        // 4       25943.69836456524
-        // 3.8     21074.388344540803
-        // 13     6067340.345612513
-        // 7      142126.16128664665
-        // 13.5    8587727.398089878
-        // 5      48061.46991743621
-        // 2.8    7756.402385156812
-        // 13.5   12079192.250058014
-        // 5      45619.223347196
-        // 2.9    7807.924142224345
-
-
-        const zoomAmplitude  = Math.min(13.68244 + (1.556327 - 13.68244)/Math.pow(1 + Math.pow((this.vehicleSpline.getLength()/1036770), 0.6166804), 2.364686), 14);
-
-        this.initVehicleLine(this.vehicleSpline);
-        this.scene.add(this.vehicleLine);
-
-        this.vehicleStartDelay = vehiclePath.startDelay + vehiclePath.zoomDuration;
-        this.totalDuration = duration + vehiclePath.zoomDuration;
-
+        this.totalDuration = duration;
         this.startTimestamp = performance.now();
-        return {zoomAmplitude: zoomAmplitude, duration: duration};
     }
 
-    loopPastJourneyStage(vehiclePath) {
-        this.vehicleSpline = new CatmullRomCurve3(
-            vehiclePath.route.map(({lat, lng}) => latLngToVector3({lat, lng})),
-            false,
-            'centripetal',
-            0.2
-        );
-
-        this.vehicleStartDelay = 0;
-        this.totalDuration = vehiclePath.camMoveDuration + vehiclePath.zoomDuration;
-
-        this.startTimestamp = performance.now();
+    addLineToCurrentTrip() {
+        this.initVehicleLine(this.vehicleSpline);
+        this.scene.add(this.vehicleLine);
     }
 
     update() {
-        if (!this.vehicleModel) {
-            return false;
+        if (this.startTimestamp != 0) {
+            const sceneTime = performance.now() - this.startTimestamp;
+            const linearProgress = MathUtils.clamp(sceneTime / this.totalDuration, 0, 1);
+            const progress = easeInOutCubic(linearProgress);
+
+            if (this.counter++ % 5) {
+                this.vehicleLine.material.resolution.copy(this.mapAndOverlayManager.getViewportSize());
+                this.previousVehicleLines.forEach(element => {
+                    element.material.resolution.copy(this.mapAndOverlayManager.getViewportSize());
+                });
+
+                const zoom = this.map.getZoom();
+                this.vehicleModel.scale.setScalar(this.scale * Math.pow(1.7, 25 - (zoom || 0)));
+            }
+
+            if (progress < 1) {
+                // Save computation by updating the scale only every ~ 0.5 seconds
+                this.vehicleSpline.getPointAt(progress, this.vehicleModel.position);
+                this.vehicleSpline.getTangentAt(progress, tmpVec3);
+                this.vehicleModel.quaternion.setFromUnitVectors(this.vehicleFront, tmpVec3);
+            } else {
+                this.startTimestamp = -1;
+            }
         }
-
-        // Save computation by updating the scale only every ~ 0.5 seconds
-        if (this.counter++ % 3) {
-            this.vehicleLine.material.resolution.copy(this.mapAndOverlayManager.getViewportSize());
-            this.previousVehicleLines.forEach(element => {
-                element.material.resolution.copy(this.mapAndOverlayManager.getViewportSize());
-            });
-
-            const zoom = this.map.getZoom();
-            this.vehicleModel.scale.setScalar(this.scale * Math.pow(1.7, 25 - (zoom || 0)));
-        }
-
-        const sceneTime = performance.now() - this.startTimestamp;
-        const linearProgress = MathUtils.clamp((sceneTime - this.vehicleStartDelay) / this.totalDuration, 0, 1);
-
-        if (linearProgress === 1) {
-            // Animation is done
-            return true;
-        }
-
-        // vehicle position/rotation
-        const progress = easeInOutCubic(linearProgress);
-
-        this.vehicleSpline.getPointAt(progress, this.vehicleModel.position);
-        this.vehicleSpline.getTangentAt(progress, tmpVec3);
-        this.vehicleModel.quaternion.setFromUnitVectors(this.vehicleFront, tmpVec3);
-
-        return false;
     }
 
     loadVehicleModel(modelPath) {

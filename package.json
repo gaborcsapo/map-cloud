@@ -11,6 +11,9 @@
     "watch": "node_modules/.bin/nodemon --exec \"npm run build && node app.js\" -e js,scss,mustache,json --ignore node_modules/ --ignore dist/ --ignore public/resources/paths/",
     "start": "node app.js"
   },
+  "engines": {
+    "node": ">=12.0.0"
+  },
   "author": "Gabor Csapo",
   "license": "MIT",
   "dependencies": {
@@ -38,8 +41,6 @@
     "sass": "^1.50.0",
     "serve-favicon": "^2.5.0",
     "short-uuid": "^4.2.0",
-    "socket.io": "^4.5.1",
-    "socket.io-client": "^4.5.1",
     "three": "^0.140.2"
   }
 }

@@ -189,6 +189,10 @@ export class MapAndOverlayManager {
           this.overlay.unbindAll();
      }
 
+     setUpdateSceneCallback(callback) {
+          this.updateSceneCallback = callback;
+     }
+
      onContextRestored({ gl }) {
           this.renderer = new THREE.WebGLRenderer({
                canvas: gl.canvas,

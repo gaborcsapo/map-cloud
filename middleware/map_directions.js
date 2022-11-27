@@ -1,5 +1,6 @@
 import {Client } from "@googlemaps/google-maps-services-js";
 import { getDirectionsAPIKey } from './secret_manager.js';
+import { distanceLatLng } from '../public/scripts/utilities/coordinates.js'
 
 const apiKey = await getDirectionsAPIKey();
 
@@ -24,11 +25,12 @@ export class MapDirections {
                 {
                     reject("Google Maps doesn't recognize one of these two places or can't draw a route between them: " + journeyStage.getStartDescription() + ", " + journeyStage.getEndDescription() + ". Please generate a new link and make these addresses more specific or closer.");
                 } else {
+                    journeyStage.setDistance(resp.data.routes[0].legs[0].distance.value);
                     journeyStage.setRoute(this.decodePath(resp.data.routes[0].overview_polyline.points));
                     resolve();
                 }
             }, (reason) => {
-                reject("There's an unknown failure with searchPlace: " + journeyStage.getStartDescription() + " --> " + journeyStage.getEndDescription() + ". Reason: " + reason + ". Please generate a new link and change these addresses.");
+                reject("There's an unknown failure with searchRoute: " + journeyStage.getStartDescription() + " --> " + journeyStage.getEndDescription() + ". Reason: " + reason + ". Please generate a new link and change these addresses.");
             });
         });
     }
@@ -38,6 +40,8 @@ export class MapDirections {
 
         return new Promise((resolve, reject) => {
             Promise.all(searchPromises).then((values) => {
+                journeyStage.setDistance(distanceLatLng(values[0], values[1]));
+                console.log("searchline", values);
                 journeyStage.setRoute(values);
                 resolve();
             }, (reason) => {
@@ -64,7 +68,6 @@ export class MapDirections {
                     {
                         reject("Google Maps doesn't recognize the place: " + description + ". Please generate a new link and make this address more specific.");
                     } else {
-                        console.log(resp.data.results)
                         resolve(resp.data.results[0].geometry.location);
                     }
                 }, (reason) => {

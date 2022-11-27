@@ -149,8 +149,6 @@ router.get('/', (req, res) => {
             ids.push(journeyGenerator.generateJourney(journey));
         });
 
-        console.log(ids)
-
         view["maps_api_key"] = maps_api_key;
         view["sampleJourneyIds"] = JSON.stringify(ids);
         res.render('home', view);
