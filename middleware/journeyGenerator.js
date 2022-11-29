@@ -1,9 +1,9 @@
-import * as JSURL from "jsurl"
 import { MapDirections } from "./map_directions.js";
-import { SimpleCache } from '../public/scripts/utilities/simpleCache.js';
-import shortUUID from "short-uuid";
-import { TEST_JOURNEY, FAM_JOURNEY } from "../public/scripts/utilities/testJourney.js";
 import { TTSManager } from "./text_to_speech.js";
+import { SimpleCache } from '../public/scripts/utilities/simpleCache.js';
+
+const tts = new TTSManager();
+const mapDirections = new MapDirections();
 
 let instance = null;
 
@@ -11,71 +11,43 @@ export class JourneyGenerator {
     constructor() {
         if (!instance) {
             instance = this;
-            this.mapDirections = new MapDirections();
-            this.journeyStore = new SimpleCache(300);
-            this.queryCache = new SimpleCache(100);
-            this.tts = new TTSManager();
-            this.generateJourney(TEST_JOURNEY, "test");
-            this.generateJourney(FAM_JOURNEY, "fam");
+            this.routeStore = new SimpleCache(300);
+            this.audioStore = new SimpleCache(300);
         }
         return instance;
-    }
-
-    getJourney(id) {
-        return this.journeyStore.get(id);
-    }
-
-    rawURLDataToJourney(rawURLData)
-    {
-        const cacheEntry = this.queryCache.get(rawURLData);
-        if (cacheEntry != null) {
-            console.log("queryCache hit");
-            return cacheEntry;
-        } else {
-            console.log("cache miss");
-            const decodedData = JSURL.parse(rawURLData);
-            const newId = this.generateJourney(decodedData);
-            this.queryCache.add(rawURLData, newId);
-            return newId;
-        }
-    }
-
-    getNewJourneyStoreEntry() {
-        const newId = shortUUID.generate();
-        this.journeyStore.add(newId, {status: "Preparing"});
-        return newId;
     }
 
     populateRoute(journeyStages) {
         let locationPromises = journeyStages.map((stage) => {
             if ((stage.getRouteType() == "plane") || (stage.getRouteType() == "shift")) {
-                return this.mapDirections.searchLine(stage);
+                return mapDirections.searchLine(stage);
             } else if (stage.getRouteType() == "car") {
-                return this.mapDirections.searchRoute(stage);
+                return mapDirections.searchRoute(stage);
             }
         })
 
-        return Promise.all(locationPromises).then(() => {
-            for (let index = 1; index < journeyStages.length; index++)
-            {
-                // Connect the two paths in case the Maps API gives slightly different points.
-                let prevRouteEnd = journeyStages[index - 1].getRoute();
-                prevRouteEnd = prevRouteEnd[prevRouteEnd.length - 1];
-                let currentRoute = journeyStages[index].getRoute();
+        return Promise.all(locationPromises)
+            .then(() => {
+                for (let index = 1; index < journeyStages.length; index++)
+                {
+                    // Connect the two paths in case the Maps API gives slightly different points.
+                    let prevRouteEnd = journeyStages[index - 1].getRoute();
+                    prevRouteEnd = prevRouteEnd[prevRouteEnd.length - 1];
+                    let currentRoute = journeyStages[index].getRoute();
 
-                currentRoute.unshift(prevRouteEnd);
-                journeyStages[index].setRoute(currentRoute);
-            }
-        }, (error) => {
-            console.log("error populating route: " + error);
-        });
+                    currentRoute.unshift(prevRouteEnd);
+                    journeyStages[index].setRoute(currentRoute);
+                }
+            }, (error) => {
+                console.log("error populating route: " + error);
+            });
     }
 
     populateAudio(journeyStages) {
         // Get text to speech
         let speechPromises = journeyStages.reduce((result, stage) => {
             if (stage.getNarrationText()) {
-              result.push(this.tts.getSpeech(stage.getNarrationText(), stage.getLanguage()));
+                result.push(tts.getSpeech(stage.getNarrationText(), stage.getLanguage()));
             }
             return result;
         }, []);
@@ -134,24 +106,5 @@ export class JourneyGenerator {
                 stage.setCamMoveDuration(2000);
             }
         }
-    }
-
-    generateJourney(journeyStages, fixed_id) {
-        var newId;
-        if (fixed_id == undefined) {
-            newId = this.getNewJourneyStoreEntry();
-        } else {
-            newId = fixed_id;
-        }
-
-        Promise.all([this.populateRoute(journeyStages), this.populateAudio(journeyStages)]).then(() => {
-            this.calculateDurations(journeyStages);
-            this.journeyStore.add(newId, {status: "Ready", journeyStages: journeyStages});
-            console.log(journeyStages);
-        }, (reason) => {
-            this.journeyStore.add(newId, {status: "Error", msg: reason});
-            console.log("error creating journey: " + reason);
-        });
-        return newId;
     }
 }

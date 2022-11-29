@@ -1,11 +1,9 @@
 import { Router} from 'express';
 import { getMapsAPIKey } from '../middleware/secret_manager.js';
-import { JourneyGenerator } from '../middleware/journey_generator.js';
 import { JourneyStage } from '../public/scripts/utilities/journeyStage.js';
 
 const router = Router();
 const maps_api_key = await getMapsAPIKey();
-const journeyGenerator = new JourneyGenerator();
 
 const view = {
     forms: [
@@ -145,12 +143,10 @@ router.get('/', (req, res) => {
         console.log("cache hit")
     } else {
         let ids = [];
-        samplePOSJourneys.forEach(journey => {
-            ids.push(journeyGenerator.generateJourney(journey));
-        });
+
 
         view["maps_api_key"] = maps_api_key;
-        view["sampleJourneyIds"] = JSON.stringify(ids);
+        view["sampleJourneyIds"] = "";
         res.render('home', view);
     }
 });

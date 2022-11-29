@@ -9,6 +9,7 @@ export class TTSManager {
 
     getSpeech(text, language) {
         if (this.audioStore.get(text+language) != null) {
+            console.log("AS cache hit");
             return Promise.resolve(this.audioStore.get(text+language));
         } else {
             // Construct the request

@@ -1,53 +1,87 @@
-import {Client } from "@googlemaps/google-maps-services-js";
+import { Client } from "@googlemaps/google-maps-services-js";
 import { getDirectionsAPIKey } from './secret_manager.js';
 import { distanceLatLng } from '../public/scripts/utilities/coordinates.js'
+import { SimpleCache } from '../public/scripts/utilities/simpleCache.js';
 
 const apiKey = await getDirectionsAPIKey();
 
 export class MapDirections {
     constructor() {
         this.client = new Client();
+        this.cache = new SimpleCache(300);
     }
 
     searchRoute(journeyStage){
-        return new Promise((resolve, reject) => {
-            this.client.directions({
-                params:
-                {
-                    origin: journeyStage.getStartDescription(),
-                    destination: journeyStage.getEndDescription(),
-                    travelMode: 'DRIVING',
-                    key: apiKey,
-                },
-                timeout: 1000,
-            }).then((resp) => {
-                if (resp.data.routes.length == 0)
-                {
-                    reject("Google Maps doesn't recognize one of these two places or can't draw a route between them: " + journeyStage.getStartDescription() + ", " + journeyStage.getEndDescription() + ". Please generate a new link and make these addresses more specific or closer.");
-                } else {
-                    journeyStage.setDistance(resp.data.routes[0].legs[0].distance.value);
-                    journeyStage.setRoute(this.decodePath(resp.data.routes[0].overview_polyline.points));
-                    resolve();
-                }
-            }, (reason) => {
-                reject("There's an unknown failure with searchRoute: " + journeyStage.getStartDescription() + " --> " + journeyStage.getEndDescription() + ". Reason: " + reason + ". Please generate a new link and change these addresses.");
+        let retPromise;
+        const cacheEntry = this.cache.get("route"+journeyStage.getStartDescription()+journeyStage.getEndDescription());
+
+        if (cacheEntry != null) {
+            console.log("Route cache hit");
+            journeyStage.setDistance(cacheEntry.distance);
+            journeyStage.setRoute(cacheEntry.line);
+            retPromise = Promise.resolve();
+        } else {
+            retPromise = new Promise((resolve, reject) => {
+                this.client.directions({
+                    params:
+                    {
+                        origin: journeyStage.getStartDescription(),
+                        destination: journeyStage.getEndDescription(),
+                        travelMode: 'DRIVING',
+                        key: apiKey,
+                    },
+                    timeout: 1000,
+                }).then((resp) => {
+                    if (resp.data.routes.length == 0)
+                    {
+                        reject("Google Maps doesn't recognize one of these two places or can't draw a route between them: " + journeyStage.getStartDescription() + ", " + journeyStage.getEndDescription() + ". Please generate a new link and make these addresses more specific or closer.");
+                    } else {
+                        journeyStage.setDistance(resp.data.routes[0].legs[0].distance.value);
+                        journeyStage.setRoute(this.decodePath(resp.data.routes[0].overview_polyline.points));
+
+                        this.cache.add(
+                            "route"+journeyStage.getStartDescription()+journeyStage.getEndDescription(),
+                            {
+                                distance: resp.data.routes[0].legs[0].distance.value,
+                                line: this.decodePath(resp.data.routes[0].overview_polyline.points),
+                            }
+                        );
+                        resolve();
+                    }
+                }, (reason) => {
+                    reject("There's an unknown failure with searchRoute: " + journeyStage.getStartDescription() + " --> " + journeyStage.getEndDescription() + ". Reason: " + reason + ". Please generate a new link and change these addresses.");
+                });
             });
-        });
+        }
+        return retPromise;
     }
 
     searchLine(journeyStage) {
-        let searchPromises = [this.searchPlace(journeyStage.getStartDescription()), this.searchPlace(journeyStage.getEndDescription())];
+        let retPromise;
+        const cacheEntry = this.cache.get("line"+journeyStage.getStartDescription()+journeyStage.getEndDescription());
 
-        return new Promise((resolve, reject) => {
-            Promise.all(searchPromises).then((values) => {
-                journeyStage.setDistance(distanceLatLng(values[0], values[1]));
-                console.log("searchline", values);
-                journeyStage.setRoute(values);
-                resolve();
-            }, (reason) => {
-                reject(reason); // bubble up the error
-            });
-        })
+        if (cacheEntry != null) {
+            console.log("Route cache hit");
+            journeyStage.setDistance(cacheEntry.distance);
+            journeyStage.setRoute(cacheEntry.line);
+            retPromise = Promise.resolve();
+        } else {
+            const searchPromises = [this.searchPlace(journeyStage.getStartDescription()), this.searchPlace(journeyStage.getEndDescription())];
+
+            retPromise = Promise.all(searchPromises).then((values) => {
+                    journeyStage.setDistance(distanceLatLng(values[0], values[1]));
+                    journeyStage.setRoute(values);
+
+                    this.cache.add(
+                        "line"+journeyStage.getStartDescription()+journeyStage.getEndDescription(),
+                        {
+                            distance: distanceLatLng(values[0], values[1]),
+                            line: values,
+                        }
+                    );
+                })
+        }
+        return retPromise;
     }
 
     searchPlace(description){

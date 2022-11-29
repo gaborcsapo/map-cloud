@@ -1,15 +1,6 @@
-import * as JSURL from "jsurl"
-import { CarCamAnimation } from './threejsObjects/cameraAnimations.js';
-import { FireworksManager } from './controllers/fireworksManager.js';
-import { VehicleManager } from './controllers/vehicleManager.js';
-import { Vector3 } from "three";
-import { Loader } from '@googlemaps/js-api-loader';
-import { MapAndOverlayManager } from './controllers/mapAndOverlayManager.js';
-
 import MustacheFormTemplate from '../views/form_element.mustache'
 import { JourneyStage } from "./utilities/journeyStage.js";
-import { queryJourneyData, createJourney } from "./utilities/requestHelper.js";
-
+import { createJourney } from "./utilities/requestHelper.js";
 
 let sightCounter = 2;
 
