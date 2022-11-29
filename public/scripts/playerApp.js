@@ -227,6 +227,7 @@ class PlayerApp {
         }
         this.vehicle.startNewJourneyStage(stage.route, stage.getCamMoveDuration());
         this.vehicle.addLineToCurrentTrip();
+        this.mapAndOverlayManager.enableMapUI(false);
 
         this.cameraAnimation = new MoveAnimation({
             mapAndOverlayManager: this.mapAndOverlayManager,
@@ -238,6 +239,7 @@ class PlayerApp {
         return new Promise(resolve => setTimeout(() => {
             this.soundManager.stopPlaneSound();
             this.soundManager.stopCarSound();
+            this.mapAndOverlayManager.enableMapUI(true);
             resolve();
         }, stage.getCamMoveDuration()));
     }

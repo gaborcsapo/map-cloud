@@ -27,7 +27,7 @@ body {
 
 #info-box {
     position: absolute;
-    max-width: 400px;
+    max-width: 500px;
     width: 35%;
     right: 20px;
     top: 65px;
@@ -42,6 +42,7 @@ body {
     #info-box {
         right: auto;
         min-height: auto;
+        max-width: auto;
         top: auto;
         border-radius: 0;
         box-shadow: none;

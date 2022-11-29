@@ -19,6 +19,7 @@
  *  */
 
 import * as THREE from 'three';
+import { NoToneMapping } from 'three';
 
 const mapId ="c2485044d90a90f"
 
@@ -155,6 +156,18 @@ export class MapAndOverlayManager {
                zoom: this.map.getZoom(),
                heading: this.map.getHeading()
           };
+     }
+
+     enableMapUI(enable) {
+          this.map.setOptions({
+               disableDefaultUI: !enable,
+               draggable: enable,
+               zoomControl: enable,
+               scrollwheel: enable,
+               disableDoubleClickZoom: enable,
+               fullscreenControl: true,
+               keyboardControls: enable,
+          })
      }
 
      addListener(eventName, handler) {
