@@ -30,7 +30,7 @@ export class MapDirections {
                         travelMode: 'DRIVING',
                         key: apiKey,
                     },
-                    timeout: 1000,
+                    timeout: 10000,
                 })
                 .then((resp) => {
                     if (resp.data.routes.length == 0)
@@ -98,7 +98,7 @@ export class MapDirections {
                         address: description,
                         key: apiKey,
                     },
-                    timeout: 1000,
+                    timeout: 10000,
                 }).then((resp) => {
                     if (resp.data.results.length == 0)
                     {

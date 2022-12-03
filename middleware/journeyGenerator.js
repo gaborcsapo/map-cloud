@@ -5,16 +5,10 @@ import { SimpleCache } from '../public/scripts/utilities/simpleCache.js';
 const tts = new TTSManager();
 const mapDirections = new MapDirections();
 
-let instance = null;
-
 export class JourneyGenerator {
     constructor() {
-        if (!instance) {
-            instance = this;
-            this.routeStore = new SimpleCache(300);
-            this.audioStore = new SimpleCache(300);
-        }
-        return instance;
+        this.routeStore = new SimpleCache(300);
+        this.audioStore = new SimpleCache(300);
     }
 
     populateRoute(journeyStages) {

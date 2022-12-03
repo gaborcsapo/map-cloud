@@ -4,19 +4,14 @@ import shortUUID from "short-uuid";
 import { TEST_JOURNEY, FAM_JOURNEY } from "../public/scripts/utilities/testJourney.js";
 import { Datastore } from '@google-cloud/datastore';
 import { JourneyStage } from "../public/scripts/utilities/journeyStage.js";
-let instance = null;
 
 export class JourneyStore {
     constructor() {
-        if (!instance) {
-            instance = this;
-            this.journeyStore = new SimpleCache(300);
-            this.journeyGenerator = new JourneyGenerator();
-            this.datastore = new Datastore();
-            this.addJourney(TEST_JOURNEY, "test");
-            this.addJourney(FAM_JOURNEY, "fam");
-        }
-        return instance;
+        this.journeyStore = new SimpleCache(300);
+        this.journeyGenerator = new JourneyGenerator();
+        this.datastore = new Datastore();
+        this.addJourney(TEST_JOURNEY, "test");
+        this.addJourney(FAM_JOURNEY, "fam");
     }
 
     async getFromGCS(id) {

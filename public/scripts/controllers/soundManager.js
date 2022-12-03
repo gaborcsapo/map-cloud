@@ -1,28 +1,36 @@
+let instance = null;
+
 export class SoundManager {
     constructor() {
-        this.airport = new Audio("/resources/sounds/airport.flac");
-        this.airport.loop = true;
+        if (!instance) {
+            instance = this;
 
-        this.car = new Audio("/resources/sounds/car.wav");
-        this.car.loop = true;
+            this.airport = new Audio("/resources/sounds/airport.flac");
+            this.airport.loop = true;
 
-        this.music = new Audio("/resources/sounds/happy_music.wav");
-        this.music.loop = true;
+            this.car = new Audio("/resources/sounds/car.wav");
+            this.car.loop = true;
 
-        this.plane = new Audio("/resources/sounds/plane.wav");
-        this.plane.loop = true;
+            this.music = new Audio("/resources/sounds/happy_music.wav");
+            this.music.loop = true;
 
-        this.button = new Audio("/resources/sounds/button_click.mp3");
+            this.plane = new Audio("/resources/sounds/plane.wav");
+            this.plane.loop = true;
 
-        this.chimeAudio = new Audio("/resources/sounds/chime.wav");
+            this.button = new Audio("/resources/sounds/button_click.mp3");
+
+            this.chimeAudio = new Audio("/resources/sounds/chime.wav");
+        }
+        return instance;
     }
 
     playMusic() {
         this.music.play();
+        this.music.volume /= 2;
     }
 
     musicVolumeDown() {
-        this.music.volume /= 3;
+        this.music.volume /= 4;
     }
 
     playAirportSound() {
