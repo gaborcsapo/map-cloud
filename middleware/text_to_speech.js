@@ -9,7 +9,7 @@ export class TTSManager {
 
     getSpeech(text, language) {
         if (this.audioStore.get(text+language) != null) {
-            console.log("AS cache hit");
+            console.log("TTS cache hit");
             return Promise.resolve(this.audioStore.get(text+language));
         } else {
             // Construct the request
@@ -22,6 +22,7 @@ export class TTSManager {
             };
             // Performs the text-to-speech request
             return this.client.synthesizeSpeech(request).then(([response]) => {
+                console.log("TTS cache miss, req done");
                 this.audioStore.add(text+language, response.audioContent);
                 return response.audioContent;
             });

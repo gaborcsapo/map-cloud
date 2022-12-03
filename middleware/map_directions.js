@@ -15,8 +15,8 @@ export class MapDirections {
         let retPromise;
         const cacheEntry = this.cache.get("route"+journeyStage.getStartDescription()+journeyStage.getEndDescription());
 
+        console.log("Route cache ", cacheEntry ? "hit": "miss", " for:", journeyStage.getStartDescription(), " --> ", journeyStage.getEndDescription());
         if (cacheEntry != null) {
-            console.log("Route cache hit");
             journeyStage.setDistance(cacheEntry.distance);
             journeyStage.setRoute(cacheEntry.line);
             retPromise = Promise.resolve();
@@ -31,10 +31,11 @@ export class MapDirections {
                         key: apiKey,
                     },
                     timeout: 1000,
-                }).then((resp) => {
+                })
+                .then((resp) => {
                     if (resp.data.routes.length == 0)
                     {
-                        reject("Google Maps doesn't recognize one of these two places or can't draw a route between them: " + journeyStage.getStartDescription() + ", " + journeyStage.getEndDescription() + ". Please generate a new link and make these addresses more specific or closer.");
+                        reject("Google Maps doesn't recognize one of these two places or can't draw a route between them.");
                     } else {
                         journeyStage.setDistance(resp.data.routes[0].legs[0].distance.value);
                         journeyStage.setRoute(this.decodePath(resp.data.routes[0].overview_polyline.points));
@@ -48,8 +49,9 @@ export class MapDirections {
                         );
                         resolve();
                     }
-                }, (reason) => {
-                    reject("There's an unknown failure with searchRoute: " + journeyStage.getStartDescription() + " --> " + journeyStage.getEndDescription() + ". Reason: " + reason + ". Please generate a new link and change these addresses.");
+                })
+                .catch((reason) => {
+                    reject("An error occured while searching routes between: " + journeyStage.getStartDescription() + " --> " + journeyStage.getEndDescription() + ". Reason: " + reason + ".\nPlease generate a new link and change these addresses.");
                 });
             });
         }
@@ -60,8 +62,8 @@ export class MapDirections {
         let retPromise;
         const cacheEntry = this.cache.get("line"+journeyStage.getStartDescription()+journeyStage.getEndDescription());
 
+        console.log("Searchline cache ", cacheEntry ? "hit": "miss", " for:", journeyStage.getStartDescription(), " --> ", journeyStage.getEndDescription());
         if (cacheEntry != null) {
-            console.log("Route cache hit");
             journeyStage.setDistance(cacheEntry.distance);
             journeyStage.setRoute(cacheEntry.line);
             retPromise = Promise.resolve();
@@ -100,12 +102,13 @@ export class MapDirections {
                 }).then((resp) => {
                     if (resp.data.results.length == 0)
                     {
-                        reject("Google Maps doesn't recognize the place: " + description + ". Please generate a new link and make this address more specific.");
+                        reject("Google Maps can't find the place with this description");
                     } else {
                         resolve(resp.data.results[0].geometry.location);
                     }
-                }, (reason) => {
-                    reject("There's an unknown failure with searchPlace: " + description + ". Reason: " + reason + ". Please generate a new link and make these addresses.");
+                })
+                .catch((reason) => {
+                    reject("An error occured while searching the place: " + description + ". Reason: " + reason + ".\nPlease generate a new link and make these addresses.");
                 });
             }
         });

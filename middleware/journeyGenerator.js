@@ -18,6 +18,7 @@ export class JourneyGenerator {
     }
 
     populateRoute(journeyStages) {
+        console.log("populateRoute()");
         let locationPromises = journeyStages.map((stage) => {
             if ((stage.getRouteType() == "plane") || (stage.getRouteType() == "shift")) {
                 return mapDirections.searchLine(stage);
@@ -38,12 +39,11 @@ export class JourneyGenerator {
                     currentRoute.unshift(prevRouteEnd);
                     journeyStages[index].setRoute(currentRoute);
                 }
-            }, (error) => {
-                console.log("error populating route: " + error);
             });
     }
 
     populateAudio(journeyStages) {
+        console.log("populateAudio()");
         // Get text to speech
         let speechPromises = journeyStages.reduce((result, stage) => {
             if (stage.getNarrationText()) {
@@ -59,8 +59,6 @@ export class JourneyGenerator {
                     journeyStages[index].setNarrationAudio(results[index]);
                 }
             }
-        }, (error) => {
-            console.log("error populating audio: " + error);
         });
     }
 

@@ -7,7 +7,6 @@ const journeyStore = new JourneyStore();
 
 router.post('/getjourney', async (req, res) => {
     const data  = await journeyStore.getJourney(req.body.id)
-    console.log(data);
     res.json(data);
 });
 

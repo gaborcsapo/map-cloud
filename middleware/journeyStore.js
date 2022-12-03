@@ -22,7 +22,7 @@ export class JourneyStore {
     async getFromGCS(id) {
         let ret = null;
         const queryKey = this.datastore.createQuery('journey')
-            .filter('__key__', '=', this.datastore.key(['journey', id]));
+        .filter('__key__', '=', this.datastore.key(['journey', id]));
         const [journeyResults] = await this.datastore.runQuery(queryKey);
 
         if (journeyResults.length > 0) {
@@ -31,10 +31,12 @@ export class JourneyStore {
             ret = journey
         }
 
+        console.log("getFromGCS id:", id, ret ? ret.status : null);
         return ret;
     }
 
     async addToGCS(id, data) {
+        console.log("addToGCS id:", id);
         const dsKey = this.datastore.key(["journey", id]);
 
         let date = new Date();
@@ -64,12 +66,13 @@ export class JourneyStore {
     }
 
     async getJourney(id) {
+        console.log("getJourney() id:", id);
         // check if journey in local cache, otherwise check GCS, otherwise return error
         let journey = this.journeyStore.get(id);
         if (journey == null) {
             journey = await this.getFromGCS(id)
             if (journey == null) {
-                return Promise.resolve({status: "NotFound"});
+                return Promise.resolve({status: "notfound"});
             }
         }
 
@@ -85,11 +88,12 @@ export class JourneyStore {
         return Promise.all(todoPromises)
             .then(() => {
                 this.journeyGenerator.calculateDurations(journey.journeyStages);
+                console.log("getJourney() finished populating id:", id, journey.status);
                 return journey;
             }, (reason) => {
                 console.log("error creating journey: " + reason);
-                this.journeyStore.add(newId, {status: "Error", msg: reason});
-                return this.journeyStore.get(newId);
+                this.journeyStore.add(id, {status: "error", msg: reason});
+                return this.journeyStore.get(id);
             });
     }
 
@@ -97,9 +101,10 @@ export class JourneyStore {
         if (id == undefined) {
             id = shortUUID.generate();
         }
+        console.log("addJourney() id:", id);
 
-        this.journeyStore.add(id, {status: "Ok", journeyStages: journeyStages});
-        this.addToGCS(id, {status: "Ok", journeyStages: journeyStages});
+        this.journeyStore.add(id, {status: "ok", journeyStages: journeyStages});
+        this.addToGCS(id, {status: "ok", journeyStages: journeyStages});
 
         // call get so that it caches the journey details
         this.getJourney(id);

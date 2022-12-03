@@ -10,6 +10,7 @@ import { FireworksManager } from './controllers/fireworksManager.js';
 import { TimelineManager } from './controllers/timelineManager.js';
 import { queryJourneyData } from "./utilities/requestHelper.js";
 import { JourneyStage } from './utilities/journeyStage.js';
+import MustacheModalTemplate from '../views/modal.mustache'
 
 const PLANE_LINE_COLOR = 0x285f4;
 const CAR_LINE_COLOR = 0xf4b400;
@@ -21,8 +22,31 @@ class PlayerApp {
         const urlSearchParams = new URLSearchParams(window.location.search);
 
         queryJourneyData(urlSearchParams.get("journey")).then((data) => {
-            this.journeyStages = data.journeyStages.map((stage) => new JourneyStage(stage));
-            this.initJourney();
+            let html;
+            if (data.status == "ok") {
+                html = MustacheModalTemplate.render({
+                    title: "Open your <b>Digital Travel Postcard</b> &#127881; &#9992;&#65039; &#127881;",
+                    body: '<button type="button" id="continue-button" class="btn btn-primary btn-lg">Continue with sound &#128266;</button>',
+                });
+
+                this.journeyStages = data.journeyStages.map((stage) => new JourneyStage(stage));
+                document.getElementById("modal-container").insertAdjacentHTML("beforeend", html);
+                this.initJourney();
+            } else if (data.status == "notfound") {
+                html = MustacheModalTemplate.render({
+                    title: "Journey ID Not Found",
+                    body: '<p>Make sure the correct URL was opened, otherwise please create a new journey in our editor <a href="/editor">here</a>',
+                });
+                document.getElementById("modal-container").insertAdjacentHTML("beforeend", html);
+            } else if (data.status == "error") {
+                html = MustacheModalTemplate.render({
+                    title: "Couldn't Generate Journey",
+                    body: data.msg + '\nYou can create a new journey in our editor <a href="/editor">here</a>',
+                });
+                document.getElementById("modal-container").insertAdjacentHTML("beforeend", html);
+            }
+            this.myModal = new bootstrap.Modal('#splash-modal');
+            this.myModal.show();
         });
     }
 
@@ -83,8 +107,6 @@ class PlayerApp {
 
         this.setupJourneySequence();
 
-        this.myModal = new bootstrap.Modal('#splash-modal');
-        this.myModal.show();
         document.getElementById("continue-button").onclick = () => {
             this.myModal.hide();
             this.soundManager.playButtonClick();

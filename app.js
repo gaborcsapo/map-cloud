@@ -11,6 +11,11 @@ const http = createServer(app);
 const mustache = mustacheExpress();
 
 mustache.cache = null;
+
+http.setTimeout(10000, ()=> {
+    console.log("app.js: HTTP server timed out");
+})
+
 app.use(express.json());
 app.engine('mustache', mustache);
 app.set('view engine', 'mustache')
