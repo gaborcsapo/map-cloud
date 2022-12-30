@@ -4,7 +4,6 @@ import { latLngAltToVector3 } from '../utilities/coordinates.js';
 export class MarkerManager {
     constructor({map, scene}) {
         this.markers = [];
-        this.imgTextures = new Map();;
         this.map = map;
         this.scene = scene;
         this.frameCount = 0;
@@ -16,6 +15,11 @@ export class MarkerManager {
         newMarker.position.y = 100;
         this.markers.push(newMarker);
         this.scene.add(newMarker);
+    }
+
+    clearMarkers() {
+        this.markers.forEach((marker) => this.scene.remove(marker));
+        this.markers = [];
     }
 
     update() {

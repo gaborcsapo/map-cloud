@@ -40,8 +40,34 @@ export class VehicleManager {
         this.startTimestamp = performance.now();
     }
 
-    addLineToCurrentTrip() {
-        this.initVehicleLine(this.vehicleSpline);
+    stopJourneyStage() {
+        this.startTimestamp = 0;
+    }
+
+    addVehicleLine() {
+        this.vehicleLine = new Line2(
+            new LineGeometry(),
+            new LineMaterial({
+                color: this.lineColor,
+                linewidth: 6,
+                vertexColors: false,
+                dashed: false
+            })
+        );
+
+        this.previousVehicleLines.push(this.vehicleLine);
+
+        this.vehicleSpline.arcLengthDivisions = ARC_LENGTH_DIVISIONS;
+        const vehicleCurvePoints = this.vehicleSpline.getSpacedPoints(this.vehicleSpline.points.length);
+        const vehiclePositions = new Float32Array(vehicleCurvePoints.length * 3);
+        for (let i = 0; i < vehicleCurvePoints.length; i++) {
+            vehicleCurvePoints[i].toArray(vehiclePositions, 3 * i);
+        }
+
+        this.vehicleLine.material.resolution.copy(this.mapAndOverlayManager.getViewportSize());
+        this.vehicleLine.geometry.setPositions(vehiclePositions);
+        this.vehicleLine.computeLineDistances();
+
         this.scene.add(this.vehicleLine);
     }
 
@@ -91,34 +117,6 @@ export class VehicleManager {
                 });
             });
         }
-    }
-
-    initVehicleLine(vehicleSpline) {
-        if (this.vehicleLine)
-        {
-            this.previousVehicleLines.push(this.vehicleLine);
-        }
-
-        this.vehicleLine = new Line2(
-            new LineGeometry(),
-            new LineMaterial({
-              color: this.lineColor,
-              linewidth: 6,
-              vertexColors: false,
-              dashed: false
-            })
-        );
-
-        vehicleSpline.arcLengthDivisions = ARC_LENGTH_DIVISIONS;
-        const vehicleCurvePoints = vehicleSpline.getSpacedPoints(vehicleSpline.points.length);
-        const vehiclePositions = new Float32Array(vehicleCurvePoints.length * 3);
-        for (let i = 0; i < vehicleCurvePoints.length; i++) {
-            vehicleCurvePoints[i].toArray(vehiclePositions, 3 * i);
-        }
-
-        this.vehicleLine.material.resolution.copy(this.mapAndOverlayManager.getViewportSize());
-        this.vehicleLine.geometry.setPositions(vehiclePositions);
-        this.vehicleLine.computeLineDistances();
     }
 
     deletePreviousLines() {

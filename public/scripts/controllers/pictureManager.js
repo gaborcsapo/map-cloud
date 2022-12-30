@@ -9,7 +9,8 @@ import { latLngAltToVector3 } from '../utilities/coordinates.js';
 export class PictureManager {
     constructor({map, scene}) {
         this.map = map;
-        this.imgTextures = new Map();;
+        this.imgTextures = new Map();
+        this.imageMeshes = [];
         this.scene = scene;
     }
 
@@ -49,7 +50,13 @@ export class PictureManager {
             imageMesh.scale.set(7, 7);
             imageMesh.position.set(position.x, 60, position.z);
 
+            this.imageMeshes.push(imageMesh);
             this.scene.add(imageMesh);
         }
+    }
+
+    clearImages() {
+        this.imageMeshes.forEach((mesh) => this.scene.remove(mesh));
+        this.imageMeshes = [];
     }
 }

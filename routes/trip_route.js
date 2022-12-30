@@ -1,13 +1,6 @@
 import { Router} from 'express';
 import { getMapsAPIKey } from '../middleware/secret_manager.js';
 
-
-
-// Shoudln't await maps API key, delays server becoming reponsive
-
-
-
-
 const maps_api_key = await getMapsAPIKey();
 const router = Router();
 

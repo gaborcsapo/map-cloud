@@ -22,7 +22,8 @@ app.set('view engine', 'mustache')
 app.set('views', 'public/views');
 app.use(express.static('dist'));
 app.use('/', routes.home);
-app.use('/map', routes.map);
+app.use('/trip', routes.trip);
+app.use('/editor', routes.editor);
 app.use('/data', routes.data);
 app.use(serve_favicon('dist/resources/img/favicon.png'));
 

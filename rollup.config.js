@@ -11,7 +11,7 @@ export default [
         },
         input: 'public/scripts/playerApp.js',
         output: {
-            file: 'dist/scripts/main-app-bundle.js',
+            file: 'dist/scripts/player-app-bundle.js',
             format: 'cjs'
         },
         plugins: [
@@ -32,7 +32,7 @@ export default [
         },
         input: 'public/scripts/editorApp.js',
         output: {
-            file: 'dist/scripts/editorApp.js',
+            file: 'dist/scripts/editor-app-bundle.js',
             format: 'cjs'
         },
         plugins: [

@@ -13,7 +13,7 @@ export class FireworksManager {
 
     start({duration, latLng}) {
         this.position = latLngAltToVector3(latLng);
-        this.position.z += 180;
+        this.position.z += 60;
         this.duration = duration;
         this.scene.add(this.fireworksGroup);
         this.startTimestamp = performance.now();

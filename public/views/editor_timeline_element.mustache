@@ -1,0 +1,42 @@
+<div class="timeline-elem">
+    <div class="line-container">
+        <div class="line"></div>
+        <div class="line"></div>
+    </div>
+    <div class="dot-container">
+        <div class="dot"></div>
+    </div>
+    <div class="card-container">
+        {{#addModeOfTransport}}
+            <div>
+                <form class="form-horizontal">
+                    <label class="form-check-label">Travel by </label>
+                    <select class="form-select transport_select">
+                        <option>car</option>
+                        <option>plane</option>
+                        <option>teleportation</option>
+                    </select>
+                </form>
+            </div>
+        {{/addModeOfTransport}}
+
+        <div class="timeline-card">
+            <div class="form__group field">
+                <input type="input" class="form__field stop_title" placeholder="Title" name="title" id='input_title{{id}}' autocomplete="off" required />
+                <label for="input_title{{id}}" class="form__label">Journey stop title</label>
+            </div>
+            <div class="form__group field">
+                <input type="input" class="form__field stop_address" placeholder="Address" name="address" id='input_address{{id}}' autocomplete="off" required />
+                <label for="input_address{{id}}" class="form__label">Address or coordinates</label>
+            </div>
+            <div class="form__group field">
+                <textarea type="input" class="form__field stop_description" placeholder="Description" name="desc" id='input_desc{{id}}' autocomplete="off" required></textarea>
+                <label for="input_desc{{id}}" class="form__label">Description to read aloud</label>
+            </div>
+            <div class="form-check form-switch">
+                <input class="form-check-input stop_fireworks" type="checkbox">
+                <label class="form-check-label">Fireworks while reading description</label>
+            </div>
+        </div>
+    </div>
+</div>

@@ -11,9 +11,12 @@ router.post('/getjourney', async (req, res) => {
 });
 
 router.post('/createjourney', (req, res) => {
-    let result = journeyStore.addJourney(req.body.data.map((elem) => {
-        return new JourneyStage(elem);
-    }));
+    let result = journeyStore.addJourney(req.body.data.map(
+        (elem) => {
+            return new JourneyStage(elem);
+        }),
+        req.body.id
+    );
     res.json({"id" : result});
 });
 

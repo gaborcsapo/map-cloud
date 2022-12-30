@@ -5,28 +5,37 @@ body {
   padding: 0;
 }
 
-.map70 {
-    position: absolute;
+.journey-map {
+    position: fixed;
     left: 0px;
     top: 0px;
     height: 100%;
     width: 100%;
     z-index: 0;
+    background-color: #f7f7f7;
+    display: flex;
+    align-items: end;
+    justify-content: center;
 }
 
-#timeline-container {
-    position: relative;
+#timeline-container, #editor-container {
     height: 100%;
     width: 100%;
     padding-top: 30px;
     padding-bottom: 30px;
     overflow: scroll;
     border-radius: 10px;
+    border-top: 1px solid #efefef;
+    border-bottom: 1px solid #efefef;
 }
 
+#editor-container {
+    border-top-left-radius: initial;
+    border-top-right-radius: initial;
+}
 
 #info-box {
-    position: absolute;
+    position: fixed;
     max-width: 500px;
     width: 35%;
     right: 20px;
@@ -38,21 +47,63 @@ body {
     box-shadow: 3px -1px 10px 3px rgb(105 96 215 / 9%);
 }
 
+#editor-box {
+    position: fixed;
+    max-width: 700px;
+    width: 45%;
+    right: 20px;
+    top: 65px;
+    height: 60%;
+    min-height: 400px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 3px -1px 10px 3px rgb(105 96 215 / 9%);
+    display: flex;
+    flex-flow: column;
+}
+
+#button-container {
+    background-color: #f7f7f7;
+    text-align: center;
+    padding: 1rem;
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+
+    .btn {
+        --bs-btn-font-size: 1.5rem;
+        margin: 1rem;
+    }
+}
+
 @media (orientation: portrait) and (max-width: 900px) {
-    #info-box {
+    #info-box, #editor-box{
         right: auto;
-        min-height: auto;
+        min-height: initial;
         max-width: initial;
-        top: auto;
+        top: 70%;
         border-radius: 0;
         box-shadow: none;
         left: 0px;
         bottom: 0px;
-        height: 30%;
         width: 100%;
+    }
+    #editor-box {
+        top: 40%;
+    }
+    #editor-container {
+        border-top-left-radius: initial;
+        border-top-right-radius: initial;
+        border-bottom-right-radius: initial;
+        border-bottom-left-radius: initial;
     }
     .map70 {
         height: 70%;
+    }
+    .map40 {
+        height: 40%;
+    }
+    .journey-map {
+        align-items: center;
     }
 }
 
@@ -61,17 +112,17 @@ body {
     height: 40px;
     left: 0;
     pointer-events: none;
-    position: absolute;
-    top: 0;
     width: 100%;
     z-index: 1;
     border-radius: 10px;
+    position: absolute;
+    top: 0;
 }
 
 .bottom {
     background: linear-gradient(transparent,rgb(250 250 250/28%) 30%,rgb(250 250 250/68%) 50%,rgb(250 250 250/96%) 75%,#fafafa 90%,#fafafa);
+    top: initial;
     bottom: 0;
-    top: auto;
 }
 
 ::-webkit-scrollbar {
@@ -92,4 +143,9 @@ body {
     height: 6px;
     background-color: rgb(199, 199, 199);
     -webkit-border-radius: 2px;
+}
+
+.timelineCenteredText {
+    margin: 1rem;
+    text-align: center;
 }

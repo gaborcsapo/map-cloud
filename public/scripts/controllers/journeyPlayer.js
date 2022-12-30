@@ -11,15 +11,13 @@ import { TimelineManager } from './timelineManager.js';
 const PLANE_LINE_COLOR = 0x285f4;
 const CAR_LINE_COLOR = 0xf4b400;
 const INITIAL_ZOOM = 18;
+const FIREWORKS_DURATION = 6000;
 
 export class JourneyPlayer {
     constructor(journeyStages){
-        this.journeyStages = journeyStages;
-        this.stageIdx = -1;
-        this.journeySequence = [];
-
+        this.playCount = 0;
         this.initialViewport = {
-            center: this.journeyStages[0].route[0],
+            center: journeyStages[0].route[0],
             zoom: INITIAL_ZOOM,
             tilt: 45,
             heading: 0,
@@ -51,9 +49,7 @@ export class JourneyPlayer {
         })
 
         this.soundManager = new SoundManager();
-        this.timelineManager = new TimelineManager({
-            journeyStages: this.journeyStages
-        });
+
         this.markerManager = new MarkerManager({
             map: this.mapAndOverlayManager.getMapInstance(),
             scene: this.mapAndOverlayManager.getScene()
@@ -63,36 +59,84 @@ export class JourneyPlayer {
             scene: this.mapAndOverlayManager.getScene()
         });
 
+        this.setJNewourney(journeyStages);
+    }
+
+    setJNewourney(journeyStages) {
+        this.markerManager.clearMarkers();
+        this.pictureManager.clearImages();
+        this.car.deletePreviousLines();
+        this.plane.deletePreviousLines();
+        this.car.stopJourneyStage();
+        this.plane.stopJourneyStage();
+        if (this.cameraAnimation)
+            this.cameraAnimation.pause();
+        this.soundManager.stopAirportSound();
+        this.soundManager.stopPlaneSound();
+        this.soundManager.stopCarSound();
+
+        this.journeyStages = journeyStages;
+        this.stageIdx = -1;
+        this.playCount++;
+        this.journeySequence = [];
         this.journeyStages.forEach(element => {
             if (element.picture != undefined) {
                 this.pictureManager.preLoadImage(element.picture);
             }
         });
-
+        this.timelineManager = new TimelineManager({
+            journeyStages: this.journeyStages
+        });
+        this.mapAndOverlayManager.setMapCamera({
+            center: journeyStages[0].route[0],
+            zoom: INITIAL_ZOOM,
+            tilt: 45,
+            heading: 0,
+        });
         this.setupJourneySequence();
     }
 
     playJourney() {
+        this.playCount++;
+        let currentPlayCount = this.playCount;
+
         this.mapAndOverlayManager.setUpdateSceneCallback(this.updateSceneCallback.bind(this));
         this.nextStage();
 
         this.journeySequence.reduce((promiseChain, currentTask) => {
-            return promiseChain.then(chainResults =>
-                currentTask().then(currentResult =>
-                    [ ...chainResults, currentResult ]
-                )
-            );
+            return promiseChain.then(chainResults => {
+                if (currentPlayCount == this.playCount) {
+                    return currentTask().then(currentResult =>
+                        [ ...chainResults, currentResult ]
+                    )
+                } else {
+                    return Promise.resolve([ ...chainResults]);
+                }
+            });
         }, Promise.resolve([])).then(arrayOfResults => {
-            this.playJourneyEndLoop();
+            if (currentPlayCount == this.playCount) {
+                this.playJourneyEndLoop();
+            }
         });
     }
 
     async playJourneyEndLoop() {
         this.soundManager.musicVolumeDown();
+        let currentPlayCount = this.playCount; // we need to cancel this if the journey was updated
 
-        while (true) {
+        while (this.journeyStages.some((stage) => {return stage.getRouteType() == "car"})) {
             for (let i = 0; i < this.journeyStages.length; i++) {
-                await this.startJourneyEndVehicleTrip(this.journeyStages[i]);
+                if (currentPlayCount != this.playCount) {
+                    return;
+                }
+
+                let stage = this.journeyStages[i];
+                if ((stage.getRouteType() == "plane") || (stage.getRouteType() == "teleportation")) {
+                    continue;
+                } else if (stage.getRouteType() == "car") {
+                    this.car.startNewJourneyStage(stage.route, stage.getCamMoveDuration());
+                    await new Promise(resolve => setTimeout(resolve, stage.getCamMoveDuration()));
+                }
             }
         }
     }
@@ -110,6 +154,7 @@ export class JourneyPlayer {
                     this.setupPlaneScene.bind(this),
                     this.narrateScene.bind(this),
                     this.zoomOutCamera.bind(this),
+                    this.waitForMapLoaded.bind(this),
                     this.startVehicleTrip.bind(this),
                     this.zoomInCamera.bind(this),
                     this.nextStage.bind(this),
@@ -118,11 +163,12 @@ export class JourneyPlayer {
                 this.journeySequence = this.journeySequence.concat([
                     this.narrateScene.bind(this),
                     this.zoomOutCamera.bind(this),
+                    this.waitForMapLoaded.bind(this),
                     this.startVehicleTrip.bind(this),
                     this.zoomInCamera.bind(this),
                     this.nextStage.bind(this),
                 ]);
-            } else if (stage.getRouteType() == "shift") {
+            } else if (stage.getRouteType() == "teleportation") {
                 this.journeySequence = this.journeySequence.concat([
                     this.narrateScene.bind(this),
                     this.moveCamera.bind(this),
@@ -140,16 +186,31 @@ export class JourneyPlayer {
 
     narrateScene() {
         const stage = this.journeyStages[this.stageIdx];
-
         this.timelineManager.open(this.stageIdx);
+        let returnPromise = this.soundManager.playAudio(stage.getNarrationAudio())
+
         if (stage.hasFireworks()) {
             this.fireworks.start({
                 latLng: stage.route[0],
-                duration: 6000,
+                duration: FIREWORKS_DURATION,
             });
+            if (stage.getNarrationDuration() < FIREWORKS_DURATION) {
+                returnPromise = new Promise(resolve => setTimeout(resolve, FIREWORKS_DURATION));
+            }
         }
 
-        return this.soundManager.playAudio(stage.getNarrationAudio());
+        return returnPromise;
+    }
+
+    waitForMapLoaded() {
+        return new Promise(resolve => {
+            this.mapAndOverlayManager.getMapInstance().addListener("tilesloaded", () => {
+                resolve();
+            });
+            if (!this.mapAndOverlayManager.getMapInstance().tilesloading) {
+                resolve();
+            }
+        });
     }
 
     zoomInCamera() {
@@ -205,7 +266,7 @@ export class JourneyPlayer {
             this.soundManager.playCarSound();
         }
         this.vehicle.startNewJourneyStage(stage.route, stage.getCamMoveDuration());
-        this.vehicle.addLineToCurrentTrip();
+        this.vehicle.addVehicleLine();
         this.mapAndOverlayManager.enableMapUI(false);
 
         this.cameraAnimation = new MoveAnimation({
@@ -223,20 +284,13 @@ export class JourneyPlayer {
         }, stage.getCamMoveDuration()));
     }
 
-    startJourneyEndVehicleTrip(stage) {
-        if ((stage.getRouteType() == "plane") || (stage.getRouteType() == "shift")) {
-            return Promise.resolve();
-        } else if (stage.getRouteType() == "car") {
-            this.car.startNewJourneyStage(stage.route, stage.getCamMoveDuration());
-            return new Promise(resolve => setTimeout(resolve, stage.getCamMoveDuration()));
-        }
-    }
-
     nextStage() {
         this.stageIdx++;
 
         if (this.journeyStages.length > this.stageIdx) {
-            this.markerManager.addMarker(this.journeyStages[this.stageIdx].route[0], this.journeyStages[this.stageIdx].markerTitle);
+            if (this.journeyStages[this.stageIdx].markerTitle && this.journeyStages[this.stageIdx].markerTitle.length > 0) {
+                this.markerManager.addMarker(this.journeyStages[this.stageIdx].route[0], this.journeyStages[this.stageIdx].markerTitle);
+            }
 
             // Load picture
             if (this.journeyStages[this.stageIdx].picture != undefined) {

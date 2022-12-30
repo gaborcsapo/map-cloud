@@ -18,13 +18,13 @@ export function queryJourneyData(id) {
     });
 }
 
-export function createJourney(data) {
+export function createJourney(id, data) {
     return fetch("/data/createjourney", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({"data": data}),
+        body: JSON.stringify({"id": id, "data": data}),
     })
     .then((response) => response.json())
     .then((data) => data.id)

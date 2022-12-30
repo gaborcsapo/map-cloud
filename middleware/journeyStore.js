@@ -1,7 +1,6 @@
 import { JourneyGenerator } from "./journeyGenerator.js";
 import { SimpleCache } from '../public/scripts/utilities/simpleCache.js';
 import shortUUID from "short-uuid";
-import { TEST_JOURNEY, FAM_JOURNEY } from "../public/scripts/utilities/testJourney.js";
 import { Datastore } from '@google-cloud/datastore';
 import { JourneyStage } from "../public/scripts/utilities/journeyStage.js";
 
@@ -10,8 +9,6 @@ export class JourneyStore {
         this.journeyStore = new SimpleCache(300);
         this.journeyGenerator = new JourneyGenerator();
         this.datastore = new Datastore();
-        this.addJourney(TEST_JOURNEY, "test");
-        this.addJourney(FAM_JOURNEY, "fam");
     }
 
     async getFromGCS(id) {
@@ -71,7 +68,7 @@ export class JourneyStore {
             }
         }
 
-        if (journey.status == "Error") {
+        if (journey.status != "ok") {
             return Promise.resolve(journey)
         }
 
@@ -93,7 +90,7 @@ export class JourneyStore {
     }
 
     addJourney(journeyStages, id) {
-        if (id == undefined) {
+        if (id == undefined || id == "undefined") {
             id = shortUUID.generate();
         }
         console.log("addJourney() id:", id);
@@ -101,7 +98,7 @@ export class JourneyStore {
         this.journeyStore.add(id, {status: "ok", journeyStages: journeyStages});
         this.addToGCS(id, {status: "ok", journeyStages: journeyStages});
 
-        // call get so that it caches the journey details
+        // call getJourney so that it caches the journey details
         this.getJourney(id);
 
         return id;

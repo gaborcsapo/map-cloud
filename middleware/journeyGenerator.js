@@ -14,7 +14,7 @@ export class JourneyGenerator {
     populateRoute(journeyStages) {
         console.log("populateRoute()");
         let locationPromises = journeyStages.map((stage) => {
-            if ((stage.getRouteType() == "plane") || (stage.getRouteType() == "shift")) {
+            if ((stage.getRouteType() == "plane") || (stage.getRouteType() == "teleportation")) {
                 return mapDirections.searchLine(stage);
             } else if (stage.getRouteType() == "car") {
                 return mapDirections.searchRoute(stage);
@@ -40,7 +40,7 @@ export class JourneyGenerator {
         console.log("populateAudio()");
         // Get text to speech
         let speechPromises = journeyStages.reduce((result, stage) => {
-            if (stage.getNarrationText()) {
+            if (stage.getNarrationText() && stage.getNarrationText().length > 0) {
                 result.push(tts.getSpeech(stage.getNarrationText(), stage.getLanguage()));
             }
             return result;
@@ -61,7 +61,7 @@ export class JourneyGenerator {
         {
             let stage = journeyStages[index];
 
-            if (stage.getNarrationText()) {
+            if (stage.getNarrationText() && stage.getNarrationText().length > 0) {
                 // we get 32Kbps MP3 which 4KB/s = 4B/ms
                 let audioLength = Math.round(stage.getNarrationAudio().byteLength / 4) + 1000;
                 if (stage.getRouteType() == "plane") {
@@ -94,7 +94,7 @@ export class JourneyGenerator {
                     Math.round(Math.min(stage.getDistance() / 0.9, 25000))
                 );
                 stage.setZoomDuration(2000);
-            } else if (stage.getRouteType() == "shift") {
+            } else if (stage.getRouteType() == "teleportation") {
                 stage.setCamMoveDuration(2000);
             }
         }

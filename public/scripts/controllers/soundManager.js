@@ -70,7 +70,7 @@ export class SoundManager {
             try {
                 let audioContext = new AudioContext();
                 let outputSource;
-                if(arrayBuffer.byteLength > 0){
+                if(arrayBuffer && arrayBuffer.byteLength > 0){
                     audioContext.decodeAudioData(arrayBuffer,
                         (buffer) => {
                             audioContext.resume();
@@ -86,6 +86,7 @@ export class SoundManager {
                     );
                 } else {
                     console.log("byte length is 0");
+                    resolve();
                 }
             } catch(e) {
                 console.log(e);

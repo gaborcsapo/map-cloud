@@ -1,6 +1,3 @@
-@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700");
-
-
 .timeline-elem {
     width: 100%;
     display: flex;
@@ -33,7 +30,7 @@
 
         .timeline-card {
             width:100%;
-            padding:10px;
+            padding:3rem;
             background: #FFFFFF;
             border-radius: 10px;
             box-shadow: 3px -1px 10px 3px rgb(105 96 215 / 9%);
@@ -69,6 +66,10 @@
                 overflow: hidden;
                 transition: max-height 0.7s ease-out;
             }
+
+            .form-switch {
+                margin-top: 2rem;
+            }
         }
 
         .blocked {
@@ -77,6 +78,10 @@
                 background-color: rgb(231, 231, 231);
                 color: rgb(143, 143, 143);
             }
+        }
+
+        .form-horizontal {
+            margin: 2rem;
         }
     }
 }

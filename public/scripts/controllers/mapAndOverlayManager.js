@@ -19,9 +19,8 @@
  *  */
 
 import * as THREE from 'three';
-import { NoToneMapping } from 'three';
 
-const mapId ="c2485044d90a90f"
+const mapId ="f3d61f0996b6dda9"
 
  /**
   * Add a [three.js](https://threejs.org) scene as a [Google Maps WebGLOverlayView](http://goo.gle/WebGLOverlayView-ref).

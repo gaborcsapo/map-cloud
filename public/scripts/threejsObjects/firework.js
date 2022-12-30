@@ -13,7 +13,7 @@ import {
 const {randFloat} = MathUtils;
 
 const NUM_PARTICLES = 80;
-const BASE_ALTITUDE = 350;
+const BASE_ALTITUDE = 150;
 const ALTITUDE_VARIANCE = 0.2;
 
 const color = new Color();
@@ -104,9 +104,9 @@ export class Firework extends Object3D {
             // particle destination
             spherical.set(randFloat(80, 150), randFloat(0, Math.PI), randFloat(-Math.PI, Math.PI));
             v3Tmp
-            .setFromSpherical(spherical)
-            .add(startingPoint)
-            .toArray(this.particleDestinations, 3 * i);
+                .setFromSpherical(spherical)
+                .add(startingPoint)
+                .toArray(this.particleDestinations, 3 * i);
         }
 
         this.positionAttr.needsUpdate = true;
@@ -129,7 +129,7 @@ export class Firework extends Object3D {
             v3Tmp.lerp(v3Tmp2, 0.05).toArray(this.positionAttr.array, 0);
 
             if (v3Tmp.distanceTo(v3Tmp2) < 20) {
-            this.explode(v3Tmp.clone());
+                this.explode(v3Tmp.clone());
             }
 
             this.positionAttr.needsUpdate = true;
