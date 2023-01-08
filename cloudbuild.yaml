@@ -12,6 +12,12 @@ steps:
   args: ["run", "build"]
 
 - name: "gcr.io/cloud-builders/gcloud"
+  args: ["gcloud", "storage", "rm", "--recursive", "gs://postcard.gaborcsapo.com/*"]
+
+- name: "gcr.io/cloud-builders/gcloud"
+  args: ["gcloud", "storage", "cp", "--recursive", "dist/*", "gs://postcard.gaborcsapo.com/*"]
+
+- name: "gcr.io/cloud-builders/gcloud"
   #args: ["run", "deploy", "postcard", "--platform=managed", "--region=us-east1", "--source", "."]
   args: ["functions", "deploy", "postcard", "--region=us-east1", "--source", ".", "--trigger-http", "--runtime=nodejs16", "--allow-unauthenticated", "--entry-point=app", "--gen2"]
 timeout: "1600s"
