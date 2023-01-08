@@ -1,10 +1,10 @@
 steps:
 - name: "gcr.io/cloud-builders/gcloud"
-  args: ["artifacts docker images delete us-east1-docker.pkg.dev/postcard-368413/cloud-run-source-deploy/postcard --delete-tags"]
+  args: ["artifacts", "docker", "images", "delete", "us-east1-docker.pkg.dev/postcard-368413/cloud-run-source-deploy/postcard", "--delete-tags"]
  - name: "gcr.io/cloud-builders/gcloud"
-  args: ["artifacts docker images delete us-east1-docker.pkg.dev/postcard-368413/gcf-artifacts/postcard--function --delete-tags"]
+  args: ["artifacts", "docker", "images", "delete", "us-east1-docker.pkg.dev/postcard-368413/gcf-artifacts/postcard--function", "--delete-tags"]
 - name: "gcr.io/cloud-builders/gcloud"
-  args: ["artifacts docker images delete us-east1-docker.pkg.dev/postcard-368413/gcf-artifacts/postcard--function/cache --delete-tags"]
+  args: ["artifacts", "docker", "images", "delete", "us-east1-docker.pkg.dev/postcard-368413/gcf-artifacts/postcard--function/cache", "--delete-tags"]
 
 - name: 'gcr.io/cloud-builders/npm'
   args: ['install']
