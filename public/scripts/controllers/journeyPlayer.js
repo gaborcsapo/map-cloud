@@ -14,8 +14,9 @@ const INITIAL_ZOOM = 18;
 const FIREWORKS_DURATION = 6000;
 
 export class JourneyPlayer {
-    constructor(journeyStages){
+    constructor(journeyStages, disableDefaultUI){
         this.playCount = 0;
+        this.defaultDisableDefaultUI = disableDefaultUI == undefined ? false : disableDefaultUI;
         this.initialViewport = {
             center: journeyStages[0].route[0],
             zoom: INITIAL_ZOOM,
@@ -25,7 +26,7 @@ export class JourneyPlayer {
 
         this.mapAndOverlayManager = new MapAndOverlayManager({
             initialViewport: this.initialViewport,
-            disableDefaultUI: false
+            disableDefaultUI: this.defaultDisableDefaultUI
         });
 
         this.plane = new VehicleManager({
@@ -59,10 +60,10 @@ export class JourneyPlayer {
             scene: this.mapAndOverlayManager.getScene()
         });
 
-        this.setJNewourney(journeyStages);
+        this.setNewJourney(journeyStages);
     }
 
-    setJNewourney(journeyStages) {
+    setNewJourney(journeyStages) {
         this.markerManager.clearMarkers();
         this.pictureManager.clearImages();
         this.car.deletePreviousLines();
@@ -96,7 +97,7 @@ export class JourneyPlayer {
         this.setupJourneySequence();
     }
 
-    playJourney() {
+    playJourney(callback) {
         this.playCount++;
         let currentPlayCount = this.playCount;
 
@@ -114,6 +115,10 @@ export class JourneyPlayer {
                 }
             });
         }, Promise.resolve([])).then(arrayOfResults => {
+            if (callback) {
+                callback();
+            }
+
             if (currentPlayCount == this.playCount) {
                 this.playJourneyEndLoop();
             }
@@ -186,9 +191,17 @@ export class JourneyPlayer {
 
     narrateScene() {
         const stage = this.journeyStages[this.stageIdx];
+
         this.timelineManager.open(this.stageIdx);
         let returnPromise = this.soundManager.playAudio(stage.getNarrationAudio())
 
+        // exception for homeApp
+        if (stage.getNarrationAudio() &&
+            (stage.getNarrationAudio().byteLength == 0) &&
+            (stage.getNarrationDuration() > 0)) {
+            returnPromise = new Promise(resolve => setTimeout(resolve, stage.getNarrationDuration()));
+        }
+        // if no text is given but we have to play fireworks
         if (stage.hasFireworks()) {
             this.fireworks.start({
                 latLng: stage.route[0],
@@ -204,10 +217,16 @@ export class JourneyPlayer {
 
     waitForMapLoaded() {
         return new Promise(resolve => {
-            this.mapAndOverlayManager.getMapInstance().addListener("tilesloaded", () => {
+            let map = this.mapAndOverlayManager.getMapInstance()
+            let tilesloadedHandler = () => {
+                google.maps.event.clearInstanceListeners(map);
                 resolve();
-            });
-            if (!this.mapAndOverlayManager.getMapInstance().tilesloading) {
+            };
+
+            map.addListener("tilesloaded", tilesloadedHandler);
+
+            if (Object.hasOwn(map, "tilesloading") && !this.mapAndOverlayManager.getMapInstance().tilesloading) {
+                google.maps.event.clearInstanceListeners(map);
                 resolve();
             }
         });
@@ -279,7 +298,7 @@ export class JourneyPlayer {
         return new Promise(resolve => setTimeout(() => {
             this.soundManager.stopPlaneSound();
             this.soundManager.stopCarSound();
-            this.mapAndOverlayManager.enableMapUI(true);
+            this.mapAndOverlayManager.enableMapUI(!this.defaultDisableDefaultUI);
             resolve();
         }, stage.getCamMoveDuration()));
     }

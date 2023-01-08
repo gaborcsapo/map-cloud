@@ -1,0 +1,19 @@
+::-webkit-scrollbar {
+    width: 4px;
+    height: 0px;
+}
+::-webkit-scrollbar-track-piece {
+    background: rgb(255, 255, 255, 0);
+}
+::-webkit-scrollbar-track-piece:end {
+    margin-bottom: 10px;
+}
+
+::-webkit-scrollbar-track-piece:start {
+    margin-top: 10px;
+}
+::-webkit-scrollbar-thumb:vertical {
+    height: 6px;
+    background-color: rgb(199, 199, 199);
+    -webkit-border-radius: 2px;
+}

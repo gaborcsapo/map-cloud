@@ -74,7 +74,7 @@ export class TimelineEditorManager {
                 prevTitle = cards[i].getElementsByClassName("stop_title")[0].value;
                 prevDescription = cards[i].getElementsByClassName("stop_description")[0].value;
                 prevEnd = cards[i].getElementsByClassName("stop_address")[0].value;
-                prevFireworks = cards[i].getElementsByClassName("stop_fireworks")[0].value;
+                prevFireworks = cards[i].getElementsByClassName("stop_fireworks")[0].checked;
             }
 
             journeyStages.push(new JourneyStage({
@@ -84,6 +84,7 @@ export class TimelineEditorManager {
                 markerTitle: prevTitle,
                 narrationText: prevDescription,
                 language: languageValue,
+                fireworks: prevFireworks,
                 picture: undefined
             }))
 

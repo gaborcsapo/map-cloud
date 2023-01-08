@@ -7,7 +7,7 @@
     <title>Digital Postcard #1</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&family=Oswald:wght@500&family=Source+Code+Pro:wght@500&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/main.css">
     <script type="text/javascript">
@@ -29,21 +29,13 @@
         Write the story of your trip, then click "Save and Preview Trip" to load the map here.
     </div>
 
-
     <div id="modal-container"></div>
 
     <div id="editor-box">
-
         <div id="editor-container">
-            <div class="timelineCenteredText">Describe each step of your journey:</div>
-            <div id="addButtonContainer" class="col col-12 d-grid d-flex justify-content-center">
-                <button class="btn btn-primary btn-lg rounded-pill" id="addButton">
-                    <svg style="color: white" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16"> <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" fill="white"></path> </svg>
-                    Add more sights
-                </button>
-            </div>
+            <div class="timelineCenteredText">Fill in this form with your story then click "Save and Preview Trip".</div>
             <form class="form-horizontal timelineCenteredText">
-                <label class="form-check-label">The voiceover should read text in </label>
+                <label class="form-check-label">The voiceover should read your text in </label>
                 <select class="form-select" id="language-select">
                     <option selected value="en-GB">UK English</option>
                     <option value="en-IN">Indian English</option>
@@ -54,17 +46,31 @@
                     <option value="zh-TW">Chinese</option>
                 </select>
             </form>
+            <div id="addButtonContainer" class="col col-12 d-grid d-flex justify-content-center">
+                <button class="btn btn-primary btn-sm rounded-pill" id="addButton">
+                    <svg style="color: white" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16"> <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" fill="white"></path> </svg>
+                    Add more sights
+                </button>
+            </div>
         </div>
 
         <div id="button-container">
-            <button id="uploadButton" class="btn btn-primary btn-lg rounded-pill" data-bs-toggle="tooltip" title="Refresh the preview">
+            <button id="uploadButton" class="btn btn-primary rounded-pill" data-bs-toggle="tooltip" title="Refresh the preview">
                 <svg style="color: white" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-files" viewBox="0 0 384 512"><!--! Font Awesome Pro 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg>
                 Save and Preview Trip
             </button>
-            <button id="copyButton" class="btn btn-primary btn-lg rounded-pill" data-bs-toggle="tooltip" title="Copy to clipboard" >
+            <button id="copyButton" class="btn btn-primary rounded-pill" data-bs-toggle="tooltip" title="Copy to clipboard" >
                 <svg style="color: white" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-files" viewBox="0 0 448 512"><!--! Font Awesome Pro 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M352 224c53 0 96-43 96-96s-43-96-96-96s-96 43-96 96c0 4 .2 8 .7 11.9l-94.1 47C145.4 170.2 121.9 160 96 160c-53 0-96 43-96 96s43 96 96 96c25.9 0 49.4-10.2 66.6-26.9l94.1 47c-.5 3.9-.7 7.8-.7 11.9c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-25.9 0-49.4 10.2-66.6 26.9l-94.1-47c.5-3.9 .7-7.8 .7-11.9s-.2-8-.7-11.9l94.1-47C302.6 213.8 326.1 224 352 224z"/></svg>
                 Copy Sharable Link
             </button>
+        </div>
+    </div>
+    <div class="toast-container" id="toastPlacement">
+        <div id="msgToastEl" class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div id="msgToastBody" class="toast-body"></div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
         </div>
     </div>
 </body>

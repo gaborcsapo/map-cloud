@@ -45,4 +45,25 @@ export default [
             commonjs()
         ]
     },
+    {
+        onwarn(warning, rollupWarn) {
+            if (warning.code !== 'CIRCULAR_DEPENDENCY') {
+                rollupWarn(warning);
+            }
+        },
+        input: 'public/scripts/homeApp.js',
+        output: {
+            file: 'dist/scripts/home-app-bundle.js',
+            format: 'cjs'
+        },
+        plugins: [
+            resolve({
+                browser: true,
+            }),
+            mustache({
+                include: 'public/views/*.mustache'
+            }),
+            commonjs()
+        ]
+    },
 ];

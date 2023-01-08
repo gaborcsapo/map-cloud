@@ -1,0 +1,14 @@
+#toastPlacement {
+    bottom: 0;
+    transform: translateX(-50%);
+    left: 50%;
+    position: absolute;
+    padding: 3rem;
+    text-align: center;
+}
+
+@media (orientation: portrait) and (max-width: 900px) {
+    #toastPlacement {
+        bottom: 60%;
+    }
+}

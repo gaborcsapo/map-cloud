@@ -27,9 +27,10 @@ app.use('/editor', routes.editor);
 app.use('/data', routes.data);
 app.use(serve_favicon('dist/resources/img/favicon.png'));
 
-const PORT = parseInt(process.env.PORT) || 8080;
+// const PORT = parseInt(process.env.PORT) || 8080;
 
-http.listen(PORT, () => {app.use(express.json());
-  console.log(`HTTP listening on port ${PORT}.`);
-})
+// http.listen(PORT, () => {app.use(express.json());
+//   console.log(`HTTP listening on port ${PORT}.`);
+// })
 
+export { app }

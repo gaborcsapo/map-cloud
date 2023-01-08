@@ -122,11 +122,11 @@ function renderMarkerHtml(label) {
         .label {
           position: relative;
           margin: 0 auto 30px;
-          font-size: 38px;
+          font-size: 50px;
           font-family: 'Google Sans', sans-serif;
           padding: .4em 1em;
           background: #590ed1;
-          border-radius: 20px;
+          border-radius: 25px;
           text-align: center;
           color: white;
           font-weight: 500;

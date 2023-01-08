@@ -30,7 +30,7 @@
 
         .timeline-card {
             width:100%;
-            padding:3rem;
+            padding: 1rem;
             background: #FFFFFF;
             border-radius: 10px;
             box-shadow: 3px -1px 10px 3px rgb(105 96 215 / 9%);
@@ -46,7 +46,7 @@
 
             }
 
-            .timeline-title:after {
+            .timeline-title-openable:after {
                 content: '\02C5'; /* Unicode character for "plus" sign (+) */
                 color: #777;
                 float: right;

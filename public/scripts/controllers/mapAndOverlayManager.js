@@ -58,11 +58,6 @@ export class MapAndOverlayManager {
 
           this.map = new google.maps.Map(mapDiv, {
                mapId: mapId,
-               disableDefaultUI: disableDefaultUI,
-               draggable: !disableDefaultUI,
-               zoomControl: !disableDefaultUI,
-               scrollwheel: !disableDefaultUI,
-               disableDoubleClickZoom: !disableDefaultUI,
                backgroundColor: 'transparent',
                gestureHandling: 'greedy',
                zoom,
@@ -70,6 +65,7 @@ export class MapAndOverlayManager {
                heading,
                tilt
           });
+          this.enableMapUI(!disableDefaultUI);
 
           this.overlay = new google.maps.WebGLOverlayView();
 
@@ -164,7 +160,8 @@ export class MapAndOverlayManager {
                zoomControl: enable,
                scrollwheel: enable,
                disableDoubleClickZoom: enable,
-               fullscreenControl: true,
+               clickableIcons: enable,
+               fullscreenControl: enable,
                keyboardControls: enable,
           })
      }

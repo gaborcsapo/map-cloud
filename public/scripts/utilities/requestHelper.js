@@ -1,6 +1,16 @@
+const GCF_URL = "https://postcard-function-pjhdynrsyq-ue.a.run.app";
+
+function getBackendURL(path) {
+    if (window.location.origin == 'http://localhost:8080') {
+        return path
+    } else {
+        return GCF_URL.concat(path)
+    }
+}
+
 export function queryJourneyData(id) {
     return new Promise((resolve) => {
-        fetch("/data/getjourney", {
+        fetch(getBackendURL("/data/getjourney"), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -19,7 +29,7 @@ export function queryJourneyData(id) {
 }
 
 export function createJourney(id, data) {
-    return fetch("/data/createjourney", {
+    return fetch(getBackendURL("/data/createjourney"), {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

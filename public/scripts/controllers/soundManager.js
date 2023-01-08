@@ -5,6 +5,8 @@ export class SoundManager {
         if (!instance) {
             instance = this;
 
+            this.silent = false;
+
             this.airport = new Audio("/resources/sounds/airport.flac");
             this.airport.loop = true;
 
@@ -24,8 +26,13 @@ export class SoundManager {
         return instance;
     }
 
+    setSilent(silent) {
+        this.silent = silent;
+    }
+
     playMusic() {
-        this.music.play();
+        if (this.silent == false)
+            this.music.play();
         this.music.volume /= 2;
     }
 
@@ -34,7 +41,8 @@ export class SoundManager {
     }
 
     playAirportSound() {
-        this.airport.play();
+        if (this.silent == false)
+            this.airport.play();
     }
 
     stopAirportSound() {
@@ -42,7 +50,8 @@ export class SoundManager {
     }
 
     playCarSound() {
-        this.car.play();
+        if (this.silent == false)
+            this.car.play();
     }
 
     stopCarSound() {
@@ -50,7 +59,8 @@ export class SoundManager {
     }
 
     playPlaneSound() {
-        this.plane.play();
+        if (this.silent == false)
+            this.plane.play();
     }
 
     stopPlaneSound() {
@@ -58,11 +68,13 @@ export class SoundManager {
     }
 
     playButtonClick() {
-        this.button.play();
+        if (this.silent == false)
+            this.button.play();
     }
 
     playChime() {
-        this.chimeAudio.play();
+        if (this.silent == false)
+            this.chimeAudio.play();
     }
 
     playAudio(arrayBuffer) {
@@ -73,11 +85,13 @@ export class SoundManager {
                 if(arrayBuffer && arrayBuffer.byteLength > 0){
                     audioContext.decodeAudioData(arrayBuffer,
                         (buffer) => {
-                            audioContext.resume();
-                            outputSource = audioContext.createBufferSource();
-                            outputSource.connect(audioContext.destination);
-                            outputSource.buffer = buffer;
-                            outputSource.start(0);
+                            if (this.silent == false) {
+                                audioContext.resume();
+                                outputSource = audioContext.createBufferSource();
+                                outputSource.connect(audioContext.destination);
+                                outputSource.buffer = buffer;
+                                outputSource.start(0);
+                            }
                             setTimeout(resolve, buffer.duration * 1000)
                         },
                         () => {

@@ -5,16 +5,16 @@ const maps_api_key = await getMapsAPIKey();
 const router = Router();
 
 router.get('/', (req, res) => {
-    if(Object.hasOwn(req.query, "journey"))
+    if(Object.hasOwn(req.query, "id"))
     {
-        res.render('map', {
+        res.render('player', {
             "maps_api_key": maps_api_key
         })
     }
     else
     {
         res.render('error', {
-            "error_msg": "missing data, please go to our home page to generate the right travel parameters",
+            "error_msg": "Trip ID is missing from the URL. Please go to our home page for more information.",
         });
     }
 });

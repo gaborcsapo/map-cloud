@@ -5,6 +5,9 @@ export class TimelineManager {
         if (document.getElementById("timeline-container")) {
             // loop stages and insert template w title and body
             journeyStages.forEach(journeyStageParams => {
+                if (journeyStageParams.markerTitle == '') {
+                    journeyStageParams.markerTitle = journeyStageParams.getStartDescription();
+                }
                 let html = MustacheTimelineTemplate.render({
                     title: journeyStageParams.markerTitle,
                     body: journeyStageParams.narrationText,
@@ -24,23 +27,26 @@ export class TimelineManager {
         // open the accordion
         let acc = document.getElementsByClassName("timeline-title")[id];
         if (acc) {
-            acc.classList.add("active");
-            let panel = acc.nextElementSibling;
-            panel.style.maxHeight = panel.scrollHeight + "px";
             acc.parentNode.classList.remove("blocked");
+            if (acc.classList.contains("timeline-title-openable"))
+            {
+                acc.classList.add("active");
+                let panel = acc.nextElementSibling;
+                panel.style.maxHeight = panel.scrollHeight + "px";
 
-            acc.addEventListener("click", function() {
-                /* Toggle between adding and removing the "active" class,
-                to highlight the button that controls the panel */
-                this.classList.toggle("active");
+                acc.addEventListener("click", function() {
+                    /* Toggle between adding and removing the "active" class,
+                    to highlight the button that controls the panel */
+                    this.classList.toggle("active");
 
-                let panel = this.nextElementSibling;
-                if (panel.style.maxHeight) {
-                    panel.style.maxHeight = null;
-                } else {
-                    panel.style.maxHeight = panel.scrollHeight + "px";
-                }
-            });
+                    let panel = this.nextElementSibling;
+                    if (panel.style.maxHeight) {
+                        panel.style.maxHeight = null;
+                    } else {
+                        panel.style.maxHeight = panel.scrollHeight + "px";
+                    }
+                });
+            }
         }
         // scroll after animation finishes
         setTimeout(() => {

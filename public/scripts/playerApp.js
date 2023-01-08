@@ -10,7 +10,7 @@ class PlayerApp {
     {
         const urlSearchParams = new URLSearchParams(window.location.search);
 
-        queryJourneyData(urlSearchParams.get("journey")).then((data) => {
+        queryJourneyData(urlSearchParams.get("id")).then((data) => {
             let html;
             if (data.status == "ok") {
                 let journeyStages = data.journeyStages.map((stage) => new JourneyStage(stage));
@@ -18,7 +18,7 @@ class PlayerApp {
 
                 html = MustacheModalTemplate.render({
                     title: "Open your <b>Digital Travel Postcard</b> &#127881; &#9992;&#65039; &#127881;",
-                    body: '<button type="button" id="continue-button" class="btn btn-primary btn-lg">Continue with sound &#128266;</button>',
+                    body: '<button type="button" id="continue-button" class="btn btn-primary">Continue with sound &#128266;</button>',
                 });
                 document.getElementById("modal-container").insertAdjacentHTML("beforeend", html);
                 this.myModal = new bootstrap.Modal('#splash-modal');
@@ -28,7 +28,7 @@ class PlayerApp {
                     soundManager.playButtonClick();
 
                     this.myModal.hide();
-                    this.journeyPlayer.playJourney();
+                    this.journeyPlayer.playJourney(this.showCredits);
 
                     setTimeout(()=>{
                         soundManager.playMusic();
@@ -38,12 +38,12 @@ class PlayerApp {
                 if (data.status == "notfound") {
                     html = MustacheModalTemplate.render({
                         title: "Journey ID Not Found",
-                        body: '<p>Make sure the correct URL was opened, otherwise please create a new journey in our editor <a href="/editor">here</a>',
+                        body: '<p>Make sure the correct URL was opened, otherwise please create a new journey in our editor <a href="/editor">here</a>.',
                     });
                 } else if (data.status == "error") {
                     html = MustacheModalTemplate.render({
                         title: "Couldn't Generate Journey",
-                        body: data.msg + '\nYou can create a new journey in our editor <a href="/editor">here</a>',
+                        body: data.msg + '\nYou can create a new journey in our editor <a href="/editor">here</a>.',
                     });
                 }
 
@@ -53,6 +53,17 @@ class PlayerApp {
 
             this.myModal.show();
         });
+
+        var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+        var toastList = toastElList.map(function (toastEl) {
+            return new bootstrap.Toast(toastEl, {autohide:false})
+        })
+    }
+
+    showCredits() {
+        var myToastEl = document.getElementById('msgToastEl')
+        var myToast = bootstrap.Toast.getOrCreateInstance(myToastEl)
+        myToast.show();
     }
 }
 

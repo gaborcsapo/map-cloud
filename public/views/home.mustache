@@ -4,18 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Digital Postcard #1 Generator</title>
+    <title>Digital Postcard #1</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&family=Oswald:wght@500&family=Source+Code+Pro:wght@500&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
-    <script type="module" src="/scripts/editorApp.js"></script>
+    <link rel="stylesheet" href="/css/main.css">
     <script type="text/javascript">
         var MAPS_API_KEY = "{{ maps_api_key }}"
-        var sampleJourneyIds = `{{{ sampleJourneyIds }}}`
     </script>
-    <link rel="stylesheet" href="/css/main.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+    <script type="module" src="/scripts/home-app-bundle.js"></script>
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-TH541L4MT2"></script>
     <script>
@@ -26,67 +25,24 @@
     </script>
 </head>
 <body>
-    <div class="container">
-        <div class="row g-5">
-            <div class="col col-12 col-md-6 text-end title-center">
-                <h1 class="mb-3">Digital Travel Postcard #1</h1>
-                <h3>Create an animated itinerary for your family or friends to build the hype around your trip.</h3>
+    <div class="home-layout">
+        <div class="title-section">
+            <h1> Create Animated Travel Postcards!</h1>
+            <p>Reminisce about all trips with your friends or hype your family about an upcoming trip with a free animated postcard.</p>
+            <div>
+                <a id="demoButton" href="/trip/?id=" class="btn btn-primary rounded-pill" data-bs-toggle="tooltip" title="Plays a demo postcard">
+                    <svg style="color: white" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-files" viewBox="0 0 384 512"><!--! Font Awesome Pro 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg>
+                    See demo
+                </a>
+                <a id="editorButton" href="/editor" class="btn btn-primary rounded-pill" data-bs-toggle="tooltip" title="Opens the editor where you can create postcards">
+                    <svg style="color: white" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-files" viewBox="0 0 512 512"><!--! Font Awesome Pro 6.2.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2022 Fonticons, Inc. --><path d="M373.1 24.97C401.2-3.147 446.8-3.147 474.9 24.97L487 37.09C515.1 65.21 515.1 110.8 487 138.9L289.8 336.2C281.1 344.8 270.4 351.1 258.6 354.5L158.6 383.1C150.2 385.5 141.2 383.1 135 376.1C128.9 370.8 126.5 361.8 128.9 353.4L157.5 253.4C160.9 241.6 167.2 230.9 175.8 222.2L373.1 24.97zM440.1 58.91C431.6 49.54 416.4 49.54 407 58.91L377.9 88L424 134.1L453.1 104.1C462.5 95.6 462.5 80.4 453.1 71.03L440.1 58.91zM203.7 266.6L186.9 325.1L245.4 308.3C249.4 307.2 252.9 305.1 255.8 302.2L390.1 168L344 121.9L209.8 256.2C206.9 259.1 204.8 262.6 203.7 266.6zM200 64C213.3 64 224 74.75 224 88C224 101.3 213.3 112 200 112H88C65.91 112 48 129.9 48 152V424C48 446.1 65.91 464 88 464H360C382.1 464 400 446.1 400 424V312C400 298.7 410.7 288 424 288C437.3 288 448 298.7 448 312V424C448 472.6 408.6 512 360 512H88C39.4 512 0 472.6 0 424V152C0 103.4 39.4 64 88 64H200z"/></svg>
+                    Create your own
+                </a>
             </div>
-            <div class="col col-12 col-md-6 map1x1" id="map"></div>
+            <div>Created by Gabor | gaborcsapo.com</div>
         </div>
+        <div id="map" class="journey-map"></div>
     </div>
-    <div class="container">
-        <form class="row g-5 needs-validation mt-5" novalidate>
 
-            {{#forms}}
-                {{> form_element}}
-            {{/forms}}
-
-            <div id="addButtonContainer" class="col col-12 d-grid d-flex justify-content-center">
-                <button class="btn btn-primary btn-lg rounded-pill" id="addButton">
-                    <svg style="color: white" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus" viewBox="0 0 16 16"> <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" fill="white"></path> </svg>
-                    Add more sights
-                </button>
-            </div>
-
-            <div class="col col-0 col-md-1 col-lg-2 mt-5"></div>
-            <div class="col col-12 col-md-10 col-lg-8 mt-5">
-                <label class="form-label">In what <b>language</b> should I read your text?</label>
-                <select id="language" class="form-select" aria-label="Select the language of the announcements" required>
-                    <option selected value="en-GB">UK English</option>
-                    <option value="en-IN">Indian English</option>
-                    <option value="de-DE">German</option>
-                    <option value="es-MX">Spanish</option>
-                    <option value="hu-HU">Hungarian</option>
-                    <option value="fr-FR">French</option>
-                    <option value="zh-TW">Chinese</option>
-                </select>
-            </div>
-            <div class="col col-0 col-md-1 col-lg-2 mb-5"></div>
-
-            <div class="col col-12 d-grid d-flex justify-content-center mt-5 mb-5">
-                <button class="btn btn-primary btn-lg mt-5" type="submit">
-                    <svg style="color: white" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-link" viewBox="0 0 16 16"> <path d="M6.354 5.5H4a3 3 0 0 0 0 6h3a3 3 0 0 0 2.83-4H9c-.086 0-.17.01-.25.031A2 2 0 0 1 7 10.5H4a2 2 0 1 1 0-4h1.535c.218-.376.495-.714.82-1z" fill="white"></path> <path d="M9 5.5a3 3 0 0 0-2.83 4h1.098A2 2 0 0 1 9 6.5h3a2 2 0 1 1 0 4h-1.535a4.02 4.02 0 0 1-.82 1H12a3 3 0 1 0 0-6H9z" fill="white"></path> </svg>
-                    Generate Link and Open in New Tab
-                </button>
-            </div>
-        </form>
-        <div class="row g-5 mt-5">
-            <div class="col col-12 d-grid d-flex justify-content-center mt-5">
-                <h2>Here's the sharable link to your animation!</h2>
-            </div>
-            <div class="col col-12 d-grid d-flex justify-content-center">
-                <textarea type="text" id="copyTarget" class="w-75" value="Your link will appear here..." oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'></textarea>
-                <div>
-                    <button id="copyButton" class="btn btn-primary align-top d-inline-block" data-bs-toggle="tooltip" title="Copy to clipboard" >
-                        <svg style="color: white" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-files" viewBox="0 0 16 16"> <path d="M13 0H6a2 2 0 0 0-2 2 2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 2 2 0 0 0 2-2V2a2 2 0 0 0-2-2zm0 13V4a2 2 0 0 0-2-2H5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1zM3 4a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4z" fill="white"></path> </svg>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="footer">
-        <p>Made by Gabor Csapo | <a>gaborcsapo.com</a></p>
-    </div>
 </body>
 </html>

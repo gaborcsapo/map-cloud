@@ -7,7 +7,7 @@
     <title>Digital Postcard #1</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&family=Oswald:wght@500&family=Source+Code+Pro:wght@500&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Quicksand&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/main.css">
     <script type="text/javascript">
@@ -32,6 +32,15 @@
     <div id="info-box">
         <div id="timeline-container"></div>
         <div class="bottom scroll-shadow"></div>
+    </div>
+
+    <div class="toast-container" id="toastPlacement">
+        <div id="msgToastEl" class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div id="msgToastBody" class="toast-body">Hope you liked this postcard!<br>Wanna send a similar postcard? Make your own in our <b><a href="/editor">editor</a></b>.<br><br>Check our Gabor's other projects at <b><a target=”_blank” href="https://www.gaborcsapo.com">gaborcsapo.com</a></b>.</div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
     </div>
 </body>
 </html>
