@@ -6,12 +6,12 @@ const router = Router();
 const journeyStore = new JourneyStore();
 
 router.post('/getjourney', async (req, res) => {
-    const data  = await journeyStore.getJourney(req.body.id)
+    const data  = await journeyStore.getJourney(JSON.parse(req.body).id)
     res.json(data);
 });
 
 router.post('/createjourney', (req, res) => {
-    let result = journeyStore.addJourney(req.body.data.map(
+    let result = journeyStore.addJourney(JSON.parse(req.body).data.map(
         (elem) => {
             return new JourneyStage(elem);
         }),

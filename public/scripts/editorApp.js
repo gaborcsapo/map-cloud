@@ -23,9 +23,9 @@ class EditorApp {
         this.myModal = new bootstrap.Modal('#splash-modal');
         this.myModal.show();
 
+        this.soundManager = new SoundManager();
         document.getElementById("continue-button").onclick = () => {
-            let soundManager = new SoundManager();
-            soundManager.playButtonClick();
+            this.soundManager.playButtonClick();
             this.myModal.hide();
         };
 
