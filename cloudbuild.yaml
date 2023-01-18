@@ -10,8 +10,8 @@ steps:
   allowFailure: true
 - name: 'gcr.io/cloud-builders/npm'
   args: ['install']
-- name: 'gcr.io/cloud-builders/npm'
-  args: ["run", "build"]
+- name: 'bash'
+  args: ["npm", "run", "build"]
 - name: "gcr.io/cloud-builders/gcloud"
   args: ["storage", "rm", "--recursive", "gs://postcard.gaborcsapo.com/*"]
   allowFailure: true
