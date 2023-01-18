@@ -14,6 +14,7 @@ steps:
   args: ["run", "build"]
 - name: "gcr.io/cloud-builders/gcloud"
   args: ["storage", "rm", "--recursive", "gs://postcard.gaborcsapo.com/*"]
+  allowFailure: true
 - name: "gcr.io/cloud-builders/gcloud"
   args: ["storage", "cp", "--recursive", "dist/*", "gs://postcard.gaborcsapo.com"]
 - name: "gcr.io/cloud-builders/gcloud"
