@@ -16,7 +16,7 @@ if [[ -z "${MAPS_API_KEY}" ]]; then
   gcloud secrets versions access 1 --secret=MAPS_API_KEY >> dist/secrets.json
 else
   echo "API key env var found"
-  echo ${MAPS_API_KEY} >> dist/secrets.json
+  echo -n ${MAPS_API_KEY} >> dist/secrets.json
 fi
 
 echo -n "\"}" >> dist/secrets.json &&
