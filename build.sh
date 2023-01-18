@@ -1,3 +1,4 @@
+#!/bin/bash
 rm -r dist
 mkdir -p dist/resources &&
 cp public/resources/img/favicon.png dist/ &&
@@ -9,6 +10,7 @@ touch dist/secrets.json &&
 
 echo -n "{\"maps_api_key\":\"" > dist/secrets.json &&
 
+# cloud build makes the env var available while on local builds we have to manually fetch the secret
 if [[ -z "${MAPS_API_KEY}" ]]; then
   echo "API key env var found"
   echo ${MAPS_API_KEY} >> dist/secrets.json
