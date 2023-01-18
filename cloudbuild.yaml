@@ -10,8 +10,13 @@ steps:
   allowFailure: true
 - name: 'gcr.io/cloud-builders/npm'
   args: ['install']
-- name: 'bash'
-  args: ["npm", "run", "build"]
+- name: 'gcr.io/cloud-builders/npm'
+  args: ["run", "build"]
+  secretEnv: ['MAP_API_KEY']
+  availableSecrets:
+    secretManager:
+    - versionName: projects/952598646239/secrets/MAPS_API_KEY/versions/latest
+      env: 'MAP_API_KEY'
 - name: "gcr.io/cloud-builders/gcloud"
   args: ["storage", "rm", "--recursive", "gs://postcard.gaborcsapo.com/*"]
   allowFailure: true

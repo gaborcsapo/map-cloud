@@ -8,7 +8,15 @@ npm run compile:rollup &&
 touch dist/secrets.json &&
 
 echo -n "{\"maps_api_key\":\"" > dist/secrets.json &&
-gcloud secrets versions access 1 --secret=MAPS_API_KEY >> dist/secrets.json &&
+
+if [[ -z "${MAPS_API_KEY}" ]]; then
+  echo "API key env var found"
+  echo ${MAPS_API_KEY} >> dist/secrets.json
+else
+  echo "API key env var not found"
+  gcloud secrets versions access 1 --secret=MAPS_API_KEY >> dist/secrets.json
+fi
+
 echo -n "\"}" >> dist/secrets.json &&
 mustache dist/secrets.json public/views/home.mustache > dist/index.html &&
 mkdir dist/trip &&
