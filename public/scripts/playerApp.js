@@ -17,7 +17,7 @@ class PlayerApp {
                 this.journeyPlayer = new JourneyPlayer(journeyStages);
 
                 html = MustacheModalTemplate.render({
-                    title: "Open your <b>Digital Travel Postcard</b> &#127881; &#9992;&#65039; &#127881;",
+                    title: "Open your <b>Postcard Animation</b> &#127881; &#9992;&#65039; &#127881;",
                     body: '<button type="button" id="continue-button" class="btn btn-primary">Continue with sound &#128266;</button>',
                 });
                 document.getElementById("modal-container").insertAdjacentHTML("beforeend", html);
