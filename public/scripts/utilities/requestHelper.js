@@ -12,6 +12,7 @@ export function queryJourneyData(id) {
     return new Promise((resolve) => {
         fetch(getBackendURL("/data/getjourney"), {
             method: 'POST',
+            mode: 'no-cors',
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -31,6 +32,7 @@ export function queryJourneyData(id) {
 export function createJourney(id, data) {
     return fetch(getBackendURL("/data/createjourney"), {
         method: 'POST',
+        mode: 'no-cors',
         headers: {
             'Content-Type': 'application/json',
         },

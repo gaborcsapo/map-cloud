@@ -20,7 +20,6 @@ else
 fi
 
 echo -n "\"}" >> dist/secrets.json &&
-cat dist/secrets.json &&
 mustache dist/secrets.json public/views/home.mustache > dist/index.html &&
 mkdir dist/trip &&
 mustache dist/secrets.json public/views/player.mustache > dist/trip/index.html &&
