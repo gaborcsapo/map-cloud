@@ -1,4 +1,8 @@
 steps:
+- name: python:slim
+  entrypoint: python
+  args: ['main.py']
+  secretEnv: ['MAPS_API_KEY']
 - name: "gcr.io/cloud-builders/gcloud"
   args: ["artifacts", "docker", "images", "delete", "us-east1-docker.pkg.dev/postcard-368413/cloud-run-source-deploy/postcard/", "--delete-tags"]
   allowFailure: true
