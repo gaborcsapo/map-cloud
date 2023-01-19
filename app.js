@@ -16,7 +16,7 @@ http.setTimeout(10000, ()=> {
     console.log("app.js: HTTP server timed out");
 })
 app.use(cors({
-  'origin': ['https://postcard.gaborcsapo.com', 'http://postcard.gaborcsapo.com', "https://localhost:8080"],
+  'origin': ['https://postcard.gaborcsapo.com', 'http://postcard.gaborcsapo.com', "http://localhost:8080"],
 }))
 app.use(express.json());
 app.engine('mustache', mustache);

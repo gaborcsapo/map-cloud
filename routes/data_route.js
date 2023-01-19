@@ -6,19 +6,18 @@ const router = Router();
 const journeyStore = new JourneyStore();
 
 router.post('/getjourney', async (req, res) => {
-    const data  = await journeyStore.getJourney(JSON.parse(req.body).id)
-    res.send(JSON.stringify(data));
+    const data  = await journeyStore.getJourney(req.body.id)
+    res.json(data);
 });
 
 router.post('/createjourney', (req, res) => {
-    let req_body = JSON.parse(req.body);
-    let result = journeyStore.addJourney(req_body.data.map(
+    let result = journeyStore.addJourney(req.body.data.map(
         (elem) => {
             return new JourneyStage(elem);
         }),
-        req_body.id
+        req.body.id
     );
-    res.send(JSON.stringify({"id" : result}));
+    res.json({"id" : result});
 });
 
 export default router;

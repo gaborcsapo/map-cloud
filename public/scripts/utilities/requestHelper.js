@@ -14,10 +14,9 @@ export function queryJourneyData(id) {
         fetch(getBackendURL("/data/getjourney"), {
             method: 'POST',
             headers: {
-                'Content-Type': 'text/plain;charset=UTF-8',
-                "Access-Control-Allow-Origin": "*"
+                'Content-Type': 'application/json',
             },
-            body: JSON.stringify({"id": id}),
+            body: {"id": id},
         })
         .then((response) => response.json())
         .then((data) => {
@@ -34,10 +33,9 @@ export function createJourney(id, data) {
     return fetch(getBackendURL("/data/createjourney"), {
         method: 'POST',
         headers: {
-            'Content-Type': 'text/plain;charset=UTF-8',
-            "Access-Control-Allow-Origin": "*"
+            'Content-Type': 'application/json',
         },
-        body: JSON.stringify({"id": id, "data": data}),
+        body: {"id": id, "data": data},
     })
     .then((response) => response.json())
     .then((data) => {
