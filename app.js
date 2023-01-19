@@ -3,7 +3,7 @@ import { createServer } from 'http';
 import serve_favicon from 'serve-favicon';
 import mustacheExpress from 'mustache-express';
 import 'dotenv/config'
-
+import cors from "cors";
 import routes from './routes/routes.js';
 
 const app = express();
@@ -15,7 +15,9 @@ mustache.cache = null;
 http.setTimeout(10000, ()=> {
     console.log("app.js: HTTP server timed out");
 })
-
+app.use(cors({
+  'origin': ['https://postcard.gaborcsapo.com', 'http://postcard.gaborcsapo.com', "https://localhost:8080"],
+}))
 app.use(express.json());
 app.engine('mustache', mustache);
 app.set('view engine', 'mustache')
