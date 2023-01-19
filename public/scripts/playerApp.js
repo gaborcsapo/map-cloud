@@ -40,7 +40,7 @@ class PlayerApp {
                         title: "Journey ID Not Found",
                         body: '<p>Make sure the correct URL was opened, otherwise please create a new journey in our editor <a href="/editor">here</a>.',
                     });
-                } else if (data.status == "error") {
+                } else {
                     html = MustacheModalTemplate.render({
                         title: "Couldn't Generate Journey",
                         body: data.msg + '\nYou can create a new journey in our editor <a href="/editor">here</a>.',
