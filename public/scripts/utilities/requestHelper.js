@@ -14,14 +14,15 @@ export function queryJourneyData(id) {
             method: 'POST',
             mode: 'no-cors',
             headers: {
-                'Content-Type': 'application/json',
+                'content-type': 'text/plain;charset=UTF-8',
             },
             body: JSON.stringify({"id": id}),
         })
-        .then((response) => response.json())
+        .then((response) => response.text())
         .then((data) => {
-            console.log('Success:', data);
-            resolve(data);
+            let parsedData = JSON.parse(data)
+            console.log('Success:', parsedData);
+            resolve(parsedData);
         })
         .catch((error) => {
             console.error('Error:', error);
@@ -34,12 +35,12 @@ export function createJourney(id, data) {
         method: 'POST',
         mode: 'no-cors',
         headers: {
-            'Content-Type': 'application/json',
+            'content-type': 'text/plain;charset=UTF-8',
         },
         body: JSON.stringify({"id": id, "data": data}),
     })
-    .then((response) => response.json())
-    .then((data) => data.id)
+    .then((response) => response.text())
+    .then((data) => JSON.parse(data).id)
     .catch((error) => {
         console.error('Error:', error);
     });
