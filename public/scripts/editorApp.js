@@ -5,6 +5,7 @@ import { createJourney } from "./utilities/requestHelper.js";
 import { queryJourneyData } from "./utilities/requestHelper.js";
 import { JourneyPlayer } from './controllers/journeyPlayer.js';
 import { TimelineEditorManager } from "./controllers/timelineEditorManager.js";
+import ClipboardJS from "clipboard";
 import MustacheModalTemplate from '../views/modal.mustache'
 
 class EditorApp {
@@ -87,8 +88,13 @@ class EditorApp {
         tooltipHtmlElem.style.display = "inline-block";
         bootstrap.Tooltip.getOrCreateInstance(tooltipHtmlElem, {trigger: "hover"});
 
+        new ClipboardJS('#copyButton', {
+            text: function(trigger) {
+                return link;
+            }
+        });
+
         tooltipHtmlElem.addEventListener('click', () => {
-            navigator.clipboard.writeText(link);
             var tooltip = bootstrap.Tooltip.getOrCreateInstance(document.getElementById("copyButton"));
             tooltip.setContent({ '.tooltip-inner': 'Copied ' + link});
         })
