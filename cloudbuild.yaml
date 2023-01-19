@@ -17,7 +17,7 @@ steps:
   args: ["storage", "rm", "--recursive", "gs://postcard.gaborcsapo.com/*"]
   allowFailure: true
 - name: "gcr.io/cloud-builders/gcloud"
-  args: ["storage", "cp", "--recursive", "dist/*", "gs://postcard.gaborcsapo.com"]
+  args: ["storage", "cp", "--recursive", "--cache-control=public,max-age=60", "dist/*", "gs://postcard.gaborcsapo.com"]
 - name: "gcr.io/cloud-builders/gcloud"
   args: ["functions", "deploy", "postcard-function", "--region=us-east1", "--source", ".", "--trigger-http", "--runtime=nodejs16", "--allow-unauthenticated", "--entry-point=app", "--gen2"]
 timeout: "1600s"
