@@ -90,7 +90,7 @@ export class JourneyStore {
     }
 
     addJourney(journeyStages, id) {
-        if (id == undefined || id == "undefined") {
+        if (id == undefined || id == "undefined" || id == "") {
             id = shortUUID.generate();
         }
         console.log("addJourney() id:", id);
