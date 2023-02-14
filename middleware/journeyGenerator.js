@@ -43,6 +43,9 @@ export class JourneyGenerator {
             if (stage.getNarrationText() && stage.getNarrationText().length > 0) {
                 result.push(tts.getSpeech(stage.getNarrationText(), stage.getLanguage()));
             }
+            else {
+                result.push(Promise.resolve(undefined))
+            }
             return result;
         }, []);
 
