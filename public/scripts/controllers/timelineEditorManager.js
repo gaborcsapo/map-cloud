@@ -1,5 +1,6 @@
 import MustacheTimelineTemplate from '../../views/editor_timeline_element.mustache'
 import { JourneyStage } from "../utilities/journeyStage.js";
+import imageCompression from 'browser-image-compression';
 
 export class TimelineEditorManager {
     constructor() {
@@ -44,6 +45,32 @@ export class TimelineEditorManager {
         this.addNewTimelineElem();
     }
 
+    processPicture(imageFileList, promiseQueue) {
+        if (imageFileList.length > 0) {
+            let imageFile = imageFileList[0];
+
+            const options = {
+                maxSizeMB: 0.05,
+                maxWidthOrHeight: 600,
+                useWebWorker: true
+            }
+
+            return imageCompression(imageFile, options).then((compressedFile) => {
+                console.log(`compressedFile size ${compressedFile.size / 1024 / 1024} MB`); // smaller than maxSizeMB
+
+                const reader = new FileReader();
+                reader.readAsDataURL(compressedFile);
+                return new Promise(resolve => {
+                  reader.onloadend = () => {
+                    resolve(reader.result);
+                  };
+                });
+            });
+        } else {
+            return Promise.resolve(undefined);
+        }
+    }
+
     parseTimeline() {
         let ret = null;
         let cards = [...document.getElementsByClassName("card-container")];
@@ -59,6 +86,7 @@ export class TimelineEditorManager {
             let prevTitle = cards[0].getElementsByClassName("stop_title")[0].value;
             let prevDescription = cards[0].getElementsByClassName("stop_description")[0].value;
             let prevFireworks = cards[0].getElementsByClassName("stop_fireworks")[0].checked;
+            let prevPicturePromise = this.processPicture(cards[0].getElementsByClassName("image_input")[0].files);
 
             for (let i = 1; i < cards.length; i++) {
                 journeyStages.push(new JourneyStage({
@@ -69,12 +97,13 @@ export class TimelineEditorManager {
                     narrationText: prevDescription,
                     language: languageValue,
                     fireworks: prevFireworks,
-                    picture: undefined
+                    picture: prevPicturePromise
                 }))
                 prevTitle = cards[i].getElementsByClassName("stop_title")[0].value;
                 prevDescription = cards[i].getElementsByClassName("stop_description")[0].value;
                 prevEnd = cards[i].getElementsByClassName("stop_address")[0].value;
                 prevFireworks = cards[i].getElementsByClassName("stop_fireworks")[0].checked;
+                prevPicturePromise = this.processPicture(cards[i].getElementsByClassName("image_input")[0].files);
             }
 
             journeyStages.push(new JourneyStage({
@@ -85,12 +114,20 @@ export class TimelineEditorManager {
                 narrationText: prevDescription,
                 language: languageValue,
                 fireworks: prevFireworks,
-                picture: undefined
+                picture: prevPicturePromise
             }))
 
-            ret = Promise.resolve(journeyStages);
+            let promiseQueue = journeyStages.map((stage) => stage.getPicture());
+
+            ret = Promise.all(promiseQueue).then((results) => {
+                for (let i = 0; i < journeyStages.length; i++) {
+                    journeyStages[i].setPicture(results[i]);
+                }
+                return journeyStages;
+            });
         }
 
         return ret;
     }
+
 }

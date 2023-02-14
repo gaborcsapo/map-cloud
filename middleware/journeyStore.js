@@ -19,7 +19,7 @@ export class JourneyStore {
 
         if (journeyResults.length > 0) {
             let journey = journeyResults[0];
-            journey.journeyStages = journey.journeyStages.map((stage) => new JourneyStage(stage));
+            journey.journeyStages = JSON.parse(journey.journeyStages).map((stage) => new JourneyStage(stage));
             ret = journey
         }
 
@@ -39,7 +39,7 @@ export class JourneyStore {
             data: [
                 {
                     name: "journeyStages",
-                    value: data.journeyStages,
+                    value: JSON.stringify(data.journeyStages),
                     excludeFromIndexes: true,
                 },
                 {
@@ -54,7 +54,7 @@ export class JourneyStore {
                 }
             ],
         }
-        this.datastore.save(journeyEntry);
+        this.datastore.save(journeyEntry).catch((response) => {console.log("couldn't save into data store due to: ", response)});
     }
 
     async getJourney(id) {

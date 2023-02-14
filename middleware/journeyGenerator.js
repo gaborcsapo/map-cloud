@@ -16,7 +16,7 @@ export class JourneyGenerator {
         let locationPromises = journeyStages.map((stage) => {
             if ((stage.getRouteType() == "plane") || (stage.getRouteType() == "teleportation")) {
                 return mapDirections.searchLine(stage);
-            } else if (stage.getRouteType() == "car") {
+            } else if ((stage.getRouteType() == "car") || (stage.getRouteType() == "scooter")) {
                 return mapDirections.searchRoute(stage);
             }
         })
@@ -71,7 +71,7 @@ export class JourneyGenerator {
 
             }
 
-            if ((stage.getRouteType() == "plane") || (stage.getRouteType() == "car")) {
+            if ((stage.getRouteType() == "plane") || (stage.getRouteType() == "car") || (stage.getRouteType() == "scooter")) {
                 // The zoomamplitude equation is just a exponential curve fitting for these y/x values:
                 // 12     1508257.9025383398
                 // 4       25943.69836456524

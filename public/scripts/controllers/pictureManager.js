@@ -6,30 +6,23 @@ import {
 } from 'three';
 import { latLngAltToVector3 } from '../utilities/coordinates.js';
 
+const BASE_SCALE = 0.16;
+
 export class PictureManager {
     constructor({map, scene}) {
         this.map = map;
-        this.imgTextures = new Map();
-        this.imageMeshes = [];
         this.scene = scene;
+        this.imageMeshes = [];
     }
 
-    async preLoadImage(url) {
-        const loader = new TextureLoader();
-        loader.crossOrigin = "Anonymous";
-        this.imgTextures.set(url, loader.load(url));
-    }
-
-    loadImageMesh(url, latLng) {
-        if (this.imgTextures.get(url) == undefined)
-        {
-            this.preLoadImage(url).then(() => {
-                this.loadImageMesh(url, latLng);
-            });
-        } else {
-            const geometry = new PlaneGeometry(12, 12, 32);
+    loadImageMesh(image, latLng) {
+        var img = new Image();
+        img.src = image;
+        img.onload = () => {
+            const geometry = new PlaneGeometry(15, 15 * img.height / img.width);
+            img = 0;
             const material = new MeshBasicMaterial({
-                map: this.imgTextures.get(url),
+                map: new TextureLoader().load(image),
                 opacity: 1
             });
 
@@ -47,8 +40,8 @@ export class PictureManager {
                 );
             }
             const position = latLngAltToVector3(latLng);
-            imageMesh.scale.set(7, 7);
-            imageMesh.position.set(position.x, 60, position.z);
+            imageMesh.scale.set(BASE_SCALE, BASE_SCALE);
+            imageMesh.position.set(position.x + 60, 60, position.z - 70);
 
             this.imageMeshes.push(imageMesh);
             this.scene.add(imageMesh);
@@ -58,5 +51,10 @@ export class PictureManager {
     clearImages() {
         this.imageMeshes.forEach((mesh) => this.scene.remove(mesh));
         this.imageMeshes = [];
+    }
+
+    update() {
+        let newScale = BASE_SCALE * Math.pow(1.7, 25 - (this.map.getZoom() || 0));
+        this.imageMeshes.forEach((mesh) => mesh.scale.set(newScale, newScale));
     }
 }

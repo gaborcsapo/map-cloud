@@ -4,7 +4,7 @@ export class SoundManager {
     constructor() {
         if (!instance) {
             instance = this;
-
+            this.audioContext = (new AudioContext() || new webkitAudioContext());
             this.silent = false;
 
             this.airport = new Audio("/resources/sounds/airport.flac");
@@ -50,8 +50,10 @@ export class SoundManager {
     }
 
     playCarSound() {
-        if (this.silent == false)
+        if (this.silent == false) {
+            this.car.volume = 0.5;
             this.car.play();
+        }
     }
 
     stopCarSound() {
@@ -80,15 +82,14 @@ export class SoundManager {
     playAudio(arrayBuffer) {
         return new Promise(resolve => {
             try {
-                let audioContext = new AudioContext();
                 let outputSource;
                 if(arrayBuffer && arrayBuffer.byteLength > 0){
-                    audioContext.decodeAudioData(arrayBuffer,
+                    this.audioContext.decodeAudioData(arrayBuffer,
                         (buffer) => {
                             if (this.silent == false) {
-                                audioContext.resume();
-                                outputSource = audioContext.createBufferSource();
-                                outputSource.connect(audioContext.destination);
+                                this.audioContext.resume();
+                                outputSource = this.audioContext.createBufferSource();
+                                outputSource.connect(this.audioContext.destination);
                                 outputSource.buffer = buffer;
                                 outputSource.start(0);
                             }

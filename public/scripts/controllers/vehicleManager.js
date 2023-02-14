@@ -99,7 +99,7 @@ export class VehicleManager {
     }
 
     loadVehicleModel(modelPath) {
-        if (modelPath.slice(-4) == "gltf") {
+        if ((modelPath.slice(-4) == "gltf") || (modelPath.slice(-3) == "glb")) {
             const gltfLoader = new GLTFLoader();
 
             return new Promise(resolve => {

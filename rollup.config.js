@@ -5,7 +5,8 @@ import mustache from 'rollup-plugin-mustache'
 export default [
     {
         onwarn(warning, rollupWarn) {
-            if (warning.code !== 'CIRCULAR_DEPENDENCY') {
+            if ((warning.code !== 'CIRCULAR_DEPENDENCY') &&
+                (warning.code !== 'THIS_IS_UNDEFINED')) {
                 rollupWarn(warning);
             }
         },
@@ -26,7 +27,10 @@ export default [
     },
     {
         onwarn(warning, rollupWarn) {
-            if (warning.code !== 'CIRCULAR_DEPENDENCY') {
+            if ((warning.code !== 'CIRCULAR_DEPENDENCY') &&
+                (warning.code !== 'THIS_IS_UNDEFINED') &&
+                (warning.code !== 'EVAL')) {
+                console.log(warning.code);
                 rollupWarn(warning);
             }
         },

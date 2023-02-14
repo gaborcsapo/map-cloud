@@ -7,7 +7,7 @@ export class JourneyStage {
         markerTitle,
         narrationText,
         language,
-        picture,
+        picture = undefined,
         route = [],
         narrationAudio = undefined,
         narrationDuration = 0,
@@ -26,6 +26,7 @@ export class JourneyStage {
         if (narrationAudio) {
             this.narrationAudio = new Uint8Array(narrationAudio.data).buffer;
         }
+        this.picture = picture;
         this.narrationDuration = narrationDuration;
         this.camMoveDuration = camMoveDuration;
         this.startingZoom = startingZoom;

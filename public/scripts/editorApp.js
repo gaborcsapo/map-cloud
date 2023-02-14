@@ -38,7 +38,7 @@ class EditorApp {
 
     refreshPreview() {
         this.clearToast();
-
+        this.displayLoading();
         this.editorManager.parseTimeline().then((data) => {
             createJourney(this.id, data).then((id) => {
                 this.id = id;
@@ -61,6 +61,8 @@ class EditorApp {
                     }
                 }, (reason) => {
                     this.errorToast(reason);
+                }).finally(() => {
+                    this.undisplayLoading();
                 });
 
                 this.initCopyButton(window.location.origin + "/trip/?id=" + id);
@@ -102,6 +104,16 @@ class EditorApp {
             var tooltip = bootstrap.Tooltip.getOrCreateInstance(document.getElementById("copyButton"));
             tooltip.setContent({ '.tooltip-inner': 'Copy to clipboard' });
         })
+    }
+
+    displayLoading() {
+        const loadingOverlayHtmlElem = document.getElementsByClassName("loading-overlay")[0];
+        loadingOverlayHtmlElem.style.display = "block";
+    }
+
+    undisplayLoading() {
+        const loadingOverlayHtmlElem = document.getElementsByClassName("loading-overlay")[0];
+        loadingOverlayHtmlElem.style.display = "none";
     }
 }
 

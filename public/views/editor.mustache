@@ -27,14 +27,19 @@
 </head>
 <body>
     <div id="map" class="journey-map map40">
-        Write the story of your trip, then click "Save and Preview Trip" to load the map here.
+        Fill in the below form with your story, then click "Save and Preview Trip" to load the preiew here.
+    </div>
+
+    <div class="loading-overlay">
+        <div class="overlay__inner">
+            <div class="overlay__content"><span class="spinner"></span></div>
+        </div>
     </div>
 
     <div id="modal-container"></div>
 
     <div id="editor-box">
         <div id="editor-container">
-            <div class="timelineCenteredText">Fill in this form with your story then click "Save and Preview Trip".</div>
             <form class="form-horizontal timelineCenteredText">
                 <label class="form-check-label">The voiceover should read your text in </label>
                 <select class="form-select" id="language-select">

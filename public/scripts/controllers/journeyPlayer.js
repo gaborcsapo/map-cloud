@@ -42,7 +42,15 @@ export class JourneyPlayer {
             lineColor: CAR_LINE_COLOR,
             modelPath: "/resources/3d/car.gltf",
             front: new Vector3(1, 0, 0),
-            scale: 0.2,
+            scale: 0.25,
+            isImage: false,
+        });
+        this.scooter = new VehicleManager({
+            mapAndOverlayManager: this.mapAndOverlayManager,
+            lineColor: CAR_LINE_COLOR,
+            modelPath: "/resources/3d/scooter.glb",
+            front: new Vector3(-1, 0, 0),
+            scale: 2,
             isImage: false,
         });
         this.fireworks = new FireworksManager({
@@ -67,8 +75,10 @@ export class JourneyPlayer {
         this.markerManager.clearMarkers();
         this.pictureManager.clearImages();
         this.car.deletePreviousLines();
+        this.scooter.deletePreviousLines();
         this.plane.deletePreviousLines();
         this.car.stopJourneyStage();
+        this.scooter.stopJourneyStage();
         this.plane.stopJourneyStage();
         if (this.cameraAnimation)
             this.cameraAnimation.pause();
@@ -80,11 +90,6 @@ export class JourneyPlayer {
         this.stageIdx = -1;
         this.playCount++;
         this.journeySequence = [];
-        this.journeyStages.forEach(element => {
-            if (element.picture != undefined) {
-                this.pictureManager.preLoadImage(element.picture);
-            }
-        });
         this.timelineManager = new TimelineManager({
             journeyStages: this.journeyStages
         });
@@ -129,7 +134,7 @@ export class JourneyPlayer {
         this.soundManager.musicVolumeDown();
         let currentPlayCount = this.playCount; // we need to cancel this if the journey was updated
 
-        while (this.journeyStages.some((stage) => {return stage.getRouteType() == "car"})) {
+        while (this.journeyStages.some((stage) => {return (stage.getRouteType() == "car") || (stage.getRouteType() == "scooter")})) {
             for (let i = 0; i < this.journeyStages.length; i++) {
                 if (currentPlayCount != this.playCount) {
                     return;
@@ -141,6 +146,9 @@ export class JourneyPlayer {
                 } else if (stage.getRouteType() == "car") {
                     this.car.startNewJourneyStage(stage.route, stage.getCamMoveDuration());
                     await new Promise(resolve => setTimeout(resolve, stage.getCamMoveDuration()));
+                } else if (stage.getRouteType() == "scooter") {
+                    this.scooter.startNewJourneyStage(stage.route, stage.getCamMoveDuration());
+                    await new Promise(resolve => setTimeout(resolve, stage.getCamMoveDuration()));
                 }
             }
         }
@@ -149,7 +157,9 @@ export class JourneyPlayer {
     updateSceneCallback() {
         this.plane.update();
         this.car.update();
+        this.scooter.update();
         this.fireworks.update();
+        this.pictureManager.update();
     }
 
     setupJourneySequence() {
@@ -165,6 +175,15 @@ export class JourneyPlayer {
                     this.nextStage.bind(this),
                 ]);
             } else if (stage.getRouteType() == "car") {
+                this.journeySequence = this.journeySequence.concat([
+                    this.narrateScene.bind(this),
+                    this.zoomOutCamera.bind(this),
+                    this.waitForMapLoaded.bind(this),
+                    this.startVehicleTrip.bind(this),
+                    this.zoomInCamera.bind(this),
+                    this.nextStage.bind(this),
+                ]);
+            } else if (stage.getRouteType() == "scooter") {
                 this.journeySequence = this.journeySequence.concat([
                     this.narrateScene.bind(this),
                     this.zoomOutCamera.bind(this),
@@ -283,6 +302,9 @@ export class JourneyPlayer {
         } else if (stage.getRouteType() == "car") {
             this.vehicle = this.car;
             this.soundManager.playCarSound();
+        } else if (stage.getRouteType() == "scooter") {
+            this.vehicle = this.scooter;
+            this.soundManager.playCarSound();
         }
         this.vehicle.startNewJourneyStage(stage.route, stage.getCamMoveDuration());
         this.vehicle.addVehicleLine();
@@ -313,8 +335,7 @@ export class JourneyPlayer {
 
             // Load picture
             if (this.journeyStages[this.stageIdx].picture != undefined) {
-                let [position] = this.journeyStages[this.stageIdx].route.slice(-1);
-                position.y += 120;
+                let position = this.journeyStages[this.stageIdx].route[0];
                 this.pictureManager.loadImageMesh(this.journeyStages[this.stageIdx].picture, position);
             }
         }

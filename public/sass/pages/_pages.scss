@@ -11,6 +11,11 @@
     justify-content: center;
 }
 
+.map40 {
+    background: #333;
+    color: white;
+}
+
 #timeline-container, #editor-container {
     height: 100%;
     width: 100%;
@@ -18,7 +23,6 @@
     padding-bottom: 30px;
     overflow: scroll;
     border-radius: 10px;
-    border-top: 1px solid #efefef;
     border-bottom: 1px solid #efefef;
 }
 
@@ -94,6 +98,11 @@
     .map40 {
         height: 40%;
     }
+
+    .loading-overlay {
+        height: 40%;
+    }
+
     .journey-map {
         align-items: center;
     }
