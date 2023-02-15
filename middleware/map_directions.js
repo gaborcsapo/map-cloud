@@ -35,7 +35,7 @@ export class MapDirections {
                 .then((resp) => {
                     if (resp.data.routes.length == 0)
                     {
-                        reject("Google Maps doesn't recognize one of these two places or can't draw a route between them.");
+                        reject("Google Maps doesn't recognize one of these two places or can't draw a route between them. Are you sure selected the correct mode of transport? Cars can't go over oceans...");
                     } else {
                         journeyStage.setDistance(resp.data.routes[0].legs[0].distance.value);
                         journeyStage.setRoute(this.decodePath(resp.data.routes[0].overview_polyline.points));

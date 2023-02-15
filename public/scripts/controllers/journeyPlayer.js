@@ -192,10 +192,19 @@ export class JourneyPlayer {
                     this.zoomInCamera.bind(this),
                     this.nextStage.bind(this),
                 ]);
-            } else if (stage.getRouteType() == "teleportation") {
+            } else if ((stage.getRouteType() == "teleportation") && (stage.getDistance() < 3000)) {
                 this.journeySequence = this.journeySequence.concat([
                     this.narrateScene.bind(this),
                     this.moveCamera.bind(this),
+                    this.nextStage.bind(this),
+                ]);
+            } else if (stage.getRouteType() == "teleportation") {
+                this.journeySequence = this.journeySequence.concat([
+                    this.narrateScene.bind(this),
+                    this.zoomOutCamera.bind(this),
+                    this.waitForMapLoaded.bind(this),
+                    this.moveCamera.bind(this),
+                    this.zoomInCamera.bind(this),
                     this.nextStage.bind(this),
                 ]);
             }
@@ -205,7 +214,7 @@ export class JourneyPlayer {
     setupPlaneScene() {
         this.soundManager.playAirportSound();
         this.soundManager.playChime();
-        return new Promise(resolve => setTimeout(resolve, 2000));
+        return new Promise(resolve => setTimeout(resolve, 1000));
     }
 
     narrateScene() {

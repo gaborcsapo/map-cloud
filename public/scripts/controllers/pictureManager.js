@@ -41,7 +41,7 @@ export class PictureManager {
             }
             const position = latLngAltToVector3(latLng);
             imageMesh.scale.set(BASE_SCALE, BASE_SCALE);
-            imageMesh.position.set(position.x + 60, 60, position.z - 70);
+            imageMesh.position.set(position.x + 70, 60, position.z);
 
             this.imageMeshes.push(imageMesh);
             this.scene.add(imageMesh);

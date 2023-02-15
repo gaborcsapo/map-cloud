@@ -4,10 +4,10 @@ import imageCompression from 'browser-image-compression';
 
 export class TimelineEditorManager {
     constructor() {
+        this.sightCounter = 0;
         this.initFirstTimelineElem();
         this.initAutoExpandingTextArea()
-
-        document.getElementById("addButton").addEventListener("click", this.addNewTimelineElem);
+        document.getElementById("addButton").addEventListener("click", this.addNewTimelineElem.bind(this));
     }
 
     addNewTimelineElem() {
@@ -35,13 +35,12 @@ export class TimelineEditorManager {
     }
 
     initFirstTimelineElem() {
-        let html = MustacheTimelineTemplate.render({id: 0});
+        let html = MustacheTimelineTemplate.render({id: this.sightCounter});
+        this.sightCounter++;
         document.getElementById("addButtonContainer").insertAdjacentHTML("beforebegin", html);
         let timelineChildren = document.getElementById("editor-container").getElementsByClassName("timeline-elem");
         timelineChildren[0].children[0].children[0].style.background = "white";
         timelineChildren[0].children[0].children[1].style.background = "white";
-        this.sightCounter = 1;
-
         this.addNewTimelineElem();
     }
 
@@ -56,8 +55,6 @@ export class TimelineEditorManager {
             }
 
             return imageCompression(imageFile, options).then((compressedFile) => {
-                console.log(`compressedFile size ${compressedFile.size / 1024 / 1024} MB`); // smaller than maxSizeMB
-
                 const reader = new FileReader();
                 reader.readAsDataURL(compressedFile);
                 return new Promise(resolve => {

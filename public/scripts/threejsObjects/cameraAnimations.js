@@ -1,6 +1,6 @@
 import {CatmullRomCurve3, MathUtils} from 'three';
 import { latLngAltToVector3, vector3ToLatLngAlt } from '../utilities/coordinates.js';
-import { easeInOutCubic, easeInSine } from '../utilities/easing.js';
+import { easeInOutCubic, easeInSine, easeInOutQuint } from '../utilities/easing.js';
 
 /**
  * Baseclass for all camera-animations, manages the rAF-loop
@@ -131,7 +131,7 @@ export class MoveAnimation extends CameraAnimation {
 
     update(animationTime) {
         const progress = MathUtils.clamp(animationTime / this.duration, 0, 1);
-        const cameraPos = this.spline.getPointAt(easeInOutCubic(progress));
+        const cameraPos = this.spline.getPointAt(easeInOutQuint(progress));
         const {lat, lng} = vector3ToLatLngAlt(cameraPos, this.origin);
         this.mapAndOverlayManager.setMapCamera({
             center: {lat, lng},

@@ -100,7 +100,6 @@ export class SoundManager {
                         }
                     );
                 } else {
-                    console.log("byte length is 0");
                     resolve();
                 }
             } catch(e) {

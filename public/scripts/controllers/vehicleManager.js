@@ -5,7 +5,7 @@ import {LineGeometry} from 'three/examples/jsm/lines/LineGeometry';
 import {LineMaterial} from 'three/examples/jsm/lines/LineMaterial';
 import {CatmullRomCurve3, Vector3, MathUtils} from 'three';
 import { latLngToVector3 } from '../utilities/coordinates.js';
-import { easeInOutCubic } from '../utilities/easing.js';
+import { easeInOutCubic, easeInOutQuint } from '../utilities/easing.js';
 
 const ARC_LENGTH_DIVISIONS = 150;
 const tmpVec3 = new Vector3();
@@ -75,7 +75,7 @@ export class VehicleManager {
         if (this.startTimestamp != 0) {
             const sceneTime = performance.now() - this.startTimestamp;
             const linearProgress = MathUtils.clamp(sceneTime / this.totalDuration, 0, 1);
-            const progress = easeInOutCubic(linearProgress);
+            const progress = easeInOutQuint(linearProgress);
 
             if (this.counter++ % 5) {
                 this.vehicleLine.material.resolution.copy(this.mapAndOverlayManager.getViewportSize());

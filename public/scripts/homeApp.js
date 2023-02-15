@@ -15,7 +15,7 @@ class HomeApp {
     }
 
     playNextJourney() {
-        this.journeyIdx++;
+        this.journeyIdx = (this.journeyIdx + 1) % SampleJourneys.length;
         this.journeyPlayer.setNewJourney(SampleJourneys[this.journeyIdx]);
         this.journeyPlayer.playJourney(this.playNextJourney.bind(this));
     }

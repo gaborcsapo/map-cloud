@@ -67,11 +67,7 @@ export class JourneyGenerator {
             if (stage.getNarrationText() && stage.getNarrationText().length > 0) {
                 // we get 32Kbps MP3 which 4KB/s = 4B/ms
                 let audioLength = Math.round(stage.getNarrationAudio().byteLength / 4) + 1000;
-                if (stage.getRouteType() == "plane") {
-                    audioLength += 2000; // for the airport chime
-                }
                 stage.setNarrationDuration(audioLength);
-
             }
 
             if ((stage.getRouteType() == "plane") || (stage.getRouteType() == "car") || (stage.getRouteType() == "scooter")) {
@@ -92,11 +88,20 @@ export class JourneyGenerator {
                 stage.setTargetZoom(
                     18 - Math.min(13.68244 + (1.556327 - 13.68244)/Math.pow(1 + Math.pow((stage.getDistance()/1036770), 0.6166804), 2.364686), 14)
                 );
-                // rougly 1sec/km should be duration with a max of 25 sec
+                // rougly 1sec/km should be duration with a max of 24 sec
                 stage.setCamMoveDuration(
-                    Math.round(Math.min(stage.getDistance() / 0.9, 25000))
+                    Math.round(Math.min(stage.getDistance(), 24000))
                 );
                 stage.setZoomDuration(2000);
+            } else if ((stage.getRouteType() == "teleportation") && (stage.getDistance() > 3000)) {
+                stage.setStartingZoom(18);
+                stage.setTargetZoom(
+                    18 - Math.min(13.68244 + (1.556327 - 13.68244)/Math.pow(1 + Math.pow((stage.getDistance()/1036770), 0.6166804), 2.364686), 14)
+                );
+                stage.setCamMoveDuration(
+                    Math.round(Math.min(stage.getDistance() / 2, 10000))
+                );
+                stage.setZoomDuration(1500);
             } else if (stage.getRouteType() == "teleportation") {
                 stage.setCamMoveDuration(2000);
             }
